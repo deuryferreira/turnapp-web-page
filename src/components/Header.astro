@@ -3,10 +3,10 @@ import { Image } from "astro:assets";
 import logoSrc from "../assets/logo.svg";
 
 const navItems = [
-  { name: "Product", href: "/product" },
-  { name: "Solutions", href: "/solutions" },
-  { name: "Pricing", href: "/pricing" },
-  { name: "About Us", href: "/about-us" },
+  { name: "Producto", href: "/product" },
+  { name: "Soluciones", href: "/solutions" },
+  { name: "Precios", href: "/pricing" },
+  { name: "Nosotros", href: "/about-us" },
   { name: "Blog", href: "/blog" },
 ];
 ---
@@ -20,7 +20,7 @@ const navItems = [
     <a
       href="/"
       class="flex items-center transition-transform duration-300 hover:scale-105 focus:scale-105 focus:outline-none focus:ring-2 focus:ring-payflo-purple focus:ring-offset-2 rounded"
-      aria-label="Payflo home"
+      aria-label="Inicio Payflo"
     >
       <Image
         src={logoSrc}
@@ -54,7 +54,7 @@ const navItems = [
         href="/login"
         class="hidden md:inline-block text-payflo-dark hover:text-payflo-purple focus:text-payflo-purple transition-all duration-300 relative focus:outline-none focus:ring-2 focus:ring-payflo-purple focus:ring-offset-2 rounded px-2 py-1"
       >
-        Log In
+        Iniciar Sesión
         <span
           class="absolute bottom-0 left-0 w-0 h-0.5 bg-payflo-purple transition-all duration-300 group-hover:w-full"
         ></span>
@@ -62,7 +62,7 @@ const navItems = [
       <a
         href="/book-demo"
         class="btn btn-primary focus:outline-none focus:ring-2 focus:ring-payflo-purple focus:ring-offset-2"
-        >Book a Demo</a
+        >Solicitar Demo</a
       >
 
       <!-- Mobile Menu Button -->
