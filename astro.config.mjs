@@ -3,10 +3,17 @@ import sitemap from "@astrojs/sitemap";
 import tailwind from "@astrojs/tailwind";
 import icon from "astro-icon";
 
+import node from "@astrojs/node";
+
 export default defineConfig({
   site: "https://turnapp.ferreiraric.com",
-  output: "static",
+  output: "hybrid",
   prefetch: true,
+
+  server: {
+    host: "0.0.0.0",
+  },
+
   integrations: [
     tailwind(),
     sitemap(),
@@ -61,9 +68,14 @@ export default defineConfig({
       },
     }),
   ],
+
   image: {
     service: {
       entrypoint: "astro/assets/services/sharp",
     },
   },
+
+  adapter: node({
+    mode: "standalone",
+  }),
 });
