@@ -7,7 +7,7 @@ import node from "@astrojs/node";
 
 export default defineConfig({
   site: "https://turnapp.ferreiraric.com",
-  output: "hybrid",
+  output: "server",
   prefetch: true,
 
   server: {
