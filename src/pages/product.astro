@@ -22,7 +22,7 @@ const features = [
     title: "Múltiples Opciones de Llamado",
     description:
       "Soporte para tickets impresos, turnos virtuales vía SMS o app, y llamado directo desde el puesto de atención.",
-    icon: "ph:megaphone-duotone", // CORREGIDO: Usando megaphone-duotone
+    icon: "ph:megaphone-duotone",
   },
   {
     title: "Solución de Etiqueta Blanca (White-Label)",
@@ -34,7 +34,7 @@ const features = [
     title: "Gestión Centralizada de Colas",
     description:
       "Administre múltiples áreas de servicio y sucursales desde un panel centralizado, asegurando la uniformidad operativa.",
-    icon: "ph:flow-chart-duotone",
+    icon: "ph:flow-arrow-duotone", // CORREGIDO
   },
   {
     title: "Configuración Rápida y Sencilla",
@@ -105,6 +105,7 @@ const features = [
         {
           features.map((feature, index) => (
             <div
+              key={feature.title}
               class="bg-white rounded-xl p-8 shadow-sm animate-on-scroll"
               style={`animation-delay: ${index * 0.1}s`}
             >

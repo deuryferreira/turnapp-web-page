@@ -46,9 +46,17 @@ export default defineConfig({
           "lifebuoy-duotone",
           "handshake-duotone",
           "megaphone-duotone",
-          "flow-chart-duotone",
+          "flow-chart-duotone", // AGREGAR ESTE
           "wrench-duotone",
           "youtube-logo-duotone",
+          // AGREGAR ESTOS NUEVOS ICONOS
+          "package-duotone",
+          "chart-bar-duotone",
+          "megaphone-simple-duotone",
+          "palette-duotone",
+          "tree-structure-duotone",
+          "gear-six-duotone",
+          "flow-arrow-duotone",
         ],
       },
     }),
