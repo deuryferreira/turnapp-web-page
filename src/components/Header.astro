@@ -1,12 +1,12 @@
 ---
 import { Image } from "astro:assets";
-import logoSrc from "../assets/logo.svg";
+import logoWideSrc from "../assets/logo-wide-transparent.png";
 
 const navItems = [
   { name: "Producto", href: "/product" }, // { name: "Soluciones", href: "/solutions" },
   { name: "Precios", href: "/pricing" },
   { name: "Nosotros", href: "/about-us" },
-  { name: "Blog", href: "/blog" },
+  // { name: "Blog", href: "/blog" },
 ];
 ---
 
@@ -21,9 +21,9 @@ const navItems = [
       aria-label="Inicio TurnApp"
     >
       <Image
-        src={logoSrc}
+        src={logoWideSrc}
         alt="TurnApp Logo"
-        width={120}
+        width={138}
         height={40}
         class="transition-all duration-300 hover:brightness-110 focus:brightness-110"
       />
@@ -100,7 +100,7 @@ const navItems = [
             class="block py-2 px-2 text-gray-700 hover:text-payflo-purple focus:text-payflo-purple transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-payflo-purple focus:ring-offset-2 rounded"
             style={`transition-delay: ${index * 50}ms;`}
           >
-                        {item.name}         {" "}
+            {item.name}{" "}
           </a>
         ))
       }

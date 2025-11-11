@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --gradient-purple-blue: linear-gradient(135deg, #7928CA 0%, #0070F3 100%);
+  --gradient-purple-blue: linear-gradient(135deg, #0055c4 0%, #0097f7 100%);
 }
 
 html {
@@ -28,13 +28,21 @@ body {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes scaleUp {
-  from { transform: scale(0.95); }
-  to { transform: scale(1); }
+  from {
+    transform: scale(0.95);
+  }
+  to {
+    transform: scale(1);
+  }
 }
 
 @keyframes slideInRight {
@@ -71,12 +79,24 @@ body {
 }
 
 /* Animation delays for staggered entrance */
-.delay-0 { animation-delay: 0s; }
-.delay-1 { animation-delay: 0.1s; }
-.delay-2 { animation-delay: 0.2s; }
-.delay-3 { animation-delay: 0.3s; }
-.delay-4 { animation-delay: 0.4s; }
-.delay-5 { animation-delay: 0.5s; }
+.delay-0 {
+  animation-delay: 0s;
+}
+.delay-1 {
+  animation-delay: 0.1s;
+}
+.delay-2 {
+  animation-delay: 0.2s;
+}
+.delay-3 {
+  animation-delay: 0.3s;
+}
+.delay-4 {
+  animation-delay: 0.4s;
+}
+.delay-5 {
+  animation-delay: 0.5s;
+}
 
 .gradient-text {
   @apply bg-clip-text text-transparent;
@@ -102,7 +122,7 @@ body {
 }
 
 .btn:focus {
-  outline: 2px solid theme('colors.payflo-purple');
+  outline: 2px solid theme("colors.payflo-purple");
   outline-offset: 2px;
 }
 
@@ -162,13 +182,13 @@ nav a {
 }
 
 nav a::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 0;
   height: 2px;
   bottom: -4px;
   left: 0;
-  background-color: theme('colors.payflo-purple');
+  background-color: theme("colors.payflo-purple");
   transition: width 0.3s ease;
 }
 
@@ -191,7 +211,11 @@ nav a:focus::after {
   top: 0;
   left: 0;
   height: 3px;
-  background: linear-gradient(to right, theme('colors.payflo-purple'), theme('colors.payflo-blue'));
+  background: linear-gradient(
+    to right,
+    theme("colors.payflo-purple"),
+    theme("colors.payflo-blue")
+  );
   z-index: 100;
   width: 0%;
   transition: width 0.1s ease;
@@ -285,7 +309,7 @@ nav a:focus::after {
 
 /* ===== Focus Indicators ===== */
 *:focus {
-  outline: 2px solid theme('colors.payflo-purple');
+  outline: 2px solid theme("colors.payflo-purple");
   outline-offset: 2px;
 }
 
@@ -299,7 +323,7 @@ nav a:focus::after {
   position: absolute;
   top: -40px;
   left: 6px;
-  background: theme('colors.payflo-purple');
+  background: theme("colors.payflo-purple");
   color: white;
   padding: 8px;
   border-radius: 4px;
