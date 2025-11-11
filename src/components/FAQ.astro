@@ -1,79 +1,128 @@
 ---
 const faqs = [
   {
-    question: "How long does it take to implement Payflo's payroll solution?",
-    answer: "Most customers can integrate and launch within 2-4 weeks, depending on your specific requirements and technical resources."
+    // Pregunta clave sobre la implementación (reforzando que ustedes la hacen)
+    question:
+      "¿Cuánto tiempo toma la implementación de TurnApp en mi institución?",
+    answer:
+      "Nuestro equipo realiza la activación completa en un periodo estimado de **1 a 3 semanas**, dependiendo del tamaño de su institución y la complejidad de los flujos de atención a configurar. El proceso es rápido y guiado.",
   },
   {
-    question: "Is Payflo compliant with tax regulations?",
-    answer: "Yes, our infrastructure handles all tax compliance, filings, and payments across the U.S. and Canada, ensuring you stay compliant at all times."
+    // Pregunta sobre la infraestructura y el uso continuo
+    question: "¿Qué tipo de infraestructura se requiere para usar TurnApp?",
+    answer:
+      "TurnApp es una solución de software. Solo necesita **pantallas** (monitores/televisores) en las áreas de espera y una **conexión a internet**. Nosotros nos encargamos del software de gestión y la infraestructura de llamado.",
   },
   {
-    question: "How do you handle data security?",
-    answer: "We maintain SOC 2 compliance and employ bank-level encryption for all data. Our infrastructure is built with security as a top priority."
+    // Pregunta sobre la personalización de la marca (HUB)
+    question:
+      "¿Podemos personalizar el diseño de las pantallas de llamado (HUB)?",
+    answer:
+      "¡Sí! El diseño de la pantalla HUB y los tickets se **personaliza completamente** acorde a la línea gráfica de su institución, asegurando una experiencia profesional y coherente con su marca.",
   },
   {
-    question: "Can I customize the user interface?",
-    answer: "Absolutely! You can use our API to build a completely custom experience or leverage our pre-built UI components that can be styled to match your brand."
+    // Pregunta sobre la seguridad de los datos (B2B importante)
+    question: "¿Cómo se maneja la seguridad y privacidad de los datos?",
+    answer:
+      "La seguridad es una prioridad. Implementamos protocolos robustos y cifrado de datos para garantizar la **confidencialidad y la integridad** de toda la información operativa y del cliente.",
   },
   {
-    question: "What kind of support do you provide?",
-    answer: "We offer dedicated implementation support, technical documentation, and ongoing assistance from our team of payroll experts."
+    // Pregunta sobre el soporte continuo (refuerza el servicio)
+    question: "¿Qué tipo de soporte técnico y capacitación ofrecen?",
+    answer:
+      "Ofrecemos **soporte dedicado** durante la implementación, capacitación completa a su personal y asistencia técnica continua para asegurar que su operación nunca se detenga.",
   },
   {
-    question: "How does pricing work?",
-    answer: "Our pricing scales with your business. Contact us for a customized quote based on your platform's specific needs and user base."
-  }
+    // Pregunta sobre el modelo de negocio/costo
+    question: "¿Cómo funciona el modelo de precios de TurnApp?",
+    answer:
+      "Nuestro precio se basa en la **escala y las necesidades específicas** de su negocio (ej: número de áreas de servicio, puestos de atención). Le invitamos a contactarnos para una cotización personalizada y sin compromiso.",
+  },
 ];
+
+// --- Texto Principal ---
+const mainTitle = "Preguntas Frecuentes";
+const mainSubtitle =
+  "Todo lo que necesita saber sobre la implementación y la operación de nuestro sistema de gestión de turnos.";
+// -----------------------
 ---
 
 <section class="py-20 bg-payflo-gray relative overflow-hidden">
-  <!-- Subtle background pattern -->
   <div class="absolute inset-0 opacity-5">
-    <div class="absolute inset-0 bg-repeat" style="background-image: url('/grid-pattern.svg');"></div>
+    <div
+      class="absolute inset-0 bg-repeat"
+      style="background-image: url('/grid-pattern.svg');"
+    >
+    </div>
   </div>
-  
+
   <div class="container-custom relative">
     <div class="text-center max-w-3xl mx-auto animate-on-scroll">
       <h2 class="text-3xl md:text-4xl font-bold">
-        Frequently Asked Questions
+        {mainTitle}
       </h2>
       <p class="mt-4 text-xl text-gray-600">
-        Everything you need to know about our payroll infrastructure.
+        {mainSubtitle}
       </p>
     </div>
-    
+
     <div class="mt-12 max-w-3xl mx-auto">
-      {faqs.map((faq, index) => (
-        <div 
-          class="mb-6 bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden animate-on-scroll faq-item hover:shadow-md transition-all duration-300"
-          style={`animation-delay: ${index * 0.1}s`}
-        >
-          <details class="group">
-            <summary class="flex justify-between items-center cursor-pointer p-6 transition-all duration-300 hover:bg-gray-50">
-              <h3 class="text-lg font-medium transition-colors duration-300 group-hover:text-payflo-purple">{faq.question}</h3>
-              <div class="flex-shrink-0 ml-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 group-open:rotate-180 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
+      {
+        faqs.map((faq, index) => (
+          <div
+            class="mb-6 bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden animate-on-scroll faq-item hover:shadow-md transition-all duration-300"
+            style={`animation-delay: ${index * 0.1}s`}
+          >
+            <details class="group">
+              <summary class="flex justify-between items-center cursor-pointer p-6 transition-all duration-300 hover:bg-gray-50">
+                <h3 class="text-lg font-medium transition-colors duration-300 group-hover:text-payflo-purple">
+                  {faq.question}
+                </h3>
+                <div class="flex-shrink-0 ml-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 text-gray-500 group-open:rotate-180 transition-transform duration-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
+              </summary>
+              <div class="px-6 pb-6 text-gray-600 faq-content">
+                <p>{faq.answer}</p>
               </div>
-            </summary>
-            <div class="px-6 pb-6 text-gray-600 faq-content">
-              <p>{faq.answer}</p>
-            </div>
-          </details>
-        </div>
-      ))}
+            </details>
+          </div>
+        ))
+      }
     </div>
-    
+
     <div class="mt-12 text-center animate-on-scroll">
-      <p class="text-gray-600">
-        Still have questions? We're here to help.
-      </p>
-      <a href="/contact" class="mt-4 inline-flex items-center text-payflo-purple font-medium hover:underline group">
-        Contact Us 
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+      <p class="text-gray-600">¿Aún tiene dudas? Estamos aquí para ayudarle.</p>
+      <a
+        href="/contact"
+        class="mt-4 inline-flex items-center text-payflo-purple font-medium hover:underline group"
+      >
+        Contáctenos
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
         </svg>
       </a>
     </div>
