@@ -1,6 +1,10 @@
 ---
 import { Image } from "astro:assets";
-import heroImage from "../assets/hero-dashboard.png";
+import heroImage1 from "../assets/mocks/m1.png";
+import heroImage2 from "../assets/mocks/m2.png"; // Asegúrate de tener al menos 2-3 imágenes
+import heroImage3 from "../assets/mocks/m3.png";
+import heroImage4 from "../assets/mocks/m4.png";
+import heroImage5 from "../assets/mocks/m5.png";
 ---
 
 <section class="pt-20 pb-16 md:pt-28 md:pb-24 overflow-hidden relative">
@@ -21,12 +25,14 @@ import heroImage from "../assets/hero-dashboard.png";
         >
           Conoce <span class="gradient-text">TurnApp</span>
         </h1>
+
         <p
           class="animate-on-scroll delay-1 mt-6 text-xl text-gray-600 max-w-lg"
         >
-          ¿Cansado del caos de las filas? Reemplaza las filas tradicionales con
-          nuestro sistema de turnos digital, centralizado y visible en tiempo
-          real.
+          ¿Cansado del caos de las filas? Moderniza las filas tradicionales con
+          nuestro <span class="gradient-text font-bold"
+            >Sistema de Turnos y Filas</span
+          >, centralizado y visible en tiempo real.
         </p>
         <div
           class="animate-on-scroll delay-2 mt-8 flex flex-col sm:flex-row gap-4"
@@ -71,16 +77,245 @@ import heroImage from "../assets/hero-dashboard.png";
           >
           </div>
           <div class="relative bg-white rounded-xl shadow-xl overflow-hidden">
-            <Image
-              src={heroImage}
-              alt="Panel de Control Payflo"
-              class="w-full h-auto transition-all duration-500"
-              width={700}
-              height={500}
-            />
+            <!-- Galería de imágenes -->
+            <div class="image-gallery relative w-full h-64 md:h-80 lg:h-96">
+              <!-- Imagen 1 -->
+              <div
+                class="gallery-item absolute inset-0 opacity-100 transition-opacity duration-1000 ease-in-out"
+                data-active="true"
+              >
+                <Image
+                  src={heroImage1}
+                  alt="Panel de Control TurnApp - Vista 1"
+                  class="w-full h-full object-cover"
+                  width={700}
+                  height={500}
+                />
+              </div>
+
+              <!-- Imagen 2 -->
+              <div
+                class="gallery-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out"
+                data-active="false"
+              >
+                <Image
+                  src={heroImage2}
+                  alt="Panel de Control TurnApp - Vista 2"
+                  class="w-full h-full object-cover"
+                  width={700}
+                  height={500}
+                />
+              </div>
+
+              <!-- Imagen 3 -->
+              <div
+                class="gallery-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out"
+                data-active="false"
+              >
+                <Image
+                  src={heroImage3}
+                  alt="Panel de Control TurnApp - Vista 3"
+                  class="w-full h-full object-cover"
+                  width={700}
+                  height={500}
+                />
+              </div>
+              <!-- Imagen 4 -->
+              <div
+                class="gallery-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out"
+                data-active="false"
+              >
+                <Image
+                  src={heroImage4}
+                  alt="Panel de Control TurnApp - Vista 4"
+                  class="w-full h-full object-cover"
+                  width={700}
+                  height={500}
+                />
+              </div>
+              <!-- Imagen 5 -->
+              <div
+                class="gallery-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out"
+                data-active="false"
+              >
+                <Image
+                  src={heroImage5}
+                  alt="Panel de Control TurnApp - Vista 5"
+                  class="w-full h-full object-cover"
+                  width={700}
+                  height={500}
+                />
+              </div>
+            </div>
+
+            <!-- Indicadores de la galería -->
+            <div
+              class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10"
+            >
+              <button
+                class="gallery-dot w-3 h-3 rounded-full bg-white bg-opacity-50 transition-all duration-300 hover:bg-opacity-100"
+                data-index="0"></button>
+              <button
+                class="gallery-dot w-3 h-3 rounded-full bg-white bg-opacity-50 transition-all duration-300 hover:bg-opacity-100"
+                data-index="1"></button>
+              <button
+                class="gallery-dot w-3 h-3 rounded-full bg-white bg-opacity-50 transition-all duration-300 hover:bg-opacity-100"
+                data-index="2"></button>
+            </div>
+
+            <!-- Botones de navegación -->
+            <button
+              class="gallery-prev absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 text-white p-2 rounded-full transition-all duration-300 hover:bg-opacity-50 z-10"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"></path>
+              </svg>
+            </button>
+            <button
+              class="gallery-next absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 text-white p-2 rounded-full transition-all duration-300 hover:bg-opacity-50 z-10"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<script>
+  // Galería de imágenes automática
+  function initImageGallery() {
+    const gallery = document.querySelector(".image-gallery");
+    if (!gallery) return;
+
+    const items = gallery.querySelectorAll(".gallery-item");
+    const dots = document.querySelectorAll(".gallery-dot");
+    const prevBtn = document.querySelector(".gallery-prev");
+    const nextBtn = document.querySelector(".gallery-next");
+
+    let currentIndex = 0;
+    let autoPlayInterval;
+
+    function showImage(index) {
+      // Ocultar todas las imágenes
+      items.forEach((item) => {
+        item.style.opacity = "0";
+        item.setAttribute("data-active", "false");
+      });
+
+      // Actualizar dots
+      dots.forEach((dot) => dot.classList.remove("!bg-opacity-100", "!w-4"));
+
+      // Mostrar imagen actual
+      items[index].style.opacity = "1";
+      items[index].setAttribute("data-active", "true");
+      dots[index].classList.add("!bg-opacity-100", "!w-4");
+
+      currentIndex = index;
+    }
+
+    function nextImage() {
+      const nextIndex = (currentIndex + 1) % items.length;
+      showImage(nextIndex);
+    }
+
+    function prevImage() {
+      const prevIndex = (currentIndex - 1 + items.length) % items.length;
+      showImage(prevIndex);
+    }
+
+    function startAutoPlay() {
+      autoPlayInterval = setInterval(nextImage, 5000); // Cambia cada 5 segundos
+      // Para 5 minutos usar: 300000
+    }
+
+    function stopAutoPlay() {
+      if (autoPlayInterval) {
+        clearInterval(autoPlayInterval);
+      }
+    }
+
+    // Event listeners
+    nextBtn?.addEventListener("click", () => {
+      stopAutoPlay();
+      nextImage();
+      startAutoPlay();
+    });
+
+    prevBtn?.addEventListener("click", () => {
+      stopAutoPlay();
+      prevImage();
+      startAutoPlay();
+    });
+
+    dots.forEach((dot, index) => {
+      dot.addEventListener("click", () => {
+        stopAutoPlay();
+        showImage(index);
+        startAutoPlay();
+      });
+    });
+
+    // Pausar autoplay al hacer hover
+    gallery.addEventListener("mouseenter", stopAutoPlay);
+    gallery.addEventListener("mouseleave", startAutoPlay);
+
+    // Iniciar autoplay
+    startAutoPlay();
+
+    // Estado inicial
+    showImage(0);
+  }
+
+  // Inicializar cuando el DOM esté listo
+  document.addEventListener("DOMContentLoaded", initImageGallery);
+  document.addEventListener("astro:after-swap", initImageGallery);
+</script>
+
+<style>
+  /* Estilos adicionales para la galería */
+  .gallery-item {
+    transition: opacity 1s ease-in-out;
+  }
+
+  .gallery-dot {
+    transition: all 0.3s ease;
+  }
+
+  .gallery-dot:hover {
+    transform: scale(1.2);
+  }
+
+  .gallery-prev:hover,
+  .gallery-next:hover {
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  /* Asegurar que las imágenes mantengan su relación de aspecto */
+  .image-gallery img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+</style>

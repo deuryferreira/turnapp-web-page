@@ -1,50 +1,42 @@
 ---
 const faqs = [
   {
-    // Pregunta clave sobre la implementación (reforzando que ustedes la hacen)
     question:
       "¿Cuánto tiempo toma la implementación de TurnApp en mi institución?",
     answer:
-      "Nuestro equipo realiza la activación completa en un periodo estimado de **1 a 3 semanas**, dependiendo del tamaño de su institución y la complejidad de los flujos de atención a configurar. El proceso es rápido y guiado.",
+      "Nuestro equipo realiza la activación completa en un periodo estimado de <strong>1 a 3 semanas</strong>, dependiendo del tamaño de su institución y la complejidad de los flujos de atención a configurar. El proceso es rápido y guiado.",
   },
   {
-    // Pregunta sobre la infraestructura y el uso continuo
     question: "¿Qué tipo de infraestructura se requiere para usar TurnApp?",
     answer:
-      "TurnApp es una solución de software. Solo necesita **pantallas** (monitores/televisores) en las áreas de espera y una **conexión a internet**. Nosotros nos encargamos del software de gestión y la infraestructura de llamado.",
+      "TurnApp es una solución de software. Solo necesita <strong>pantallas</strong> (monitores/televisores) en las áreas de espera y una <strong>conexión a internet</strong>. Nosotros nos encargamos del software de gestión y la infraestructura de llamado.",
   },
   {
-    // Pregunta sobre la personalización de la marca (HUB)
     question:
       "¿Podemos personalizar el diseño de las pantallas de llamado (HUB)?",
     answer:
-      "¡Sí! El diseño de la pantalla HUB y los tickets se **personaliza completamente** acorde a la línea gráfica de su institución, asegurando una experiencia profesional y coherente con su marca.",
+      "¡Sí! El diseño de la pantalla HUB y los tickets se <strong>personaliza completamente</strong> acorde a la línea gráfica de su institución, asegurando una experiencia profesional y coherente con su marca.",
   },
   {
-    // Pregunta sobre la seguridad de los datos (B2B importante)
     question: "¿Cómo se maneja la seguridad y privacidad de los datos?",
     answer:
-      "La seguridad es una prioridad. Implementamos protocolos robustos y cifrado de datos para garantizar la **confidencialidad y la integridad** de toda la información operativa y del cliente.",
+      "La seguridad es una prioridad. Implementamos protocolos robustos y cifrado de datos para garantizar la <strong>confidencialidad y la integridad</strong> de toda la información operativa y del cliente.",
   },
   {
-    // Pregunta sobre el soporte continuo (refuerza el servicio)
     question: "¿Qué tipo de soporte técnico y capacitación ofrecen?",
     answer:
-      "Ofrecemos **soporte dedicado** durante la implementación, capacitación completa a su personal y asistencia técnica continua para asegurar que su operación nunca se detenga.",
+      "Ofrecemos <strong>soporte dedicado</strong> durante la implementación, capacitación completa a su personal y asistencia técnica continua para asegurar que su operación nunca se detenga.",
   },
   {
-    // Pregunta sobre el modelo de negocio/costo
     question: "¿Cómo funciona el modelo de precios de TurnApp?",
     answer:
-      "Nuestro precio se basa en la **escala y las necesidades específicas** de su negocio (ej: número de áreas de servicio, puestos de atención). Le invitamos a contactarnos para una cotización personalizada y sin compromiso.",
+      "Nuestro precio se basa en la <strong>escala y las necesidades específicas</strong> de su negocio (ej: número de áreas de servicio, puestos de atención). Le invitamos a contactarnos para una cotización personalizada y sin compromiso.",
   },
 ];
 
-// --- Texto Principal ---
 const mainTitle = "Preguntas Frecuentes";
 const mainSubtitle =
   "Todo lo que necesita saber sobre la implementación y la operación de nuestro sistema de gestión de turnos.";
-// -----------------------
 ---
 
 <section class="py-20 bg-payflo-gray relative overflow-hidden">
@@ -95,10 +87,12 @@ const mainSubtitle =
                   </svg>
                 </div>
               </summary>
-              <div class="px-6 pb-6 text-gray-600 faq-content">
-                <p>{faq.answer}</p>
+              <div class="px-6 pb-6 pt-6 text-gray-600 faq-content">
+                {/* <p>adsasdasdasdasdasdasdasd</p> */}
+                <p set:html={faq.answer} class="text-gray-600" />
               </div>
             </details>
+            {/* asdasdasdsadsa */}
           </div>
         ))
       }
