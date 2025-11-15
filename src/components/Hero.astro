@@ -77,20 +77,45 @@ import heroImage5 from "../assets/mocks/m5.png";
           >
           </div>
           <div class="relative bg-white rounded-xl shadow-xl overflow-hidden">
-            <!-- Galería de imágenes y video -->
-            <div class="image-gallery relative w-full h-64 md:h-80 lg:h-96">
-              <!-- Imagen 1 -->
+            <!-- Galería de imágenes y video con proporción 1400x1080 -->
+            <div
+              class="image-gallery relative w-full aspect-[1400/1080] max-w-full"
+            >
+              <!-- Video (primero en la secuencia) -->
               <div
                 class="gallery-item absolute inset-0 opacity-100 transition-opacity duration-1000 ease-in-out"
                 data-active="true"
+                data-type="video"
+                data-duration="33000"
+              >
+                <div class="relative w-full h-full">
+                  <video
+                    class="w-full h-full object-cover"
+                    preload="auto"
+                    autoplay
+                    loop
+                    muted
+                    playsinline
+                  >
+                    <source src="/turnapp-promo-2.mp4" type="video/mp4" />
+                    Tu navegador no soporta el elemento de video.
+                  </video>
+                </div>
+              </div>
+
+              <!-- Imagen 1 -->
+              <div
+                class="gallery-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out"
+                data-active="false"
                 data-type="image"
+                data-duration="5000"
               >
                 <Image
                   src={heroImage1}
                   alt="Panel de Control TurnApp - Vista 1"
                   class="w-full h-full object-cover"
-                  width={700}
-                  height={500}
+                  width={1400}
+                  height={1080}
                 />
               </div>
 
@@ -99,13 +124,14 @@ import heroImage5 from "../assets/mocks/m5.png";
                 class="gallery-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out"
                 data-active="false"
                 data-type="image"
+                data-duration="5000"
               >
                 <Image
                   src={heroImage2}
                   alt="Panel de Control TurnApp - Vista 2"
                   class="w-full h-full object-cover"
-                  width={700}
-                  height={500}
+                  width={1400}
+                  height={1080}
                 />
               </div>
 
@@ -114,13 +140,14 @@ import heroImage5 from "../assets/mocks/m5.png";
                 class="gallery-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out"
                 data-active="false"
                 data-type="image"
+                data-duration="5000"
               >
                 <Image
                   src={heroImage3}
                   alt="Panel de Control TurnApp - Vista 3"
                   class="w-full h-full object-cover"
-                  width={700}
-                  height={500}
+                  width={1400}
+                  height={1080}
                 />
               </div>
 
@@ -129,13 +156,14 @@ import heroImage5 from "../assets/mocks/m5.png";
                 class="gallery-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out"
                 data-active="false"
                 data-type="image"
+                data-duration="5000"
               >
                 <Image
                   src={heroImage4}
                   alt="Panel de Control TurnApp - Vista 4"
                   class="w-full h-full object-cover"
-                  width={700}
-                  height={500}
+                  width={1400}
+                  height={1080}
                 />
               </div>
 
@@ -144,109 +172,17 @@ import heroImage5 from "../assets/mocks/m5.png";
                 class="gallery-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out"
                 data-active="false"
                 data-type="image"
+                data-duration="5000"
               >
                 <Image
                   src={heroImage5}
                   alt="Panel de Control TurnApp - Vista 5"
                   class="w-full h-full object-cover"
-                  width={700}
-                  height={500}
+                  width={1400}
+                  height={1080}
                 />
               </div>
-
-              <!-- Video -->
-              <div
-                class="gallery-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out"
-                data-active="false"
-                data-type="video"
-              >
-                <div class="relative w-full h-full">
-                  <video class="w-full h-full object-cover" preload="metadata">
-                    <source src="/demo.mp4" type="video/mp4" />
-                    <!-- <source src="/videos/turnapp-demo.webm" type="video/webm" /> -->
-                    Tu navegador no soporta el elemento de video.
-                  </video>
-                  <div
-                    class="video-overlay absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center"
-                  >
-                    <div
-                      class="video-play-btn w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 hover:bg-opacity-100 hover:scale-110"
-                    >
-                      <svg
-                        class="w-6 h-6 text-payflo-purple ml-1"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M8 5v14l11-7z"></path>
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
-
-            <!-- Indicadores de la galería (6 elementos) -->
-            <div
-              class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10"
-            >
-              <button
-                class="gallery-dot w-3 h-3 rounded-full bg-white bg-opacity-100 transition-all duration-300 hover:bg-opacity-100 dot-active"
-                data-index="0"></button>
-              <button
-                class="gallery-dot w-3 h-3 rounded-full bg-white bg-opacity-50 transition-all duration-300 hover:bg-opacity-100"
-                data-index="1"></button>
-              <button
-                class="gallery-dot w-3 h-3 rounded-full bg-white bg-opacity-50 transition-all duration-300 hover:bg-opacity-100"
-                data-index="2"></button>
-              <button
-                class="gallery-dot w-3 h-3 rounded-full bg-white bg-opacity-50 transition-all duration-300 hover:bg-opacity-100"
-                data-index="3"></button>
-              <button
-                class="gallery-dot w-3 h-3 rounded-full bg-white bg-opacity-50 transition-all duration-300 hover:bg-opacity-100"
-                data-index="4"></button>
-              <button
-                class="gallery-dot w-3 h-3 rounded-full bg-white bg-opacity-50 transition-all duration-300 hover:bg-opacity-100 video-dot"
-                data-index="5"
-              >
-                <svg class="w-2 h-2" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7z"></path>
-                </svg>
-              </button>
-            </div>
-
-            <!-- Botones de navegación -->
-            <button
-              class="gallery-prev absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 text-white p-2 rounded-full transition-all duration-300 hover:bg-opacity-50 z-10"
-            >
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 19l-7-7 7-7"></path>
-              </svg>
-            </button>
-            <button
-              class="gallery-next absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 text-white p-2 rounded-full transition-all duration-300 hover:bg-opacity-50 z-10"
-            >
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 5l7 7-7 7"></path>
-              </svg>
-            </button>
           </div>
         </div>
       </div>
@@ -260,201 +196,104 @@ import heroImage5 from "../assets/mocks/m5.png";
     transition: opacity 1s ease-in-out;
   }
 
-  .gallery-dot {
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  /* Asegurar que las imágenes y video mantengan la relación de aspecto 1400x1080 */
+  .image-gallery {
+    aspect-ratio: 1400/1080;
   }
 
-  .gallery-dot:hover {
-    transform: scale(1.2);
-  }
-
-  .gallery-prev:hover,
-  .gallery-next:hover {
-    transform: translateY(-50%) scale(1.1);
-  }
-
-  /* Clase para el dot activo */
-  .dot-active {
-    background-color: white !important;
-    opacity: 1 !important;
-    transform: scale(1.2);
-  }
-
-  /* Estilos específicos para el dot de video */
-  .video-dot svg {
-    opacity: 0.7;
-  }
-
-  .video-dot.dot-active svg {
-    opacity: 1;
-  }
-
-  /* Overlay y botón de play para video */
-  .video-overlay {
-    transition: opacity 0.3s ease;
-  }
-
-  .gallery-item[data-active="true"][data-type="video"] .video-overlay {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .gallery-item[data-type="video"]:hover .video-overlay {
-    opacity: 1;
-  }
-
-  /* Asegurar que las imágenes mantengan su relación de aspecto */
   .image-gallery img,
   .image-gallery video {
     object-fit: cover;
     width: 100%;
     height: 100%;
   }
+
+  /* Para el video específicamente, si necesitas ajustar la relación */
+  .image-gallery video {
+    /* Si el video es 1400x1180, se recortará ligeramente para mantener la proporción del contenedor */
+    object-position: center;
+  }
 </style>
 
 <script>
-  // Galería de imágenes automática con video
-  function initImageGallery() {
-    const gallery = document.querySelector(".image-gallery");
-    if (!gallery) return;
+  // Galería automática simplificada - Versión TypeScript
+  const initImageGallery = (): (() => void) => {
+    const gallery = document.querySelector<HTMLElement>(".image-gallery");
+    if (!gallery) return () => {};
 
-    const items = gallery.querySelectorAll(".gallery-item");
-    const dots = document.querySelectorAll(".gallery-dot");
-    const prevBtn = document.querySelector(".gallery-prev");
-    const nextBtn = document.querySelector(".gallery-next");
+    const items = gallery.querySelectorAll<HTMLElement>(".gallery-item");
+    let currentIndex: number = 0;
+    let timeoutId: NodeJS.Timeout | null = null;
 
-    let currentIndex = 0;
-    let autoPlayInterval;
+    const showNextItem = (): void => {
+      // Ocultar elemento actual
+      items[currentIndex].style.opacity = "0";
+      items[currentIndex].setAttribute("data-active", "false");
 
-    function showImage(index) {
-      // Pausar video actual si existe
-      const currentVideo = items[currentIndex].querySelector("video");
-      if (currentVideo) {
-        currentVideo.pause();
-        currentVideo.currentTime = 0;
+      // Calcular siguiente índice
+      currentIndex = (currentIndex + 1) % items.length;
+
+      // Mostrar siguiente elemento
+      items[currentIndex].style.opacity = "1";
+      items[currentIndex].setAttribute("data-active", "true");
+
+      // Obtener duración del elemento actual
+      const durationAttr = items[currentIndex].getAttribute("data-duration");
+      const duration = durationAttr ? parseInt(durationAttr) : 5000;
+
+      // Programar siguiente cambio
+      timeoutId = setTimeout(showNextItem, duration);
+    };
+
+    const startGallery = (): void => {
+      // Detener cualquier timeout existente
+      if (timeoutId) {
+        clearTimeout(timeoutId);
       }
 
-      // Ocultar todas las imágenes
-      items.forEach((item) => {
-        item.style.opacity = "0";
-        item.setAttribute("data-active", "false");
+      // Obtener duración del primer elemento (video)
+      const initialDurationAttr = items[0].getAttribute("data-duration");
+      const initialDuration = initialDurationAttr
+        ? parseInt(initialDurationAttr)
+        : 25000;
+
+      // Programar primer cambio después de la duración del video
+      timeoutId = setTimeout(showNextItem, initialDuration);
+    };
+
+    // Manejar eventos de video
+    const video = items[0].querySelector<HTMLVideoElement>("video");
+    if (video) {
+      // Cuando el video termina, avanzar automáticamente
+      video.addEventListener("ended", () => {
+        // Avanzar inmediatamente al siguiente elemento
+        showNextItem();
       });
 
-      // Actualizar dots - remover clase activa de todos
-      dots.forEach((dot) => {
-        dot.classList.remove("dot-active");
-        dot.classList.remove("bg-opacity-100");
-        dot.classList.add("bg-opacity-50");
+      // Si hay error en el video, avanzar después de 25 segundos
+      video.addEventListener("error", () => {
+        console.warn("Error cargando el video, continuando con imágenes...");
+        setTimeout(showNextItem, 33000);
       });
-
-      // Mostrar elemento actual
-      items[index].style.opacity = "1";
-      items[index].setAttribute("data-active", "true");
-
-      // Si es un video, prepararlo pero no autoplay (por políticas de navegadores)
-      const newVideo = items[index].querySelector("video");
-      if (newVideo) {
-        newVideo.currentTime = 0;
-        // No hacemos autoplay aquí por políticas de navegadores
-      }
-
-      // Activar dot actual
-      if (dots[index]) {
-        dots[index].classList.add("dot-active");
-        dots[index].classList.remove("bg-opacity-50");
-        dots[index].classList.add("bg-opacity-100");
-      }
-
-      currentIndex = index;
     }
 
-    function nextImage() {
-      const nextIndex = (currentIndex + 1) % items.length;
-      showImage(nextIndex);
-    }
+    // Iniciar galería
+    startGallery();
 
-    function prevImage() {
-      const prevIndex = (currentIndex - 1 + items.length) % items.length;
-      showImage(prevIndex);
-    }
-
-    function startAutoPlay() {
-      autoPlayInterval = setInterval(() => {
-        // No avanzar automáticamente si estamos en un video que se está reproduciendo
-        const currentVideo = items[currentIndex].querySelector("video");
-        if (currentVideo && !currentVideo.paused) {
-          return; // No cambiar de slide si el video está reproduciéndose
-        }
-        nextImage();
-      }, 5000); // Cambia cada 5 segundos
-    }
-
-    function stopAutoPlay() {
-      if (autoPlayInterval) {
-        clearInterval(autoPlayInterval);
+    // Limpiar timeout al desmontar
+    return (): void => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
       }
-    }
-
-    // Event listeners para navegación
-    nextBtn?.addEventListener("click", () => {
-      stopAutoPlay();
-      nextImage();
-      startAutoPlay();
-    });
-
-    prevBtn?.addEventListener("click", () => {
-      stopAutoPlay();
-      prevImage();
-      startAutoPlay();
-    });
-
-    dots.forEach((dot, index) => {
-      dot.addEventListener("click", () => {
-        stopAutoPlay();
-        showImage(index);
-        startAutoPlay();
-      });
-    });
-
-    // Control de video - play/pause
-    gallery.addEventListener("click", (e) => {
-      // Si se hace click en el botón de play del video
-      if (e.target.closest(".video-play-btn")) {
-        const videoItem = e.target.closest(".gallery-item");
-        const video = videoItem.querySelector("video");
-
-        if (video.paused) {
-          video.play();
-          videoItem.querySelector(".video-overlay").style.opacity = "0";
-          videoItem.querySelector(".video-overlay").style.pointerEvents =
-            "none";
-          stopAutoPlay(); // Pausar el autoplay de la galería mientras se reproduce el video
-        }
-      }
-    });
-
-    // Cuando termina un video, reanudar autoplay
-    gallery.addEventListener("ended", (e) => {
-      if (e.target.tagName === "VIDEO") {
-        startAutoPlay();
-      }
-    });
-
-    // Pausar autoplay al hacer hover
-    gallery.addEventListener("mouseenter", stopAutoPlay);
-    gallery.addEventListener("mouseleave", startAutoPlay);
-
-    // Iniciar autoplay
-    startAutoPlay();
-
-    // Estado inicial
-    showImage(0);
-  }
+    };
+  };
 
   // Inicializar cuando el DOM esté listo
-  document.addEventListener("DOMContentLoaded", initImageGallery);
-  document.addEventListener("astro:after-swap", initImageGallery);
+  document.addEventListener("DOMContentLoaded", () => {
+    initImageGallery();
+  });
+
+  document.addEventListener("astro:after-swap", () => {
+    initImageGallery();
+  });
 </script>
