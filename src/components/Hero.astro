@@ -86,7 +86,7 @@ import heroImage5 from "../assets/mocks/m5.png";
                 class="gallery-item absolute inset-0 opacity-100 transition-opacity duration-1000 ease-in-out"
                 data-active="true"
                 data-type="video"
-                data-duration="25000"
+                data-duration="35000"
               >
                 <div class="relative w-full h-full">
                   <video
@@ -272,7 +272,7 @@ import heroImage5 from "../assets/mocks/m5.png";
       const initialDurationAttr = items[0].getAttribute("data-duration");
       const initialDuration = initialDurationAttr
         ? parseInt(initialDurationAttr)
-        : 25000;
+        : 35000;
 
       // Programar primer cambio después de la duración del video
       timeoutId = setTimeout(showNextItem, initialDuration);
@@ -290,7 +290,7 @@ import heroImage5 from "../assets/mocks/m5.png";
       // Si hay error en el video, avanzar después de 25 segundos
       video.addEventListener("error", () => {
         console.warn("Error cargando el video, continuando con imágenes...");
-        setTimeout(showNextItem, 25000);
+        setTimeout(showNextItem, 35000);
       });
 
       // Reproducir el video inicial
