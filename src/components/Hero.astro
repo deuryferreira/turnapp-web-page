@@ -5,9 +5,29 @@ import heroImage2 from "../assets/mocks/m2.png";
 import heroImage3 from "../assets/mocks/m3.png";
 import heroImage4 from "../assets/mocks/m4.png";
 import heroImage5 from "../assets/mocks/m5.png";
+import heroImage6 from "../assets/mocks/m6.png";
+
+// Array de videos para la galería
+const videos = [
+  {
+    src: "/turnapp-promo-2.mp4",
+    alt: "Demo de TurnApp - Sistema de Gestión de Turnos",
+    duration: 35000,
+  },
+];
+
+// Array de imágenes para la galería
+const images = [
+  { src: heroImage1, alt: "Panel de Control TurnApp - Vista 1" },
+  { src: heroImage2, alt: "Panel de Control TurnApp - Vista 2" },
+  { src: heroImage3, alt: "Panel de Control TurnApp - Vista 3" },
+  { src: heroImage4, alt: "Panel de Control TurnApp - Vista 4" },
+  { src: heroImage5, alt: "Panel de Control TurnApp - Vista 5" },
+  { src: heroImage6, alt: "Panel de Control TurnApp - Vista 5" },
+];
 ---
 
-<section class="pt-20 pb-16 md:pt-28 md:pb-24 overflow-hidden relative">
+<section class="pt-20 pb-16 md:pt-24 md:pb-20 overflow-hidden relative">
   <!-- Subtle background pattern with parallax effect -->
   <div class="absolute inset-0 opacity-5 parallax" data-speed="0.2">
     <div
@@ -29,10 +49,9 @@ import heroImage5 from "../assets/mocks/m5.png";
         <p
           class="animate-on-scroll delay-1 mt-6 text-xl text-gray-600 max-w-lg"
         >
-          ¿Cansado del caos de las filas? Moderniza las filas tradicionales con
-          nuestro <span class="gradient-text font-bold"
-            >Sistema de Turnos y Filas</span
-          >, centralizado y visible en tiempo real.
+          El <span class="gradient-text font-bold">Sistema de Turnos</span>,
+          centralizado y en tiempo real. Su aliado para una atención al usuario
+          eficiente y organizada. ¡Di adios al caos en las filas!
         </p>
         <div
           class="animate-on-scroll delay-2 mt-8 flex flex-col sm:flex-row gap-4"
@@ -81,107 +100,53 @@ import heroImage5 from "../assets/mocks/m5.png";
             <div
               class="image-gallery relative w-full aspect-[1400/1080] max-w-full"
             >
-              <!-- Video (primero en la secuencia) -->
-              <div
-                class="gallery-item absolute inset-0 opacity-100 transition-opacity duration-1000 ease-in-out"
-                data-active="true"
-                data-type="video"
-                data-duration="35000"
-              >
-                <div class="relative w-full h-full">
-                  <video
-                    class="w-full h-full object-cover"
-                    preload="auto"
-                    autoplay
-                    muted
-                    playsinline
-                    loop={false}
+              <!-- Videos generados con map -->
+              {
+                videos.map((video, index) => (
+                  <div
+                    class={`gallery-item absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                      index === 0 ? "opacity-100" : "opacity-0"
+                    }`}
+                    data-active={index === 0 ? "true" : "false"}
+                    data-type="video"
+                    data-duration={video.duration}
                   >
-                    <source src="/turnapp-promo-2.mp4" type="video/mp4" />
-                    Tu navegador no soporta el elemento de video.
-                  </video>
-                </div>
-              </div>
+                    <div class="relative w-full h-full">
+                      <video
+                        class="w-full h-full object-cover"
+                        preload="auto"
+                        autoplay={index === 0}
+                        muted
+                        playsinline
+                        loop={false}
+                      >
+                        <source src={video.src} type="video/mp4" />
+                        Tu navegador no soporta el elemento de video.
+                      </video>
+                    </div>
+                  </div>
+                ))
+              }
 
-              <!-- Imagen 1 -->
-              <div
-                class="gallery-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out"
-                data-active="false"
-                data-type="image"
-                data-duration="5000"
-              >
-                <Image
-                  src={heroImage1}
-                  alt="Panel de Control TurnApp - Vista 1"
-                  class="w-full h-full object-cover"
-                  width={1400}
-                  height={1080}
-                />
-              </div>
-
-              <!-- Imagen 2 -->
-              <div
-                class="gallery-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out"
-                data-active="false"
-                data-type="image"
-                data-duration="5000"
-              >
-                <Image
-                  src={heroImage2}
-                  alt="Panel de Control TurnApp - Vista 2"
-                  class="w-full h-full object-cover"
-                  width={1400}
-                  height={1080}
-                />
-              </div>
-
-              <!-- Imagen 3 -->
-              <div
-                class="gallery-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out"
-                data-active="false"
-                data-type="image"
-                data-duration="5000"
-              >
-                <Image
-                  src={heroImage3}
-                  alt="Panel de Control TurnApp - Vista 3"
-                  class="w-full h-full object-cover"
-                  width={1400}
-                  height={1080}
-                />
-              </div>
-
-              <!-- Imagen 4 -->
-              <div
-                class="gallery-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out"
-                data-active="false"
-                data-type="image"
-                data-duration="5000"
-              >
-                <Image
-                  src={heroImage4}
-                  alt="Panel de Control TurnApp - Vista 4"
-                  class="w-full h-full object-cover"
-                  width={1400}
-                  height={1080}
-                />
-              </div>
-
-              <!-- Imagen 5 -->
-              <div
-                class="gallery-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out"
-                data-active="false"
-                data-type="image"
-                data-duration="5000"
-              >
-                <Image
-                  src={heroImage5}
-                  alt="Panel de Control TurnApp - Vista 5"
-                  class="w-full h-full object-cover"
-                  width={1400}
-                  height={1080}
-                />
-              </div>
+              <!-- Imágenes generadas con map -->
+              {
+                images.map((image, index) => (
+                  <div
+                    class="gallery-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out"
+                    data-active="false"
+                    data-type="image"
+                    data-duration="5000"
+                  >
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      class="w-full h-full object-contain"
+                      width={1400}
+                      height={1080}
+                    />
+                  </div>
+                ))
+              }
             </div>
           </div>
         </div>
