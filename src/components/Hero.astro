@@ -86,16 +86,16 @@ import heroImage5 from "../assets/mocks/m5.png";
                 class="gallery-item absolute inset-0 opacity-100 transition-opacity duration-1000 ease-in-out"
                 data-active="true"
                 data-type="video"
-                data-duration="33000"
+                data-duration="25000"
               >
                 <div class="relative w-full h-full">
                   <video
                     class="w-full h-full object-cover"
                     preload="auto"
                     autoplay
-                    loop
                     muted
                     playsinline
+                    loop={false}
                   >
                     <source src="/turnapp-promo-2.mp4" type="video/mp4" />
                     Tu navegador no soporta el elemento de video.
@@ -210,7 +210,6 @@ import heroImage5 from "../assets/mocks/m5.png";
 
   /* Para el video específicamente, si necesitas ajustar la relación */
   .image-gallery video {
-    /* Si el video es 1400x1180, se recortará ligeramente para mantener la proporción del contenedor */
     object-position: center;
   }
 </style>
@@ -227,18 +226,36 @@ import heroImage5 from "../assets/mocks/m5.png";
 
     const showNextItem = (): void => {
       // Ocultar elemento actual
-      items[currentIndex].style.opacity = "0";
-      items[currentIndex].setAttribute("data-active", "false");
+      const currentItem = items[currentIndex];
+      currentItem.style.opacity = "0";
+      currentItem.setAttribute("data-active", "false");
+
+      // Si el elemento actual es un video, pausarlo y reiniciarlo
+      const currentVideo = currentItem.querySelector<HTMLVideoElement>("video");
+      if (currentVideo) {
+        currentVideo.pause();
+        currentVideo.currentTime = 0;
+      }
 
       // Calcular siguiente índice
       currentIndex = (currentIndex + 1) % items.length;
 
       // Mostrar siguiente elemento
-      items[currentIndex].style.opacity = "1";
-      items[currentIndex].setAttribute("data-active", "true");
+      const nextItem = items[currentIndex];
+      nextItem.style.opacity = "1";
+      nextItem.setAttribute("data-active", "true");
+
+      // Si el siguiente elemento es un video, reproducirlo
+      const nextVideo = nextItem.querySelector<HTMLVideoElement>("video");
+      if (nextVideo) {
+        nextVideo.currentTime = 0;
+        nextVideo.play().catch((error) => {
+          console.error("Error al reproducir el video:", error);
+        });
+      }
 
       // Obtener duración del elemento actual
-      const durationAttr = items[currentIndex].getAttribute("data-duration");
+      const durationAttr = nextItem.getAttribute("data-duration");
       const duration = durationAttr ? parseInt(durationAttr) : 5000;
 
       // Programar siguiente cambio
@@ -273,7 +290,12 @@ import heroImage5 from "../assets/mocks/m5.png";
       // Si hay error en el video, avanzar después de 25 segundos
       video.addEventListener("error", () => {
         console.warn("Error cargando el video, continuando con imágenes...");
-        setTimeout(showNextItem, 33000);
+        setTimeout(showNextItem, 25000);
+      });
+
+      // Reproducir el video inicial
+      video.play().catch((error) => {
+        console.error("Error al reproducir el video inicial:", error);
       });
     }
 
@@ -285,6 +307,15 @@ import heroImage5 from "../assets/mocks/m5.png";
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
+
+      // Pausar todos los videos al desmontar
+      items.forEach((item) => {
+        const video = item.querySelector<HTMLVideoElement>("video");
+        if (video) {
+          video.pause();
+          video.currentTime = 0;
+        }
+      });
     };
   };
 
