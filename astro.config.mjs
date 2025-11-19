@@ -21,6 +21,10 @@ export default defineConfig({
     icon({
       include: {
         ph: [
+          "envelope-duotone",
+          "map-pin-duotone",
+          "target-duotone",
+          "lightbulb-duotone",
           "star-duotone",
           "lightning-duotone",
           "globe-duotone",

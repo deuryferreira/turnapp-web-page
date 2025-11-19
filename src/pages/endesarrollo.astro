@@ -1,0 +1,194 @@
+---
+// src/pages/desarrollo.astro
+import Layout from "../layouts/Layout.astro";
+// Ajusta la ruta según tu estructura de layouts
+---
+
+<Layout title="Sección en Desarrollo">
+  <section class="construction-section">
+    <div class="construction-content">
+      <div class="construction-icon">
+        <span>🚧</span>
+      </div>
+
+      <h1 class="construction-title">Sección en Desarrollo</h1>
+
+      <p class="construction-message">
+        Esta área del sitio está actualmente en construcción. Estamos trabajando
+        para traerte nuevas funcionalidades muy pronto.
+      </p>
+
+      <div class="construction-progress">
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
+        <span class="progress-text">65% completado</span>
+      </div>
+
+      <div class="construction-actions">
+        <a href="/" class="btn-primary"> ← Volver al Inicio </a>
+        <a href="/contact" class="btn-secondary"> Contactar </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .construction-section {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  }
+
+  .construction-content {
+    text-align: center;
+    max-width: 600px;
+    background: white;
+    padding: 4rem 3rem;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e1e5e9;
+  }
+
+  .construction-icon span {
+    font-size: 5rem;
+    display: block;
+    margin-bottom: 2rem;
+    animation: bounce 2s infinite;
+  }
+
+  .construction-title {
+    color: #2d3748;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+  }
+
+  .construction-message {
+    color: #718096;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+  }
+
+  .construction-progress {
+    margin-bottom: 3rem;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    width: 65%;
+    height: 100%;
+    background: linear-gradient(90deg, #4299e1, #667eea);
+    border-radius: 4px;
+    animation: progressAnimation 2s ease-in-out infinite;
+  }
+
+  .progress-text {
+    color: #718096;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .construction-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: #4299e1;
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid #4299e1;
+  }
+
+  .btn-primary:hover {
+    background: #3182ce;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(66, 153, 225, 0.3);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: #4299e1;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid #4299e1;
+  }
+
+  .btn-secondary:hover {
+    background: #4299e1;
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  @keyframes bounce {
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-10px);
+    }
+    60% {
+      transform: translateY(-5px);
+    }
+  }
+
+  @keyframes progressAnimation {
+    0% {
+      opacity: 0.7;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.7;
+    }
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .construction-content {
+      padding: 3rem 2rem;
+      margin: 1rem;
+    }
+
+    .construction-title {
+      font-size: 2rem;
+    }
+
+    .construction-actions {
+      flex-direction: column;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>

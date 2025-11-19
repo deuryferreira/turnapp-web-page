@@ -1,126 +1,538 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import Layout from "../../layouts/Layout.astro";
 ---
 
-<Layout title="Documentation | Payflo">
-	<main class="py-20 px-6 sm:px-8 lg:px-12">
-		<div class="max-w-7xl mx-auto">
-			<!-- Hero Section -->
-			<div class="text-center mb-16">
-				<h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Documentation</h1>
-				<p class="text-xl text-gray-600 max-w-2xl mx-auto">
-					Everything you need to know about integrating and using Payflo's platform.
-				</p>
-			</div>
+<Layout title="Documentación | TurnApp - Sistema de Gestión de Turnos">
+  <main class="py-20 px-6 sm:px-8 lg:px-12">
+    <div class="max-w-7xl mx-auto">
+      <!-- Hero Section -->
+      <div class="text-center mb-16">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          Documentación
+        </h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          Toda la información que necesitas para implementar y utilizar el
+          sistema de gestión de turnos TurnApp en tu institución.
+        </p>
+      </div>
 
-			<!-- Quick Links -->
-			<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-				<a href="/documentation/api-reference" class="group">
-					<div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
-						<div class="w-12 h-12 bg-payflo-blue/10 rounded-lg flex items-center justify-center mb-4">
-							<svg class="w-6 h-6 text-payflo-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-							</svg>
-						</div>
-						<h2 class="text-xl font-semibold mb-2 text-gray-900 group-hover:text-payflo-blue transition-colors duration-200">API Reference</h2>
-						<p class="text-gray-600">Detailed documentation of our REST API endpoints and parameters.</p>
-					</div>
-				</a>
+      <!-- Quick Links -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        <a href="/documentation/guia-implementacion" class="group">
+          <div
+            class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200"
+          >
+            <div
+              class="w-12 h-12 bg-payflo-purple/10 rounded-lg flex items-center justify-center mb-4"
+            >
+              <svg
+                class="w-6 h-6 text-payflo-purple"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <h2
+              class="text-xl font-semibold mb-2 text-gray-900 group-hover:text-payflo-purple transition-colors duration-200"
+            >
+              Guía de Implementación
+            </h2>
+            <p class="text-gray-600">
+              Documentación completa para implementar TurnApp en tu institución
+              paso a paso.
+            </p>
+          </div>
+        </a>
 
-				<a href="/tutorials" class="group">
-					<div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
-						<div class="w-12 h-12 bg-payflo-purple/10 rounded-lg flex items-center justify-center mb-4">
-							<svg class="w-6 h-6 text-payflo-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-							</svg>
-						</div>
-						<h2 class="text-xl font-semibold mb-2 text-gray-900 group-hover:text-payflo-purple transition-colors duration-200">Tutorials</h2>
-						<p class="text-gray-600">Step-by-step guides to help you get started with our platform.</p>
-					</div>
-				</a>
+        <a href="/tutoriales" class="group">
+          <div
+            class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200"
+          >
+            <div
+              class="w-12 h-12 bg-payflo-purple/10 rounded-lg flex items-center justify-center mb-4"
+            >
+              <svg
+                class="w-6 h-6 text-payflo-purple"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                ></path>
+              </svg>
+            </div>
+            <h2
+              class="text-xl font-semibold mb-2 text-gray-900 group-hover:text-payflo-purple transition-colors duration-200"
+            >
+              Tutoriales
+            </h2>
+            <p class="text-gray-600">
+              Guías paso a paso para comenzar a utilizar nuestra plataforma.
+            </p>
+          </div>
+        </a>
 
-				<a href="/case-studies" class="group">
-					<div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
-						<div class="w-12 h-12 bg-payflo-purple/10 rounded-lg flex items-center justify-center mb-4">
-							<svg class="w-6 h-6 text-payflo-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-							</svg>
-						</div>
-						<h2 class="text-xl font-semibold mb-2 text-gray-900 group-hover:text-payflo-purple transition-colors duration-200">Case Studies</h2>
-						<p class="text-gray-600">Real-world examples of successful Payflo implementations.</p>
-					</div>
-				</a>
-			</div>
+        <a href="/casos-de-exito" class="group">
+          <div
+            class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200"
+          >
+            <div
+              class="w-12 h-12 bg-payflo-purple/10 rounded-lg flex items-center justify-center mb-4"
+            >
+              <svg
+                class="w-6 h-6 text-payflo-purple"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                ></path>
+              </svg>
+            </div>
+            <h2
+              class="text-xl font-semibold mb-2 text-gray-900 group-hover:text-payflo-purple transition-colors duration-200"
+            >
+              Casos de Éxito
+            </h2>
+            <p class="text-gray-600">
+              Ejemplos reales de implementaciones exitosas de TurnApp.
+            </p>
+          </div>
+        </a>
+      </div>
 
-			<!-- Getting Started Section -->
-			<div class="mb-16">
-				<h2 class="text-3xl font-bold text-gray-900 mb-8">Getting Started</h2>
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-					<div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-						<h3 class="text-xl font-semibold mb-4">Quick Start Guide</h3>
-						<p class="text-gray-600 mb-6">Get up and running with Payflo in minutes.</p>
-						<ol class="list-decimal list-inside space-y-4 text-gray-600">
-							<li>Sign up for an account</li>
-							<li>Configure your organization settings</li>
-							<li>Add your first employee</li>
-							<li>Run your first payroll</li>
-						</ol>
-						<a href="/documentation/quick-start" class="mt-6 inline-block text-payflo-blue hover:text-payflo-purple font-medium">
-							Read the guide →
-						</a>
-					</div>
+      <!-- Getting Started Section -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8">Comenzando</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            <h3 class="text-xl font-semibold mb-4">Guía Rápida</h3>
+            <p class="text-gray-600 mb-6">
+              Comienza a usar TurnApp en minutos con esta guía rápida.
+            </p>
+            <ol class="list-decimal list-inside space-y-4 text-gray-600">
+              <li>Crear una cuenta institucional</li>
+              <li>Configurar áreas de servicio y puestos</li>
+              <li>Personalizar la pantalla de turnos (HUB)</li>
+              <li>Realizar la primera simulación de turnos</li>
+            </ol>
+            <a
+              href="/documentation/guia-rapida"
+              class="mt-6 inline-block text-payflo-purple hover:text-payflo-blue font-medium"
+            >
+              Leer la guía →
+            </a>
+          </div>
 
-					<div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-						<h3 class="text-xl font-semibold mb-4">Integration Guide</h3>
-						<p class="text-gray-600 mb-6">Learn how to integrate Payflo with your existing systems.</p>
-						<ul class="list-disc list-inside space-y-4 text-gray-600">
-							<li>API authentication</li>
-							<li>Webhooks setup</li>
-							<li>Data synchronization</li>
-							<li>Error handling</li>
-						</ul>
-						<a href="/documentation/integration" class="mt-6 inline-block text-payflo-blue hover:text-payflo-purple font-medium">
-							View integration docs →
-						</a>
-					</div>
-				</div>
-			</div>
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            <h3 class="text-xl font-semibold mb-4">
+              Configuración del Sistema
+            </h3>
+            <p class="text-gray-600 mb-6">
+              Aprende a configurar TurnApp para las necesidades específicas de
+              tu institución.
+            </p>
+            <ul class="list-disc list-inside space-y-4 text-gray-600">
+              <li>Tipos de servicios y categorías</li>
+              <li>Configuración de horarios de atención</li>
+              <li>Personalización de tickets y pantallas</li>
+              <li>Gestión de usuarios y permisos</li>
+            </ul>
+            <a
+              href="/documentation/configuracion"
+              class="mt-6 inline-block text-payflo-purple hover:text-payflo-blue font-medium"
+            >
+              Ver documentación →
+            </a>
+          </div>
+        </div>
+      </div>
 
-			<!-- Popular Topics -->
-			<div>
-				<h2 class="text-3xl font-bold text-gray-900 mb-8">Popular Topics</h2>
-				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-					<a href="/documentation/payroll-processing" class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
-						<h3 class="text-lg font-semibold mb-2">Payroll Processing</h3>
-						<p class="text-gray-600">Learn about our payroll processing system and features.</p>
-					</a>
+      <!-- Popular Topics -->
+      <div>
+        <h2 class="text-3xl font-bold text-gray-900 mb-8">Temas Populares</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <a
+            href="/documentation/gestion-turnos"
+            class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200"
+          >
+            <h3 class="text-lg font-semibold mb-2">Gestión de Turnos</h3>
+            <p class="text-gray-600">
+              Aprende sobre nuestro sistema de gestión y asignación de turnos.
+            </p>
+          </a>
 
-					<a href="/documentation/tax-calculations" class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
-						<h3 class="text-lg font-semibold mb-2">Tax Calculations</h3>
-						<p class="text-gray-600">Understanding how our tax engine works.</p>
-					</a>
+          <a
+            href="/documentation/pantalla-hub"
+            class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200"
+          >
+            <h3 class="text-lg font-semibold mb-2">Pantalla HUB</h3>
+            <p class="text-gray-600">
+              Configuración y personalización de la pantalla principal de
+              turnos.
+            </p>
+          </a>
 
-					<a href="/documentation/compliance" class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
-						<h3 class="text-lg font-semibold mb-2">Compliance</h3>
-						<p class="text-gray-600">Stay compliant with our built-in compliance tools.</p>
-					</a>
+          <a
+            href="/documentation/reportes"
+            class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200"
+          >
+            <h3 class="text-lg font-semibold mb-2">Reportes y Análisis</h3>
+            <p class="text-gray-600">
+              Genera reportes de eficiencia y tiempos de espera.
+            </p>
+          </a>
 
-					<a href="/documentation/reporting" class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
-						<h3 class="text-lg font-semibold mb-2">Reporting</h3>
-						<p class="text-gray-600">Generate and customize payroll reports.</p>
-					</a>
+          <a
+            href="/documentation/personalizacion"
+            class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200"
+          >
+            <h3 class="text-lg font-semibold mb-2">Personalización</h3>
+            <p class="text-gray-600">
+              Personaliza la apariencia según tu marca institucional.
+            </p>
+          </a>
 
-					<a href="/documentation/employee-portal" class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
-						<h3 class="text-lg font-semibold mb-2">Employee Portal</h3>
-						<p class="text-gray-600">Set up and manage the employee self-service portal.</p>
-					</a>
+          <a
+            href="/documentation/soporte"
+            class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200"
+          >
+            <h3 class="text-lg font-semibold mb-2">Soporte Técnico</h3>
+            <p class="text-gray-600">
+              Solución de problemas comunes y contacto con soporte.
+            </p>
+          </a>
 
-					<a href="/documentation/security" class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
-						<h3 class="text-lg font-semibold mb-2">Security</h3>
-						<p class="text-gray-600">Learn about our security features and best practices.</p>
-					</a>
-				</div>
-			</div>
-		</div>
-	</main>
+          <a
+            href="/documentation/seguridad"
+            class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200"
+          >
+            <h3 class="text-lg font-semibold mb-2">Seguridad</h3>
+            <p class="text-gray-600">
+              Conoce nuestras características de seguridad y mejores prácticas.
+            </p>
+          </a>
+        </div>
+      </div>
+
+      <!-- Additional Resources -->
+      <div class="mt-16 bg-gray-50 rounded-lg p-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">
+          Recursos Adicionales
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <h3 class="text-lg font-semibold mb-4">
+              ¿Necesitas ayuda personalizada?
+            </h3>
+            <p class="text-gray-600 mb-4">
+              Nuestro equipo de implementación está disponible para ayudarte con
+              la configuración específica de tu institución.
+            </p>
+            <a
+              href="/contact"
+              class="inline-block bg-payflo-purple text-white px-6 py-3 rounded-lg hover:bg-payflo-blue transition-colors duration-200"
+            >
+              Solicitar Asistencia
+            </a>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold mb-4">Próximos Webinars</h3>
+            <p class="text-gray-600 mb-4">
+              Únete a nuestras sesiones de entrenamiento en vivo para aprender
+              mejores prácticas.
+            </p>
+            <a
+              href="/webinars"
+              class="inline-block border border-payflo-purple text-payflo-purple px-6 py-3 rounded-lg hover:bg-payflo-purple hover:text-white transition-colors duration-200"
+            >
+              Ver Calendario
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>
+--- import Layout from '../../layouts/Layout.astro'; ---
+
+<Layout title="Documentación | TurnApp - Sistema de Gestión de Turnos">
+  <main class="py-20 px-6 sm:px-8 lg:px-12">
+    <div class="max-w-7xl mx-auto">
+      <!-- Hero Section -->
+      <div class="text-center mb-16">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          Documentación
+        </h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          Toda la información que necesitas para implementar y utilizar el
+          sistema de gestión de turnos TurnApp en tu institución.
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        <a href="/documentation/guia-implementacion" class="group">
+          <div
+            class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200"
+          >
+            <div
+              class="w-12 h-12 bg-payflo-purple/10 rounded-lg flex items-center justify-center mb-4"
+            >
+              <svg
+                class="w-6 h-6 text-payflo-purple"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <h2
+              class="text-xl font-semibold mb-2 text-gray-900 group-hover:text-payflo-purple transition-colors duration-200"
+            >
+              Guía de Implementación
+            </h2>
+            <p class="text-gray-600">
+              Documentación completa para implementar TurnApp en tu institución
+              paso a paso.
+            </p>
+          </div>
+        </a>
+
+        <a href="/tutoriales" class="group">
+          <div
+            class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200"
+          >
+            <div
+              class="w-12 h-12 bg-payflo-purple/10 rounded-lg flex items-center justify-center mb-4"
+            >
+              <svg
+                class="w-6 h-6 text-payflo-purple"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                ></path>
+              </svg>
+            </div>
+            <h2
+              class="text-xl font-semibold mb-2 text-gray-900 group-hover:text-payflo-purple transition-colors duration-200"
+            >
+              Tutoriales
+            </h2>
+            <p class="text-gray-600">
+              Guías paso a paso para comenzar a utilizar nuestra plataforma.
+            </p>
+          </div>
+        </a>
+
+        <a href="/casos-de-exito" class="group">
+          <div
+            class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200"
+          >
+            <div
+              class="w-12 h-12 bg-payflo-purple/10 rounded-lg flex items-center justify-center mb-4"
+            >
+              <svg
+                class="w-6 h-6 text-payflo-purple"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                ></path>
+              </svg>
+            </div>
+            <h2
+              class="text-xl font-semibold mb-2 text-gray-900 group-hover:text-payflo-purple transition-colors duration-200"
+            >
+              Casos de Éxito
+            </h2>
+            <p class="text-gray-600">
+              Ejemplos reales de implementaciones exitosas de TurnApp.
+            </p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Getting Started Section -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8">Comenzando</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            <h3 class="text-xl font-semibold mb-4">Guía Rápida</h3>
+            <p class="text-gray-600 mb-6">
+              Comienza a usar TurnApp en minutos con esta guía rápida.
+            </p>
+            <ol class="list-decimal list-inside space-y-4 text-gray-600">
+              <li>Crear una cuenta institucional</li>
+              <li>Configurar áreas de servicio y puestos</li>
+              <li>Personalizar la pantalla de turnos (HUB)</li>
+              <li>Realizar la primera simulación de turnos</li>
+            </ol>
+            <a
+              href="/documentation/guia-rapida"
+              class="mt-6 inline-block text-payflo-purple hover:text-payflo-blue font-medium"
+            >
+              Leer la guía →
+            </a>
+          </div>
+
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            <h3 class="text-xl font-semibold mb-4">
+              Configuración del Sistema
+            </h3>
+            <p class="text-gray-600 mb-6">
+              Aprende a configurar TurnApp para las necesidades específicas de
+              tu institución.
+            </p>
+            <ul class="list-disc list-inside space-y-4 text-gray-600">
+              <li>Tipos de servicios y categorías</li>
+              <li>Configuración de horarios de atención</li>
+              <li>Personalización de tickets y pantallas</li>
+              <li>Gestión de usuarios y permisos</li>
+            </ul>
+            <a
+              href="/documentation/configuracion"
+              class="mt-6 inline-block text-payflo-purple hover:text-payflo-blue font-medium"
+            >
+              Ver documentación →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Popular Topics -->
+      <div>
+        <h2 class="text-3xl font-bold text-gray-900 mb-8">Temas Populares</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <a
+            href="/documentation/gestion-turnos"
+            class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200"
+          >
+            <h3 class="text-lg font-semibold mb-2">Gestión de Turnos</h3>
+            <p class="text-gray-600">
+              Aprende sobre nuestro sistema de gestión y asignación de turnos.
+            </p>
+          </a>
+
+          <a
+            href="/documentation/pantalla-hub"
+            class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200"
+          >
+            <h3 class="text-lg font-semibold mb-2">Pantalla HUB</h3>
+            <p class="text-gray-600">
+              Configuración y personalización de la pantalla principal de
+              turnos.
+            </p>
+          </a>
+
+          <a
+            href="/documentation/reportes"
+            class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200"
+          >
+            <h3 class="text-lg font-semibold mb-2">Reportes y Análisis</h3>
+            <p class="text-gray-600">
+              Genera reportes de eficiencia y tiempos de espera.
+            </p>
+          </a>
+
+          <a
+            href="/documentation/personalizacion"
+            class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200"
+          >
+            <h3 class="text-lg font-semibold mb-2">Personalización</h3>
+            <p class="text-gray-600">
+              Personaliza la apariencia según tu marca institucional.
+            </p>
+          </a>
+
+          <a
+            href="/documentation/soporte"
+            class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200"
+          >
+            <h3 class="text-lg font-semibold mb-2">Soporte Técnico</h3>
+            <p class="text-gray-600">
+              Solución de problemas comunes y contacto con soporte.
+            </p>
+          </a>
+
+          <a
+            href="/documentation/seguridad"
+            class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200"
+          >
+            <h3 class="text-lg font-semibold mb-2">Seguridad</h3>
+            <p class="text-gray-600">
+              Conoce nuestras características de seguridad y mejores prácticas.
+            </p>
+          </a>
+        </div>
+      </div>
+
+      <!-- Additional Resources -->
+      <div class="mt-16 bg-gray-50 rounded-lg p-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">
+          Recursos Adicionales
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <h3 class="text-lg font-semibold mb-4">
+              ¿Necesitas ayuda personalizada?
+            </h3>
+            <p class="text-gray-600 mb-4">
+              Nuestro equipo de implementación está disponible para ayudarte con
+              la configuración específica de tu institución.
+            </p>
+            <a
+              href="/contact"
+              class="inline-block bg-payflo-purple text-white px-6 py-3 rounded-lg hover:bg-payflo-blue transition-colors duration-200"
+            >
+              Solicitar Asistencia
+            </a>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold mb-4">Próximos Webinars</h3>
+            <p class="text-gray-600 mb-4">
+              Únete a nuestras sesiones de entrenamiento en vivo para aprender
+              mejores prácticas.
+            </p>
+            <a
+              href="/webinars"
+              class="inline-block border border-payflo-purple text-payflo-purple px-6 py-3 rounded-lg hover:bg-payflo-purple hover:text-white transition-colors duration-200"
+            >
+              Ver Calendario
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 </Layout>
