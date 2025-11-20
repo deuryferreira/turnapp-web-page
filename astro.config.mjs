@@ -22,6 +22,13 @@ export default defineConfig({
       include: {
         ph: [
           "envelope-duotone",
+          "envelope-simple",
+          "phone",
+          "paper-plane-tilt",
+          "envelope",
+          "clock",
+          "chat-centered-text",
+          "globe-hemisphere-west",
           "map-pin-duotone",
           "target-duotone",
           "lightbulb-duotone",
