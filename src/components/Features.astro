@@ -7,32 +7,53 @@ import featureImage3 from "../assets/features/ft3.svg"; // Asumiendo que usarás
 
 const features = [
   {
-    title: "Digitaliza el Flujo Completo",
+    title: "Monitoreo en Tiempo Real",
     description:
-      "Elimina las filas caóticas y gestiona el ciclo del turno de principio a fin. Desde la emisión (autoservicio o recepción) hasta el llamado final, todo está centralizado en TurnApp.",
-    icon: "ph:star-duotone", // Icono de estrella/calidad
+      "Visualice el estado de todas sus colas y módulos al instante desde un dashboard centralizado y dinámico.",
+    icon: "ph:monitor-duotone",
     image: featureImage1,
   },
   {
-    title: "Optimiza tus Servicios",
+    title: "Gestión Inteligente de Colas",
     description:
-      "Moderniza el servicio al usuario, con llamados automatizados que garantizan la metodología PEPS (Primero en Entrar – Primero en Salir). Menos errores, más eficiencia.",
-    icon: "ph:lightning-duotone", // Icono de velocidad/eficiencia
+      "Cree y administre múltiples áreas de servicio con reglas de prioridad y flujos personalizados.",
+    icon: "ph:brain-duotone",
     image: featureImage2,
   },
   {
-    title: "Experiencia Clara en Tiempo Real",
+    title: "Emisión Multicanal",
     description:
-      "Ofrece una experiencia profesional y fluida. Utiliza la pantalla HUB personalizable para el llamado visible en tiempo real, reforzado con notificación de audio y voz automática.",
-    icon: "ph:globe-duotone", // Icono de visibilidad/alcance
+      "Generación de tickets físicos, turnos por código QR y visualización en pantallas multimedia (Hubs).",
+    icon: "ph:ticket-duotone",
     image: featureImage3,
+  },
+  {
+    title: "Estación del Agente",
+    description:
+      "Interfaz optimizada para que su personal gestione llamadas y atención con la máxima eficiencia.",
+    icon: "ph:desktop-duotone",
+    image: featureImage1, // Reuso por ahora
+  },
+  {
+    title: "Análisis y Reportes",
+    description:
+      "Obtenga métricas detalladas sobre tiempos de espera, volumen de atención y desempeño del equipo.",
+    icon: "ph:presentation-chart-duotone",
+    image: featureImage2, // Reuso por ahora
+  },
+  {
+    title: "Flujos Únicos",
+    description:
+      "Configure recorridos multi-etapa donde el usuario mantiene un único turno para múltiples departamentos.",
+    icon: "ph:arrows-merge-duotone",
+    image: featureImage3, // Reuso por ahora
   },
 ];
 
 // --- Texto Principal ---
 const mainTitle = "Todo lo que necesitas para controlar tu flujo de atención";
 const mainSubtitle =
-  "Nuestras herramientas combinan la robustez B2B con una interfaz intuitiva. Digitaliza rápidamente tu servicio y asegura una experiencia de cliente de alto nivel.";
+  "Nuestras herramientas combinan la robustez empresarial con una interfaz intuitiva. Digitalice rápidamente su servicio y asegure una experiencia de cliente de alto nivel.";
 // -----------------------
 ---
 
@@ -52,16 +73,16 @@ const mainSubtitle =
       <h2 class="animate-on-scroll delay-0 text-3xl md:text-4xl font-bold">
         {mainTitle}
       </h2>
-      <p class="animate-on-scroll delay-1 mt-4 text-xl text-gray-600">
+      <p class="animate-on-scroll delay-1 mt-4 text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto">
         {mainSubtitle}
       </p>
     </div>
 
-    <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
       {
         features.map((feature, index) => (
           <div
-            class={`feature-card animate-on-scroll delay-${index + 2} group`}
+            class={`feature-card glass-card animate-on-scroll delay-${index + 2} group`}
           >
             <div class="h-12 w-12 rounded-lg bg-gradient-to-r from-payflo-purple to-payflo-blue flex items-center justify-center text-white mb-6 transition-transform duration-300 group-hover:scale-110">
               <Icon

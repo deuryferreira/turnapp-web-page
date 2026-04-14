@@ -4,23 +4,19 @@ import logoSrc from "../assets/favicon.svg"; // Asumiendo que usarás el logo de
 
 const companyLinks = [
   { name: "Nosotros", href: "/about-us" },
-  // { name: "Carreras", href: "/careers" },
   { name: "Contacto", href: "/contact" },
-  { name: "Blog", href: "/endesarrollo" },
 ];
 
-const resourceLinks = [
-  // Adaptado para un sistema de turnos B2B (menos técnico, más funcional)
-  { name: "Manual de Usuario", href: "/documentation" },
-  // { name: "Guías de Implementación", href: "/implementation-guides" },
-  { name: "Tutoriales", href: "/tutorials" },
-  { name: "Casos de Estudio", href: "/case-studies" },
-];
+
 
 const legalLinks = [
   { name: "Política de Privacidad", href: "/privacy-policy" },
   { name: "Términos de Uso", href: "/terms-of-use" },
   { name: "Política de Cookies", href: "/cookie-policy" },
+];
+
+const otherSolutions = [
+  { name: "Ferreira TIC", href: "https://ferreiratic.com" },
 ];
 
 // const socialLinks = [
@@ -141,25 +137,23 @@ const legalLinks = [
         </ul>
       </div>
 
+
+
       <div>
         <h3
           class="text-lg font-semibold mb-4 text-white/90 hover:text-white transition-colors duration-300"
         >
-          Recursos
+          Otras Soluciones
         </h3>
         <ul class="space-y-3">
           {
-            resourceLinks.map((link, index) => (
+            otherSolutions.map((link, index) => (
               <li class="transform transition-all duration-300 hover:translate-x-1">
                 <a
                   href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   class="text-gray-400 hover:text-white transition-colors duration-300 inline-block"
-                  target={link.href.startsWith("http") ? "_blank" : undefined}
-                  rel={
-                    link.href.startsWith("http")
-                      ? "noopener noreferrer"
-                      : undefined
-                  }
                   style={`transition-delay: ${index * 50}ms;`}
                 >
                   {link.name}

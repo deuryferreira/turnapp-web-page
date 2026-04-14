@@ -1,0 +1,71 @@
+---
+// Componente de Prueba Social Dinámica (Social Proof Toast)
+const implementations = [
+  { location: "Santo Domingo", entity: "Clínica Dental", time: "hace 2 horas" },
+  { location: "Santiago", entity: "Centro Médico", time: "hace 5 horas" },
+  { location: "La Romana", entity: "Banco Regional", time: "ayer" },
+  { location: "Punta Cana", entity: "Centro Logístico", time: "hace 30 min" },
+];
+---
+
+<div
+  id="social-proof-toast"
+  class="fixed bottom-8 left-8 z-[100] transform translate-y-20 opacity-0 transition-all duration-700 ease-out pointer-events-none md:pointer-events-auto"
+>
+  <div class="glass p-4 rounded-2xl flex items-center gap-4 max-w-sm shadow-2xl border border-white/40">
+    <div class="h-12 w-12 rounded-full bg-gradient-to-r from-payflo-purple to-payflo-blue flex-shrink-0 flex items-center justify-center text-white shadow-inner">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle-2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+    </div>
+    <div>
+      <p class="text-sm font-bold text-gray-900" id="sp-location">Nueva implementación</p>
+      <p class="text-xs text-gray-600 mt-0.5" id="sp-detail">Un centro en Santo Domingo acaba de unirse.</p>
+      <p class="text-[10px] text-payflo-purple font-medium mt-1 uppercase tracking-wider" id="sp-time">Hace unos instantes</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const data = [
+    { location: "Santo Domingo", detail: "Una red médica acaba de centralizar su atención.", time: "Hace 2 horas" },
+    { location: "Santiago", detail: "Nuevo sistema de turnos activado en consultorio.", time: "Hace 5 horas" },
+    { location: "La Romana", detail: "Banco local optimizó sus filas hoy.", time: "Reciente" },
+    { location: "La Vega", detail: "Centro departamental mejoró su flujo de atención.", time: "Ayer" }
+  ];
+
+  let currentIdx = 0;
+
+  function showToast() {
+    const toast = document.getElementById('social-proof-toast');
+    const locationEl = document.getElementById('sp-location');
+    const detailEl = document.getElementById('sp-detail');
+    const timeEl = document.getElementById('sp-time');
+
+    if (!toast || !locationEl || !detailEl || !timeEl) return;
+
+    // Actualizar contenido
+    const item = data[currentIdx];
+    locationEl.textContent = `Éxito en ${item.location}`;
+    detailEl.textContent = item.detail;
+    timeEl.textContent = item.time;
+
+    // Mostrar
+    toast.classList.remove('translate-y-20', 'opacity-0');
+    toast.classList.add('translate-y-0', 'opacity-100');
+
+    // Ocultar después de 6 segundos
+    setTimeout(() => {
+      toast.classList.add('translate-y-20', 'opacity-0');
+      toast.classList.remove('translate-y-0', 'opacity-100');
+      
+      // Siguiente ítem
+      currentIdx = (currentIdx + 1) % data.length;
+    }, 6000);
+  }
+
+  // Iniciar después de 5 segundos de carga
+  setTimeout(() => {
+    showToast();
+    // Repetir cada 30 segundos
+    setInterval(showToast, 30000);
+  }, 5000);
+</script>

@@ -4,15 +4,13 @@ import logoWideSrc from "../assets/logo-wide-transparent.png";
 
 const navItems = [
   { name: "Inicio", href: "/" },
-  { name: "Producto", href: "/product" }, // { name: "Soluciones", href: "/solutions" },
-  { name: "Precios", href: "/contact" },
+  { name: "Conoce más", href: "/product" },
   { name: "Nosotros", href: "/about-us" },
-  { name: "Blog", href: "/endesarrollo" },
 ];
 ---
 
 <header
-  class="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-100"
+  class="sticky top-0 z-50 w-full glass transition-all duration-500"
   role="banner"
 >
   <div class="container-custom flex items-center justify-between h-20">
@@ -24,9 +22,9 @@ const navItems = [
       <Image
         src={logoWideSrc}
         alt="TurnApp Logo"
-        width={138}
+        width={171}
         height={40}
-        class="transition-all duration-300 hover:brightness-110 focus:brightness-110"
+        class="transition-all duration-300 hover:brightness-110 focus:brightness-110 h-10 w-auto"
       />
     </a>
 

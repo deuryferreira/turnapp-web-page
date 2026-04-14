@@ -4,11 +4,9 @@ import sitemap from "@astrojs/sitemap";
 import tailwind from "@astrojs/tailwind";
 import icon from "astro-icon";
 
-import node from "@astrojs/node";
-
 export default defineConfig({
   site: "https://turnapp.ferreiraric.com",
-  output: "server",
+  output: "static",
   prefetch: true,
 
   server: {
@@ -76,6 +74,14 @@ export default defineConfig({
           "tree-structure-duotone",
           "gear-six-duotone",
           "flow-arrow-duotone",
+          "monitor-duotone",
+          "ticket-duotone",
+          "desktop-duotone",
+          "presentation-chart-duotone",
+          "trend-up-duotone",
+          "first-aid-kit-duotone",
+          "bank-duotone",
+          "arrows-merge-duotone",
         ],
       },
     }),
@@ -87,7 +93,5 @@ export default defineConfig({
     },
   },
 
-  adapter: node({
-    mode: "standalone",
-  }),
+  adapter: undefined,
 });
