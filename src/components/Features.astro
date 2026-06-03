@@ -1,9 +1,12 @@
 ---
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
-import featureImage1 from "../assets/features/ft1.svg"; // Asumiendo que usarás imágenes que muestren control/pantalla
-import featureImage2 from "../assets/features/ft2.svg"; // Asumiendo que usarás imágenes que muestren el análisis
-import featureImage3 from "../assets/features/ft3.svg"; // Asumiendo que usarás imágenes que muestren el kiosco/impresión
+import featureImage1 from "../assets/features/ft1.webp";
+import featureImage2 from "../assets/features/ft2.webp";
+import featureImage3 from "../assets/features/ft3.webp";
+import featureImage4 from "../assets/features/ft4.webp";
+import featureImage5 from "../assets/features/ft5.webp";
+import featureImage6 from "../assets/features/ft6.webp";
 
 const features = [
   {
@@ -32,21 +35,21 @@ const features = [
     description:
       "Interfaz optimizada para que su personal gestione llamadas y atención con la máxima eficiencia.",
     icon: "ph:desktop-duotone",
-    image: featureImage1, // Reuso por ahora
+    image: featureImage4,
   },
   {
     title: "Análisis y Reportes",
     description:
       "Obtenga métricas detalladas sobre tiempos de espera, volumen de atención y desempeño del equipo.",
     icon: "ph:presentation-chart-duotone",
-    image: featureImage2, // Reuso por ahora
+    image: featureImage5,
   },
   {
     title: "Flujos Únicos",
     description:
       "Configure recorridos multi-etapa donde el usuario mantiene un único turno para múltiples departamentos.",
     icon: "ph:arrows-merge-duotone",
-    image: featureImage3, // Reuso por ahora
+    image: featureImage6,
   },
 ];
 
@@ -58,7 +61,7 @@ const mainSubtitle =
 ---
 
 <section
-  class="py-20 bg-gradient-to-b from-white to-payflo-gray relative overflow-hidden"
+  class="py-32 bg-gradient-to-b from-white to-payflo-gray relative overflow-hidden"
 >
   <div class="absolute inset-0 opacity-5 parallax" data-speed="0.1">
     <div
@@ -84,12 +87,6 @@ const mainSubtitle =
           <div
             class={`feature-card glass-card animate-on-scroll delay-${index + 2} group`}
           >
-            <div class="h-12 w-12 rounded-lg bg-gradient-to-r from-payflo-purple to-payflo-blue flex items-center justify-center text-white mb-6 transition-transform duration-300 group-hover:scale-110">
-              <Icon
-                name={feature.icon}
-                class="h-6 w-6 transition-transform duration-300 group-hover:rotate-12"
-              />
-            </div>
             <h3 class="text-xl font-semibold transition-colors duration-300 group-hover:text-payflo-purple">
               {feature.title}
             </h3>
@@ -99,8 +96,6 @@ const mainSubtitle =
                 src={feature.image}
                 alt={feature.title}
                 class="w-full h-auto rounded-lg transition-all duration-500"
-                width={300}
-                height={200}
               />
             </div>
           </div>
@@ -109,3 +104,17 @@ const mainSubtitle =
     </div>
   </div>
 </section>
+
+<script>
+  import VanillaTilt from "vanilla-tilt";
+
+  document.addEventListener("astro:page-load", () => {
+    const cards = document.querySelectorAll(".feature-card");
+    VanillaTilt.init(Array.from(cards) as HTMLElement[], {
+      max: 5,
+      speed: 400,
+      glare: true,
+      "max-glare": 0.2,
+    });
+  });
+</script>

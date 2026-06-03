@@ -4,19 +4,19 @@ const steps = [
     number: "01",
     title: "Análisis y Definición del Flujo",
     description:
-      "Nuestro equipo se reúne con usted para entender sus áreas de servicio, sus reglas de atención (PEPS) y diseñar el flujo óptimo para su institución.",
+      "Nuestro equipo se reúne con usted para entender sus áreas de servicio, sus reglas de atención (PEPS) y diseñar el flujo óptimo para su institución. Evaluamos la carga operativa para asegurar un enrutamiento perfecto.",
   },
   {
     number: "02",
     title: "Implementación y Personalización",
     description:
-      "Configuramos toda la plataforma TurnApp: desde la lógica de los llamados por área hasta la adaptación visual de las pantallas HUB con su línea gráfica.",
+      "Configuramos toda la plataforma TurnApp: desde la lógica de los llamados por área hasta la adaptación visual de las pantallas HUB con su línea gráfica, logrando una inmersión de marca total.",
   },
   {
     number: "03",
     title: "Activación y Soporte Continuo",
     description:
-      "Realizamos la puesta en marcha, capacitamos a su personal para el uso inmediato y aseguramos el monitoreo y soporte para una operación fluida desde el primer día.",
+      "Realizamos la puesta en marcha, capacitamos a su personal para el uso inmediato y aseguramos el monitoreo y soporte en tiempo real para una operación fluida desde el primer día.",
   },
 ];
 
@@ -27,88 +27,54 @@ const mainSubtitle =
 // -----------------------
 ---
 
-<section class="py-20 bg-payflo-gray relative overflow-hidden">
-  <div class="absolute inset-0 opacity-5">
-    <div
-      class="absolute inset-0 bg-repeat"
-      style="background-image: url('/grid-pattern.svg');"
-    >
-    </div>
-  </div>
-
-  <div class="container-custom relative">
-    <div class="max-w-3xl mx-auto text-center">
-      <h2 class="animate-on-scroll delay-0 text-3xl md:text-4xl font-bold">
-        {mainTitle}
+<section class="py-32 bg-white relative overflow-hidden">
+  <div class="container-custom relative z-10">
+    <div class="max-w-4xl animate-on-scroll delay-0 mb-20">
+      <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-payflo-dark leading-[1.1]">
+        Ponemos a trabajar a TurnApp en <span class="text-transparent bg-clip-text bg-gradient-to-r from-payflo-purple to-payflo-blue">tres pasos</span> rápidos.
       </h2>
-      <p class="animate-on-scroll delay-1 mt-4 text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto">
-        {mainSubtitle}
+      <p class="mt-6 text-xl md:text-2xl text-gray-500 font-light max-w-2xl leading-relaxed">
+        Olvídese de configuraciones complejas. Nuestro equipo experto se encarga de la implementación de principio a fin.
       </p>
     </div>
 
-    <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-      <div
-        class="hidden md:block absolute top-16 left-1/6 right-1/6 h-0.5 bg-gradient-to-r from-payflo-purple to-payflo-blue"
-      >
-      </div>
+    <div class="relative max-w-5xl mx-auto">
+      <!-- Vertical line connector -->
+      <div class="hidden md:block absolute left-[3.5rem] top-8 bottom-8 w-px bg-gradient-to-b from-payflo-purple/50 via-payflo-blue/30 to-transparent z-0"></div>
 
-      {
-        steps.map((step, index) => (
-          <div
-            class={`bg-white rounded-xl p-8 shadow-lg border border-gray-100 animate-on-scroll delay-${index + 2} group hover:shadow-xl transition-all duration-300 hover:-translate-y-2`}
-          >
-            <div class="flex items-center justify-center w-12 h-12 rounded-full bg-payflo-purple/10 text-payflo-purple font-semibold transition-all duration-300 group-hover:bg-payflo-purple group-hover:text-white group-hover:scale-110">
-              {step.number}
-            </div>
-            <h3 class="mt-6 text-xl font-semibold transition-colors duration-300 group-hover:text-payflo-purple">
-              {step.title}
-            </h3>
-            <p class="mt-3 text-gray-600 leading-relaxed">{step.description}</p>
-
-            {index < steps.length - 1 && (
-              <div class="flex justify-center mt-4 md:hidden">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6 text-payflo-purple animate-bounce"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                  />
-                </svg>
+      <div class="space-y-16 md:space-y-24">
+        {
+          steps.map((step, index) => (
+            <div class="relative z-10 flex flex-col md:flex-row gap-8 md:gap-16 items-start group animate-on-scroll" style={`animation-delay: ${(index * 0.2)}s`}>
+              
+              <!-- Number Indicator -->
+              <div class="flex-shrink-0 relative">
+                <div class="w-20 h-20 md:w-28 md:h-28 rounded-full bg-white shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-gray-100 flex items-center justify-center relative z-10 group-hover:scale-110 transition-transform duration-500 ease-out">
+                  <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-payflo-purple to-payflo-blue opacity-0 group-hover:opacity-10 transition-opacity duration-500"></div>
+                  <span class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-gray-800 to-gray-400 group-hover:from-payflo-purple group-hover:to-payflo-blue transition-colors duration-500">
+                    {step.number}
+                  </span>
+                </div>
+                <!-- Massive Background Number -->
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[150px] md:text-[250px] font-black text-gray-50/80 -z-10 select-none group-hover:text-gray-100 transition-colors duration-700 pointer-events-none">
+                  {step.number}
+                </div>
               </div>
-            )}
-          </div>
-        ))
-      }
-    </div>
 
-    <!-- <div class="mt-16 text-center">
-      <div class="animate-on-scroll delay-5">
-        <a href="/implementacion" class="btn btn-primary group">
-          <span class="inline-flex items-center">
-            Solicitar una Consulta
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 ml-2 transition-transform duration-300 group-hover:translate-x-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-            </svg>
-          </span>
-        </a>
+              <!-- Content -->
+              <div class="pt-4 md:pt-8 flex-grow">
+                <h3 class="text-2xl md:text-3xl font-semibold text-payflo-dark group-hover:text-payflo-purple transition-colors duration-300">
+                  {step.title}
+                </h3>
+                <p class="mt-4 text-lg md:text-xl text-gray-500 font-light leading-relaxed max-w-2xl">
+                  {step.description}
+                </p>
+              </div>
+              
+            </div>
+          ))
+        }
       </div>
-    </div> -->
+    </div>
   </div>
 </section>

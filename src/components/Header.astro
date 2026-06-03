@@ -6,6 +6,7 @@ const navItems = [
   { name: "Inicio", href: "/" },
   { name: "Conoce más", href: "/product" },
   { name: "Nosotros", href: "/about-us" },
+  { name: "Contacto", href: "/contact" },
 ];
 ---
 
@@ -56,8 +57,8 @@ const navItems = [
       </a> -->
       <a
         href="/book-demo"
-        class="btn btn-primary focus:outline-none focus:ring-2 focus:ring-payflo-purple focus:ring-offset-2"
-        >Solicitar Demo</a
+        class="hidden md:inline-flex btn btn-primary focus:outline-none focus:ring-2 focus:ring-payflo-purple focus:ring-offset-2"
+        >Agendar una llamada</a
       >
 
       <button
@@ -87,7 +88,7 @@ const navItems = [
 
   <nav
     id="mobile-menu"
-    class="hidden md:hidden bg-white w-full border-t border-gray-100"
+    class="hidden md:hidden bg-white w-full border-t border-gray-100 shadow-lg absolute left-0 right-0"
     role="navigation"
     aria-label="Mobile navigation"
   >
@@ -96,18 +97,20 @@ const navItems = [
         navItems.map((item, index) => (
           <a
             href={item.href}
-            class="block py-2 px-2 text-gray-700 hover:text-payflo-purple focus:text-payflo-purple transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-payflo-purple focus:ring-offset-2 rounded"
+            class="block py-2 px-2 text-gray-700 hover:text-payflo-purple focus:text-payflo-purple transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-payflo-purple focus:ring-offset-2 rounded font-medium"
             style={`transition-delay: ${index * 50}ms;`}
           >
             {item.name}{" "}
           </a>
         ))
       }
-      <a
-        href="/login"
-        class="block py-2 px-2 text-gray-700 hover:text-payflo-purple focus:text-payflo-purple transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-payflo-purple focus:ring-offset-2 rounded"
-        >Iniciar Sesión</a
-      >
+      <div class="pt-4 border-t border-gray-100 mt-2">
+        <a
+          href="/book-demo"
+          class="block w-full text-center py-3 px-4 bg-payflo-purple text-white hover:bg-payflo-purple/90 transition-all duration-300 rounded-lg font-medium"
+          >Agendar una llamada</a
+        >
+      </div>
     </div>
   </nav>
 </header>
