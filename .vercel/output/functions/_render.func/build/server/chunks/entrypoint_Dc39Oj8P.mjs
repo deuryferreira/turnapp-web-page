@@ -1,11 +1,10 @@
 import require$$0 from 'url';
-import require$$1 from 'path-to-regexp';
 import require$$2 from 'path-to-regexp-updated';
 import nodePath from 'node:path';
 import colors from 'piccolore';
-import { parse, stringify as stringify$1, unflatten as unflatten$1 } from 'devalue';
+import { parse as parse$1, stringify as stringify$1, unflatten as unflatten$1 } from 'devalue';
 import 'es-module-lexer';
-import { serialize, parse as parse$1 } from 'cookie';
+import { serialize, parse as parse$2 } from 'cookie';
 import { escape } from 'html-escaper';
 import { clsx } from 'clsx';
 import { decodeBase64, encodeBase64, decodeHex, encodeHexUpperCase } from '@oslojs/encoding';
@@ -383,7 +382,446 @@ const CacheNotEnabled = {
   hint: 'Use an adapter that provides a default cache provider, or set one explicitly: `experimental: { cache: { provider: "..." } }`. See https://docs.astro.build/en/reference/experimental-flags/route-caching/.'
 };
 
+function getAugmentedNamespace(n) {
+  if (Object.prototype.hasOwnProperty.call(n, '__esModule')) return n;
+  var f = n.default;
+	if (typeof f == "function") {
+		var a = function a () {
+			var isInstance = false;
+      try {
+        isInstance = this instanceof a;
+      } catch {}
+			if (isInstance) {
+        return Reflect.construct(f, arguments, this.constructor);
+			}
+			return f.apply(this, arguments);
+		};
+		a.prototype = f.prototype;
+  } else a = {};
+  Object.defineProperty(a, '__esModule', {value: true});
+	Object.keys(n).forEach(function (k) {
+		var d = Object.getOwnPropertyDescriptor(n, k);
+		Object.defineProperty(a, k, d.get ? d : {
+			enumerable: true,
+			get: function () {
+				return n[k];
+			}
+		});
+	});
+	return a;
+}
+
 var dist = {exports: {}};
+
+/**
+ * Tokenize input string.
+ */
+function lexer(str) {
+    var tokens = [];
+    var i = 0;
+    while (i < str.length) {
+        var char = str[i];
+        if (char === "*" || char === "+" || char === "?") {
+            tokens.push({ type: "MODIFIER", index: i, value: str[i++] });
+            continue;
+        }
+        if (char === "\\") {
+            tokens.push({ type: "ESCAPED_CHAR", index: i++, value: str[i++] });
+            continue;
+        }
+        if (char === "{") {
+            tokens.push({ type: "OPEN", index: i, value: str[i++] });
+            continue;
+        }
+        if (char === "}") {
+            tokens.push({ type: "CLOSE", index: i, value: str[i++] });
+            continue;
+        }
+        if (char === ":") {
+            var name = "";
+            var j = i + 1;
+            while (j < str.length) {
+                var code = str.charCodeAt(j);
+                if (
+                // `0-9`
+                (code >= 48 && code <= 57) ||
+                    // `A-Z`
+                    (code >= 65 && code <= 90) ||
+                    // `a-z`
+                    (code >= 97 && code <= 122) ||
+                    // `_`
+                    code === 95) {
+                    name += str[j++];
+                    continue;
+                }
+                break;
+            }
+            if (!name)
+                throw new TypeError("Missing parameter name at " + i);
+            tokens.push({ type: "NAME", index: i, value: name });
+            i = j;
+            continue;
+        }
+        if (char === "(") {
+            var count = 1;
+            var pattern = "";
+            var j = i + 1;
+            if (str[j] === "?") {
+                throw new TypeError("Pattern cannot start with \"?\" at " + j);
+            }
+            while (j < str.length) {
+                if (str[j] === "\\") {
+                    pattern += str[j++] + str[j++];
+                    continue;
+                }
+                if (str[j] === ")") {
+                    count--;
+                    if (count === 0) {
+                        j++;
+                        break;
+                    }
+                }
+                else if (str[j] === "(") {
+                    count++;
+                    if (str[j + 1] !== "?") {
+                        throw new TypeError("Capturing groups are not allowed at " + j);
+                    }
+                }
+                pattern += str[j++];
+            }
+            if (count)
+                throw new TypeError("Unbalanced pattern at " + i);
+            if (!pattern)
+                throw new TypeError("Missing pattern at " + i);
+            tokens.push({ type: "PATTERN", index: i, value: pattern });
+            i = j;
+            continue;
+        }
+        tokens.push({ type: "CHAR", index: i, value: str[i++] });
+    }
+    tokens.push({ type: "END", index: i, value: "" });
+    return tokens;
+}
+/**
+ * Parse a string for the raw tokens.
+ */
+function parse(str, options) {
+    if (options === void 0) { options = {}; }
+    var tokens = lexer(str);
+    var _a = options.prefixes, prefixes = _a === void 0 ? "./" : _a;
+    var defaultPattern = "[^" + escapeString(options.delimiter || "/#?") + "]+?";
+    var result = [];
+    var key = 0;
+    var i = 0;
+    var path = "";
+    var tryConsume = function (type) {
+        if (i < tokens.length && tokens[i].type === type)
+            return tokens[i++].value;
+    };
+    var mustConsume = function (type) {
+        var value = tryConsume(type);
+        if (value !== undefined)
+            return value;
+        var _a = tokens[i], nextType = _a.type, index = _a.index;
+        throw new TypeError("Unexpected " + nextType + " at " + index + ", expected " + type);
+    };
+    var consumeText = function () {
+        var result = "";
+        var value;
+        // tslint:disable-next-line
+        while ((value = tryConsume("CHAR") || tryConsume("ESCAPED_CHAR"))) {
+            result += value;
+        }
+        return result;
+    };
+    while (i < tokens.length) {
+        var char = tryConsume("CHAR");
+        var name = tryConsume("NAME");
+        var pattern = tryConsume("PATTERN");
+        if (name || pattern) {
+            var prefix = char || "";
+            if (prefixes.indexOf(prefix) === -1) {
+                path += prefix;
+                prefix = "";
+            }
+            if (path) {
+                result.push(path);
+                path = "";
+            }
+            result.push({
+                name: name || key++,
+                prefix: prefix,
+                suffix: "",
+                pattern: pattern || defaultPattern,
+                modifier: tryConsume("MODIFIER") || ""
+            });
+            continue;
+        }
+        var value = char || tryConsume("ESCAPED_CHAR");
+        if (value) {
+            path += value;
+            continue;
+        }
+        if (path) {
+            result.push(path);
+            path = "";
+        }
+        var open = tryConsume("OPEN");
+        if (open) {
+            var prefix = consumeText();
+            var name_1 = tryConsume("NAME") || "";
+            var pattern_1 = tryConsume("PATTERN") || "";
+            var suffix = consumeText();
+            mustConsume("CLOSE");
+            result.push({
+                name: name_1 || (pattern_1 ? key++ : ""),
+                pattern: name_1 && !pattern_1 ? defaultPattern : pattern_1,
+                prefix: prefix,
+                suffix: suffix,
+                modifier: tryConsume("MODIFIER") || ""
+            });
+            continue;
+        }
+        mustConsume("END");
+    }
+    return result;
+}
+/**
+ * Compile a string to a template function for the path.
+ */
+function compile(str, options) {
+    return tokensToFunction(parse(str, options), options);
+}
+/**
+ * Expose a method for transforming tokens into the path function.
+ */
+function tokensToFunction(tokens, options) {
+    if (options === void 0) { options = {}; }
+    var reFlags = flags(options);
+    var _a = options.encode, encode = _a === void 0 ? function (x) { return x; } : _a, _b = options.validate, validate = _b === void 0 ? true : _b;
+    // Compile all the tokens into regexps.
+    var matches = tokens.map(function (token) {
+        if (typeof token === "object") {
+            return new RegExp("^(?:" + token.pattern + ")$", reFlags);
+        }
+    });
+    return function (data) {
+        var path = "";
+        for (var i = 0; i < tokens.length; i++) {
+            var token = tokens[i];
+            if (typeof token === "string") {
+                path += token;
+                continue;
+            }
+            var value = data ? data[token.name] : undefined;
+            var optional = token.modifier === "?" || token.modifier === "*";
+            var repeat = token.modifier === "*" || token.modifier === "+";
+            if (Array.isArray(value)) {
+                if (!repeat) {
+                    throw new TypeError("Expected \"" + token.name + "\" to not repeat, but got an array");
+                }
+                if (value.length === 0) {
+                    if (optional)
+                        continue;
+                    throw new TypeError("Expected \"" + token.name + "\" to not be empty");
+                }
+                for (var j = 0; j < value.length; j++) {
+                    var segment = encode(value[j], token);
+                    if (validate && !matches[i].test(segment)) {
+                        throw new TypeError("Expected all \"" + token.name + "\" to match \"" + token.pattern + "\", but got \"" + segment + "\"");
+                    }
+                    path += token.prefix + segment + token.suffix;
+                }
+                continue;
+            }
+            if (typeof value === "string" || typeof value === "number") {
+                var segment = encode(String(value), token);
+                if (validate && !matches[i].test(segment)) {
+                    throw new TypeError("Expected \"" + token.name + "\" to match \"" + token.pattern + "\", but got \"" + segment + "\"");
+                }
+                path += token.prefix + segment + token.suffix;
+                continue;
+            }
+            if (optional)
+                continue;
+            var typeOfMessage = repeat ? "an array" : "a string";
+            throw new TypeError("Expected \"" + token.name + "\" to be " + typeOfMessage);
+        }
+        return path;
+    };
+}
+/**
+ * Create path match function from `path-to-regexp` spec.
+ */
+function match(str, options) {
+    var keys = [];
+    var re = pathToRegexp(str, keys, options);
+    return regexpToFunction(re, keys, options);
+}
+/**
+ * Create a path match function from `path-to-regexp` output.
+ */
+function regexpToFunction(re, keys, options) {
+    if (options === void 0) { options = {}; }
+    var _a = options.decode, decode = _a === void 0 ? function (x) { return x; } : _a;
+    return function (pathname) {
+        var m = re.exec(pathname);
+        if (!m)
+            return false;
+        var path = m[0], index = m.index;
+        var params = Object.create(null);
+        var _loop_1 = function (i) {
+            // tslint:disable-next-line
+            if (m[i] === undefined)
+                return "continue";
+            var key = keys[i - 1];
+            if (key.modifier === "*" || key.modifier === "+") {
+                params[key.name] = m[i].split(key.prefix + key.suffix).map(function (value) {
+                    return decode(value, key);
+                });
+            }
+            else {
+                params[key.name] = decode(m[i], key);
+            }
+        };
+        for (var i = 1; i < m.length; i++) {
+            _loop_1(i);
+        }
+        return { path: path, index: index, params: params };
+    };
+}
+/**
+ * Escape a regular expression string.
+ */
+function escapeString(str) {
+    return str.replace(/([.+*?=^!:${}()[\]|/\\])/g, "\\$1");
+}
+/**
+ * Get the flags for a regexp from the options.
+ */
+function flags(options) {
+    return options && options.sensitive ? "" : "i";
+}
+/**
+ * Pull out keys from a regexp.
+ */
+function regexpToRegexp(path, keys) {
+    if (!keys)
+        return path;
+    // Use a negative lookahead to match only capturing groups.
+    var groups = path.source.match(/\((?!\?)/g);
+    if (groups) {
+        for (var i = 0; i < groups.length; i++) {
+            keys.push({
+                name: i,
+                prefix: "",
+                suffix: "",
+                modifier: "",
+                pattern: ""
+            });
+        }
+    }
+    return path;
+}
+/**
+ * Transform an array into a regexp.
+ */
+function arrayToRegexp(paths, keys, options) {
+    var parts = paths.map(function (path) { return pathToRegexp(path, keys, options).source; });
+    return new RegExp("(?:" + parts.join("|") + ")", flags(options));
+}
+/**
+ * Create a path regexp from string input.
+ */
+function stringToRegexp(path, keys, options) {
+    return tokensToRegexp(parse(path, options), keys, options);
+}
+/**
+ * Expose a function for taking tokens and returning a RegExp.
+ */
+function tokensToRegexp(tokens, keys, options) {
+    if (options === void 0) { options = {}; }
+    var _a = options.strict, strict = _a === void 0 ? false : _a, _b = options.start, start = _b === void 0 ? true : _b, _c = options.end, end = _c === void 0 ? true : _c, _d = options.encode, encode = _d === void 0 ? function (x) { return x; } : _d;
+    var endsWith = "[" + escapeString(options.endsWith || "") + "]|$";
+    var delimiter = "[" + escapeString(options.delimiter || "/#?") + "]";
+    var route = start ? "^" : "";
+    // Iterate over the tokens and create our regexp string.
+    for (var _i = 0, tokens_1 = tokens; _i < tokens_1.length; _i++) {
+        var token = tokens_1[_i];
+        if (typeof token === "string") {
+            route += escapeString(encode(token));
+        }
+        else {
+            var prefix = escapeString(encode(token.prefix));
+            var suffix = escapeString(encode(token.suffix));
+            if (token.pattern) {
+                if (keys)
+                    keys.push(token);
+                if (prefix || suffix) {
+                    if (token.modifier === "+" || token.modifier === "*") {
+                        var mod = token.modifier === "*" ? "?" : "";
+                        route += "(?:" + prefix + "((?:" + token.pattern + ")(?:" + suffix + prefix + "(?:" + token.pattern + "))*)" + suffix + ")" + mod;
+                    }
+                    else {
+                        route += "(?:" + prefix + "(" + token.pattern + ")" + suffix + ")" + token.modifier;
+                    }
+                }
+                else {
+                    route += "(" + token.pattern + ")" + token.modifier;
+                }
+            }
+            else {
+                route += "(?:" + prefix + suffix + ")" + token.modifier;
+            }
+        }
+    }
+    if (end) {
+        if (!strict)
+            route += delimiter + "?";
+        route += !options.endsWith ? "$" : "(?=" + endsWith + ")";
+    }
+    else {
+        var endToken = tokens[tokens.length - 1];
+        var isEndDelimited = typeof endToken === "string"
+            ? delimiter.indexOf(endToken[endToken.length - 1]) > -1
+            : // tslint:disable-next-line
+                endToken === undefined;
+        if (!strict) {
+            route += "(?:" + delimiter + "(?=" + endsWith + "))?";
+        }
+        if (!isEndDelimited) {
+            route += "(?=" + delimiter + "|" + endsWith + ")";
+        }
+    }
+    return new RegExp(route, flags(options));
+}
+/**
+ * Normalize the given path string, returning a regular expression.
+ *
+ * An empty array can be passed in for the keys, which will hold the
+ * placeholder key descriptions. For example, using `/user/:id`, `keys` will
+ * contain `[{ name: 'id', delimiter: '/', optional: false, repeat: false }]`.
+ */
+function pathToRegexp(path, keys, options) {
+    if (path instanceof RegExp)
+        return regexpToRegexp(path, keys);
+    if (Array.isArray(path))
+        return arrayToRegexp(path, keys, options);
+    return stringToRegexp(path, keys, options);
+}
+
+const dist_es2015 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  compile,
+  match,
+  parse,
+  pathToRegexp,
+  regexpToFunction,
+  tokensToFunction,
+  tokensToRegexp
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const require$$1 = /*@__PURE__*/getAugmentedNamespace(dist_es2015);
 
 var superstatic;
 var hasRequiredSuperstatic;
@@ -3278,7 +3716,7 @@ const ASTRO_PATH_PARAM = "x_astro_path";
 const ASTRO_LOCALS_HEADER = "x-astro-locals";
 const ASTRO_MIDDLEWARE_SECRET_HEADER = "x-astro-middleware-secret";
 
-const middlewareSecret = "ed6053f2-8886-45be-9a25-92e2f7a7c463";
+const middlewareSecret = "1aa1a5b3-ec56-40cb-94df-105712da405c";
 
 const ACTION_QUERY_PARAMS = {
   actionName: "_action"};
@@ -3418,7 +3856,7 @@ function deserializeActionResult(res) {
     return { data: void 0, error: void 0 };
   }
   return {
-    data: parse(res.body, {
+    data: parse$1(res.body, {
       URL: (href) => new URL(href)
     }),
     error: void 0
@@ -3935,7 +4373,7 @@ class AstroCookies {
     if (!raw) {
       return;
     }
-    this.#requestValues = parse$1(raw, { decode: identity });
+    this.#requestValues = parse$2(raw, { decode: identity });
   }
 }
 
@@ -12660,14 +13098,14 @@ const renderers = [];
 const serializedData = [{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"type":"page","component":"_server-islands.astro","params":["name"],"segments":[[{"content":"_server-islands","dynamic":false,"spread":false}],[{"content":"name","dynamic":true,"spread":false}]],"pattern":"^\\/_server-islands\\/([^/]+?)\\/?$","prerender":false,"isIndex":false,"fallbackRoutes":[],"route":"/_server-islands/[name]","origin":"internal","distURL":[],"_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"route":"/_image","component":"node_modules/astro/dist/assets/endpoint/generic.js","params":[],"pathname":"/_image","pattern":"^\\/_image\\/?$","segments":[[{"content":"_image","dynamic":false,"spread":false}]],"type":"endpoint","prerender":false,"fallbackRoutes":[],"distURL":[],"isIndex":false,"origin":"internal","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"route":"/contact","isIndex":false,"type":"page","pattern":"^\\/contact\\/?$","segments":[[{"content":"contact","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/contact.astro","pathname":"/contact","prerender":false,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}}];
 				serializedData.map(deserializeRouteInfo);
 
-const _page0 = () => import('./generic_C_EiF3R8.mjs');
-const _page1 = () => import('./contact_MUVIAWxS.mjs');
+const _page0 = () => import('./generic_wrJP7Z3I.mjs');
+const _page1 = () => import('./contact_BKyIQmfq.mjs');
 const pageMap = new Map([
     ["node_modules/astro/dist/assets/endpoint/generic.js", _page0],
     ["src/pages/contact.astro", _page1]
 ]);
 
-const _manifest = deserializeManifest(({"rootDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/","cacheDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/node_modules/.astro/","outDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/build/","srcDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/","publicDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/public/","buildClientDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/build/client/","buildServerDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/build/server/","adapterName":"@astrojs/vercel","assetsDir":"_astro","routes":[{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"type":"page","component":"_server-islands.astro","params":["name"],"segments":[[{"content":"_server-islands","dynamic":false,"spread":false}],[{"content":"name","dynamic":true,"spread":false}]],"pattern":"^\\/_server-islands\\/([^/]+?)\\/?$","prerender":false,"isIndex":false,"fallbackRoutes":[],"route":"/_server-islands/[name]","origin":"internal","distURL":[],"_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/_image","component":"node_modules/astro/dist/assets/endpoint/generic.js","params":[],"pathname":"/_image","pattern":"^\\/_image\\/?$","segments":[[{"content":"_image","dynamic":false,"spread":false}]],"type":"endpoint","prerender":false,"fallbackRoutes":[],"distURL":[],"isIndex":false,"origin":"internal","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/404","isIndex":false,"type":"page","pattern":"^\\/404\\/?$","segments":[[{"content":"404","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/404.astro","pathname":"/404","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/about-us","isIndex":false,"type":"page","pattern":"^\\/about-us\\/?$","segments":[[{"content":"about-us","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/about-us.astro","pathname":"/about-us","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/blog/[slug]","isIndex":false,"type":"page","pattern":"^\\/blog\\/([^/]+?)\\/?$","segments":[[{"content":"blog","dynamic":false,"spread":false}],[{"content":"slug","dynamic":true,"spread":false}]],"params":["slug"],"component":"src/pages/blog/[slug].astro","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/blog","isIndex":true,"type":"page","pattern":"^\\/blog\\/?$","segments":[[{"content":"blog","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/blog/index.astro","pathname":"/blog","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/book-demo","isIndex":false,"type":"page","pattern":"^\\/book-demo\\/?$","segments":[[{"content":"book-demo","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/book-demo.astro","pathname":"/book-demo","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/careers","isIndex":false,"type":"page","pattern":"^\\/careers\\/?$","segments":[[{"content":"careers","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/careers.astro","pathname":"/careers","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/case-studies","isIndex":true,"type":"page","pattern":"^\\/case-studies\\/?$","segments":[[{"content":"case-studies","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/case-studies/index.astro","pathname":"/case-studies","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[{"type":"external","src":"_astro/contact.DHZaXq33.css"}],"routeData":{"route":"/contact","isIndex":false,"type":"page","pattern":"^\\/contact\\/?$","segments":[[{"content":"contact","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/contact.astro","pathname":"/contact","prerender":false,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/cookie-policy","isIndex":false,"type":"page","pattern":"^\\/cookie-policy\\/?$","segments":[[{"content":"cookie-policy","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/cookie-policy.astro","pathname":"/cookie-policy","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/documentation/api-reference","isIndex":false,"type":"page","pattern":"^\\/documentation\\/api-reference\\/?$","segments":[[{"content":"documentation","dynamic":false,"spread":false}],[{"content":"api-reference","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/documentation/api-reference.astro","pathname":"/documentation/api-reference","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/documentation","isIndex":true,"type":"page","pattern":"^\\/documentation\\/?$","segments":[[{"content":"documentation","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/documentation/index.astro","pathname":"/documentation","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/documentation","isIndex":false,"type":"page","pattern":"^\\/documentation\\/?$","segments":[[{"content":"documentation","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/documentation.astro","pathname":"/documentation","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/endesarrollo","isIndex":false,"type":"page","pattern":"^\\/endesarrollo\\/?$","segments":[[{"content":"endesarrollo","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/endesarrollo.astro","pathname":"/endesarrollo","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/login","isIndex":false,"type":"page","pattern":"^\\/login\\/?$","segments":[[{"content":"login","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/login.astro","pathname":"/login","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/pricing","isIndex":false,"type":"page","pattern":"^\\/pricing\\/?$","segments":[[{"content":"pricing","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/pricing.astro","pathname":"/pricing","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/privacy-policy","isIndex":false,"type":"page","pattern":"^\\/privacy-policy\\/?$","segments":[[{"content":"privacy-policy","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/privacy-policy.astro","pathname":"/privacy-policy","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/product","isIndex":false,"type":"page","pattern":"^\\/product\\/?$","segments":[[{"content":"product","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/product.astro","pathname":"/product","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/solutions","isIndex":false,"type":"page","pattern":"^\\/solutions\\/?$","segments":[[{"content":"solutions","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/solutions.astro","pathname":"/solutions","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/terms-of-use","isIndex":false,"type":"page","pattern":"^\\/terms-of-use\\/?$","segments":[[{"content":"terms-of-use","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/terms-of-use.astro","pathname":"/terms-of-use","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/tutorials","isIndex":true,"type":"page","pattern":"^\\/tutorials\\/?$","segments":[[{"content":"tutorials","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/tutorials/index.astro","pathname":"/tutorials","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/","isIndex":true,"type":"page","pattern":"^\\/$","segments":[],"params":[],"component":"src/pages/index.astro","pathname":"/","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}}],"serverLike":true,"middlewareMode":"classic","site":"https://turnapp.ferreiraric.com","base":"/","trailingSlash":"ignore","compressHTML":true,"experimentalQueuedRendering":{"enabled":false,"poolSize":0,"contentCache":false},"componentMetadata":[["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/404.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/about-us.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/blog/[slug].astro",{"propagation":"in-tree","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/blog/index.astro",{"propagation":"in-tree","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/book-demo.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/careers.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/case-studies/index.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/cookie-policy.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/documentation.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/documentation/api-reference.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/documentation/index.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/endesarrollo.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/index.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/login.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/pricing.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/privacy-policy.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/product.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/solutions.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/terms-of-use.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/tutorials/index.astro",{"propagation":"none","containsHead":true}],["\u0000astro:content",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:page:src/pages/blog/[slug]@_@astro",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:pages",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:manifest",{"propagation":"in-tree","containsHead":false}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/node_modules/astro/dist/entrypoints/prerender.js",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:page:src/pages/blog/index@_@astro",{"propagation":"in-tree","containsHead":false}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/contact.astro",{"propagation":"none","containsHead":true}]],"renderers":[],"clientDirectives":[["idle","(()=>{var l=(n,t)=>{let i=async()=>{await(await n())()},e=typeof t.value==\"object\"?t.value:void 0,s={timeout:e==null?void 0:e.timeout};\"requestIdleCallback\"in window?window.requestIdleCallback(i,s):setTimeout(i,s.timeout||200)};(self.Astro||(self.Astro={})).idle=l;window.dispatchEvent(new Event(\"astro:idle\"));})();"],["load","(()=>{var e=async t=>{await(await t())()};(self.Astro||(self.Astro={})).load=e;window.dispatchEvent(new Event(\"astro:load\"));})();"],["media","(()=>{var n=(a,t)=>{let i=async()=>{await(await a())()};if(t.value){let e=matchMedia(t.value);e.matches?i():e.addEventListener(\"change\",i,{once:!0})}};(self.Astro||(self.Astro={})).media=n;window.dispatchEvent(new Event(\"astro:media\"));})();"],["only","(()=>{var e=async t=>{await(await t())()};(self.Astro||(self.Astro={})).only=e;window.dispatchEvent(new Event(\"astro:only\"));})();"],["visible","(()=>{var a=(s,i,o)=>{let r=async()=>{await(await s())()},t=typeof i.value==\"object\"?i.value:void 0,c={rootMargin:t==null?void 0:t.rootMargin},n=new IntersectionObserver(e=>{for(let l of e)if(l.isIntersecting){n.disconnect(),r();break}},c);for(let e of o.children)n.observe(e)};(self.Astro||(self.Astro={})).visible=a;window.dispatchEvent(new Event(\"astro:visible\"));})();"]],"entryModules":{"\u0000virtual:astro:actions/noop-entrypoint":"chunks/noop-entrypoint_BOlrdqWF.mjs","\u0000noop-middleware":"virtual_astro_middleware.mjs","\u0000virtual:astro:session-driver":"chunks/_virtual_astro_session-driver_DYx9Bb3p.mjs","\u0000virtual:astro:server-island-manifest":"chunks/_virtual_astro_server-island-manifest_CQQ1F5PF.mjs","\u0000virtual:astro:page:src/pages/404@_@astro":"chunks/404_CraHraQX.mjs","\u0000virtual:astro:page:src/pages/about-us@_@astro":"chunks/about-us_D6CZU_FI.mjs","\u0000virtual:astro:page:src/pages/blog/[slug]@_@astro":"chunks/_slug__BE2y10-B.mjs","\u0000virtual:astro:page:src/pages/blog/index@_@astro":"chunks/index_BzPolynD.mjs","\u0000virtual:astro:page:src/pages/book-demo@_@astro":"chunks/book-demo_8xOrPVQ9.mjs","\u0000virtual:astro:page:src/pages/careers@_@astro":"chunks/careers_B1g5_bPk.mjs","\u0000virtual:astro:page:src/pages/case-studies/index@_@astro":"chunks/index_BRRa2_1p.mjs","\u0000virtual:astro:page:src/pages/cookie-policy@_@astro":"chunks/cookie-policy_DlddE3i2.mjs","\u0000virtual:astro:page:src/pages/documentation/api-reference@_@astro":"chunks/api-reference_CMpmt32h.mjs","\u0000virtual:astro:page:src/pages/documentation/index@_@astro":"chunks/index_DYw1JDUc.mjs","\u0000virtual:astro:page:src/pages/documentation@_@astro":"chunks/documentation_pi7phRzS.mjs","\u0000virtual:astro:page:src/pages/endesarrollo@_@astro":"chunks/endesarrollo_Bc_EEZ3W.mjs","\u0000virtual:astro:page:src/pages/login@_@astro":"chunks/login_CiE_FkjO.mjs","\u0000virtual:astro:page:src/pages/pricing@_@astro":"chunks/pricing_CjXoGfRI.mjs","\u0000virtual:astro:page:src/pages/privacy-policy@_@astro":"chunks/privacy-policy_EYHmTUFE.mjs","\u0000virtual:astro:page:src/pages/product@_@astro":"chunks/product_BIKN_sDL.mjs","\u0000virtual:astro:page:src/pages/solutions@_@astro":"chunks/solutions_DJpqfCvS.mjs","\u0000virtual:astro:page:src/pages/terms-of-use@_@astro":"chunks/terms-of-use_D_-wttuD.mjs","\u0000virtual:astro:page:src/pages/tutorials/index@_@astro":"chunks/index_Cy-Z85YH.mjs","\u0000virtual:astro:page:src/pages/index@_@astro":"chunks/index_DwavhDl1.mjs","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/node_modules/astro/dist/assets/services/sharp.js":"chunks/sharp_C_sjopUH.mjs","C:\\Users\\Ferreira_x2\\Desktop\\dev\\turnapp-web-page\\.astro\\content-assets.mjs":"chunks/content-assets_DloNRoa4.mjs","\u0000astro:data-layer-content":"chunks/_astro_data-layer-content_V2dGt0hc.mjs","astro/entrypoints/prerender":"prerender-entry.EgUfojch.mjs","@astrojs/vercel/entrypoint":"entry.mjs","\u0000virtual:astro:page:node_modules/astro/dist/assets/endpoint/generic@_@js":"chunks/generic_C_EiF3R8.mjs","\u0000virtual:astro:page:src/pages/contact@_@astro":"chunks/contact_MUVIAWxS.mjs","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/node_modules/astro/components/ClientRouter.astro?astro&type=script&index=0&lang.ts":"_astro/ClientRouter.astro_astro_type_script_index_0_lang.DQAK6ZHT.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/Features.astro?astro&type=script&index=0&lang.ts":"_astro/Features.astro_astro_type_script_index_0_lang.Cj-dhqA4.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/Header.astro?astro&type=script&index=0&lang.ts":"_astro/Header.astro_astro_type_script_index_0_lang.C34phMF9.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/Hero.astro?astro&type=script&index=0&lang.ts":"_astro/Hero.astro_astro_type_script_index_0_lang.DOoUef6z.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/SocialProof.astro?astro&type=script&index=0&lang.ts":"_astro/SocialProof.astro_astro_type_script_index_0_lang.BMNpwfG1.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/layouts/Layout.astro?astro&type=script&index=0&lang.ts":"_astro/Layout.astro_astro_type_script_index_0_lang.BAQDUpRY.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/blog/[slug].astro?astro&type=script&index=0&lang.ts":"_astro/_slug_.astro_astro_type_script_index_0_lang.xLGdccrv.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/book-demo.astro?astro&type=script&index=0&lang.ts":"_astro/book-demo.astro_astro_type_script_index_0_lang.BSNAhYHB.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/contact.astro?astro&type=script&index=0&lang.ts":"_astro/contact.astro_astro_type_script_index_0_lang.BKWyVA67.js","astro:scripts/page.js":"_astro/page.BOdB6yKo.js","astro:scripts/before-hydration.js":""},"inlinedScripts":[["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/Header.astro?astro&type=script&index=0&lang.ts","document.addEventListener(\"astro:page-load\",()=>{const e=document.getElementById(\"menu-toggle\"),t=document.getElementById(\"mobile-menu\");e&&t&&e.addEventListener(\"click\",()=>{const n=e.getAttribute(\"aria-expanded\")===\"true\";e.setAttribute(\"aria-expanded\",String(!n)),e.classList.toggle(\"menu-open\"),t.classList.toggle(\"mobile-menu-open\")})});"],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/Hero.astro?astro&type=script&index=0&lang.ts","const m=()=>{const l=document.querySelector(\".image-gallery\");if(!l)return()=>{};const r=l.querySelectorAll(\".gallery-item\");let n=0,o=null;const a=()=>{const e=r[n];e.style.opacity=\"0\",e.setAttribute(\"data-active\",\"false\");const t=e.querySelector(\"video\");t&&(t.pause(),t.currentTime=0),n=(n+1)%r.length;const s=r[n];s.style.opacity=\"1\",s.setAttribute(\"data-active\",\"true\");const d=s.querySelector(\"video\");d&&(d.currentTime=0,d.play().catch(i=>console.error(\"Error video:\",i)));const u=s.getAttribute(\"data-duration\"),v=u?parseInt(u):5e3;o=setTimeout(a,v),l.querySelectorAll(\".gallery-dot\").forEach((i,g)=>{g===n?(i.classList.add(\"bg-white\",\"w-8\"),i.classList.remove(\"bg-white/40\",\"w-2\")):(i.classList.remove(\"bg-white\",\"w-8\"),i.classList.add(\"bg-white/40\",\"w-2\"))})},y=()=>{o&&clearTimeout(o);const e=r[0].getAttribute(\"data-duration\"),t=e?parseInt(e):35e3;o=setTimeout(a,t)},c=r[0].querySelector(\"video\");return c&&(c.addEventListener(\"ended\",()=>a()),c.addEventListener(\"error\",()=>{console.warn(\"Error cargando el video, continuando con imágenes...\"),setTimeout(a,35e3)}),c.play().catch(e=>console.error(\"Error al reproducir el video inicial:\",e))),y(),()=>{o&&clearTimeout(o),r.forEach(e=>{const t=e.querySelector(\"video\");t&&(t.pause(),t.currentTime=0)})}};document.addEventListener(\"DOMContentLoaded\",()=>{m()});document.addEventListener(\"astro:after-swap\",()=>{m()});"],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/SocialProof.astro?astro&type=script&index=0&lang.ts","const i=[{location:\"Clínica San Juan\",detail:\"Redujo el tiempo de espera de sus pacientes en un 45% usando las filas inteligentes de TurnApp.\",time:\"Este mes\"},{location:\"Banco Nacional\",detail:\"Aumentó la satisfacción del cliente al 98% implementando emisión de turnos por QR.\",time:\"Reciente\"},{location:\"Centro de Servicios\",detail:\"Procesó 500+ turnos diarios sin aglomeraciones gracias a las pantallas HUB.\",time:\"Hace 2 meses\"},{location:\"Hospital Central\",detail:\"Organizó 4 departamentos médicos con un flujo de atención unificado y transparente.\",time:\"Este trimestre\"},{location:\"Agencia de Envíos\",detail:\"Optimizó la estación de sus 12 agentes, reduciendo el tiempo por transacción a la mitad.\",time:\"Este año\"}];let n=0,c=!1;function l(){if(c)return;const t=document.getElementById(\"social-proof-toast\"),e=document.getElementById(\"sp-location\"),s=document.getElementById(\"sp-detail\"),o=document.getElementById(\"sp-time\");if(!t||!e||!s||!o)return;const a=i[n];e.textContent=`Éxito: ${a.location}`,s.textContent=a.detail,o.textContent=a.time,t.classList.remove(\"translate-y-20\",\"opacity-0\"),t.classList.add(\"translate-y-0\",\"opacity-100\"),setTimeout(()=>{t.classList.add(\"translate-y-20\",\"opacity-0\"),t.classList.remove(\"translate-y-0\",\"opacity-100\"),n=(n+1)%i.length},8e3)}document.addEventListener(\"DOMContentLoaded\",()=>{const t=document.getElementById(\"sp-close\");t&&t.addEventListener(\"click\",()=>{c=!0;const e=document.getElementById(\"social-proof-toast\");e&&(e.classList.add(\"translate-y-20\",\"opacity-0\"),e.classList.remove(\"translate-y-0\",\"opacity-100\"))}),setTimeout(()=>{l(),setInterval(l,35e3)},6e3)});"],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/blog/[slug].astro?astro&type=script&index=0&lang.ts","document.addEventListener(\"astro:page-load\",()=>{const r=document.getElementById(\"reading-progress\"),c=document.querySelector(\"article\");if(r&&c){const t=()=>{const e=window.scrollY,o=c.clientHeight-window.innerHeight,i=Math.min(100,Math.max(0,e/o*100));r.style.width=`${i}%`,r.setAttribute(\"aria-valuenow\",i.toString())};window.addEventListener(\"scroll\",t,{passive:!0}),t()}const s=document.getElementById(\"copy-link\"),a=document.getElementById(\"copy-link-mobile\"),l=window.location.href;[s,a].forEach(t=>{t&&t.addEventListener(\"click\",async()=>{try{await navigator.clipboard.writeText(l);const e=t.querySelector(\"span\"),o=t.querySelector(\"svg\"),i=e?.textContent||\"Copy Link\";if(o&&(o.style.color=\"#7928CA\"),e){e.textContent=\"Copied!\";const n=document.createElement(\"div\");n.setAttribute(\"aria-live\",\"polite\"),n.setAttribute(\"aria-atomic\",\"true\"),n.className=\"sr-only\",n.textContent=\"Link copied to clipboard\",document.body.appendChild(n),setTimeout(()=>{e.textContent=i,o&&(o.style.color=\"\"),document.body.removeChild(n)},2e3)}}catch(e){console.error(\"Failed to copy URL:\",e)}})})});"],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/book-demo.astro?astro&type=script&index=0&lang.ts","const g=()=>{const l=document.getElementById(\"demo-form\");if(!l)return;const p=document.querySelectorAll(\".step-content\"),f=document.querySelectorAll(\"#progress-steps > div\"),c=document.getElementById(\"prev-step\"),a=document.getElementById(\"next-step\"),u=document.getElementById(\"submit-form\");let e=1;function d(){p.forEach((o,n)=>{o.classList.toggle(\"hidden\",n+1!==e)}),f.forEach((o,n)=>{const t=o.querySelector(\".step-circle\");if(t){const s=n+1<=e;o.classList.toggle(\"bg-payflo-purple/5\",s),s?(t.classList.add(\"bg-payflo-purple\",\"text-white\"),t.classList.remove(\"bg-gray-200\",\"text-gray-600\")):(t.classList.add(\"bg-gray-200\",\"text-gray-600\"),t.classList.remove(\"bg-payflo-purple\",\"text-white\"))}}),c&&(c.style.display=e===1?\"none\":\"block\"),a&&(a.style.display=e===2?\"none\":\"block\"),u&&(u.style.display=e===2?\"block\":\"none\")}function m(o){if(o===1){const n=document.getElementById(\"company\")?.value,t=document.getElementById(\"company-size\")?.value,s=document.getElementById(\"industry\")?.value;if(!n||!t||!s){const i=[];return n||i.push(\"Nombre de la Institución\"),t||i.push(\"Tamaño de la Institución\"),s||i.push(\"Tipo de Institución\"),alert(`Por favor complete los siguientes campos obligatorios:\n${i.join(`\n`)}`),!1}return!0}if(o===2){const n=document.getElementById(\"first-name\")?.value,t=document.getElementById(\"last-name\")?.value,s=document.getElementById(\"work-email\")?.value,i=document.getElementById(\"job-title\")?.value;if(!n||!t||!s||!i){const r=[];return n||r.push(\"Nombre\"),t||r.push(\"Apellido\"),s||r.push(\"Correo Electrónico Laboral\"),i||r.push(\"Cargo\"),alert(`Por favor complete los siguientes campos obligatorios:\n${r.join(`\n`)}`),!1}return/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(s)?!0:(alert(\"Por favor ingrese una dirección de correo electrónico válida\"),!1)}return!0}c&&c.addEventListener(\"click\",()=>{e>1&&(e--,d(),window.scrollTo({top:0,behavior:\"smooth\"}))}),a&&a.addEventListener(\"click\",()=>{m(e)&&(e++,d(),window.scrollTo({top:0,behavior:\"smooth\"}))}),l&&l.addEventListener(\"submit\",o=>{o.preventDefault(),m(e)&&(alert(\"¡Gracias por solicitar una demostración! Nos pondremos en contacto contigo pronto.\"),l.reset(),e=1,d(),window.scrollTo({top:0,behavior:\"smooth\"}))}),d()};document.addEventListener(\"DOMContentLoaded\",g);"],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/contact.astro?astro&type=script&index=0&lang.ts","const e=document.querySelector(\"form\"),t=document.getElementById(\"submit-btn\");e&&t&&e.addEventListener(\"submit\",s=>{t.classList.add(\"btn-loading\"),t.setAttribute(\"disabled\",\"true\"),t.classList.add(\"opacity-80\",\"cursor-not-allowed\")});"]],"assets":["/favicon.svg","/grid-pattern.svg","/partner-logo-1.svg","/partner-logo-2.svg","/partner-logo-3.svg","/partner-logo-4.svg","/partner-logo-5.svg","/partner-logo-6.svg","/testimonial-avatar-1.jpg","/testimonial-avatar-2.jpg","/testimonial-avatar-3.jpg","/turnapp-promo-2.mp4","/avatars/female-avatar.png","/avatars/male-avatar.png","/blog/building-payroll.jpg","/blog/compliance.jpg","/blog/future-payroll.jpg","/blog/introducing-payflo.jpg","/_astro/ClientRouter.astro_astro_type_script_index_0_lang.DQAK6ZHT.js","/_astro/Features.astro_astro_type_script_index_0_lang.Cj-dhqA4.js","/_astro/index.B0NqHVf_.js","/_astro/Layout.astro_astro_type_script_index_0_lang.BAQDUpRY.js","/_astro/page.BOdB6yKo.js","/_astro/ft1.ky6eWvY0.webp","/_astro/ft3.QqNdIg_A.webp","/_astro/ft2.DzQzUEfW.webp","/_astro/ft4.pMkNw8Bc.webp","/_astro/ft5.mDAns9ax.webp","/_astro/ft6.BxTWgsUL.webp","/_astro/team-photo.CbtWTGVv.jpg","/_astro/present_sin_slogan.DNOz9wRE.png","/_astro/m2.bvHbhU1V.png","/_astro/m3.BiAObFqx.png","/_astro/m4.E1SnpbV_.png","/_astro/m5.pzDR1MXo.png","/_astro/m1.26pEMezb.png","/_astro/m6.DxZySiuK.png","/_astro/logo-wide-transparent.Bk_t4l8r.png","/_astro/favicon.cN_Yg_zq.svg","/_astro/Layout.FnTcTuJU.css","/_astro/contact.DHZaXq33.css","/_astro/page.BOdB6yKo.js","/404.html","/about-us/index.html","/blog/index.html","/book-demo/index.html","/careers/index.html","/case-studies/index.html","/cookie-policy/index.html","/documentation/api-reference/index.html","/documentation/index.html","/documentation/index.html","/endesarrollo/index.html","/login/index.html","/pricing/index.html","/privacy-policy/index.html","/product/index.html","/solutions/index.html","/terms-of-use/index.html","/tutorials/index.html","/index.html"],"buildFormat":"directory","checkOrigin":true,"actionBodySizeLimit":1048576,"serverIslandBodySizeLimit":1048576,"allowedDomains":[],"key":"wtwLzRDVUmaqRhGqCFtUpULV5iaNByDAPDIOR3cEo2c=","image":{},"devToolbar":{"enabled":false,"debugInfoOutput":""},"logLevel":"info","shouldInjectCspMetaTags":false}));
+const _manifest = deserializeManifest(({"rootDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/","cacheDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/node_modules/.astro/","outDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/build/","srcDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/","publicDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/public/","buildClientDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/build/client/","buildServerDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/build/server/","adapterName":"@astrojs/vercel","assetsDir":"_astro","routes":[{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"type":"page","component":"_server-islands.astro","params":["name"],"segments":[[{"content":"_server-islands","dynamic":false,"spread":false}],[{"content":"name","dynamic":true,"spread":false}]],"pattern":"^\\/_server-islands\\/([^/]+?)\\/?$","prerender":false,"isIndex":false,"fallbackRoutes":[],"route":"/_server-islands/[name]","origin":"internal","distURL":[],"_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/_image","component":"node_modules/astro/dist/assets/endpoint/generic.js","params":[],"pathname":"/_image","pattern":"^\\/_image\\/?$","segments":[[{"content":"_image","dynamic":false,"spread":false}]],"type":"endpoint","prerender":false,"fallbackRoutes":[],"distURL":[],"isIndex":false,"origin":"internal","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/404","isIndex":false,"type":"page","pattern":"^\\/404\\/?$","segments":[[{"content":"404","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/404.astro","pathname":"/404","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/about-us","isIndex":false,"type":"page","pattern":"^\\/about-us\\/?$","segments":[[{"content":"about-us","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/about-us.astro","pathname":"/about-us","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/blog/[slug]","isIndex":false,"type":"page","pattern":"^\\/blog\\/([^/]+?)\\/?$","segments":[[{"content":"blog","dynamic":false,"spread":false}],[{"content":"slug","dynamic":true,"spread":false}]],"params":["slug"],"component":"src/pages/blog/[slug].astro","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/blog","isIndex":true,"type":"page","pattern":"^\\/blog\\/?$","segments":[[{"content":"blog","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/blog/index.astro","pathname":"/blog","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/book-demo","isIndex":false,"type":"page","pattern":"^\\/book-demo\\/?$","segments":[[{"content":"book-demo","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/book-demo.astro","pathname":"/book-demo","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/careers","isIndex":false,"type":"page","pattern":"^\\/careers\\/?$","segments":[[{"content":"careers","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/careers.astro","pathname":"/careers","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/case-studies","isIndex":true,"type":"page","pattern":"^\\/case-studies\\/?$","segments":[[{"content":"case-studies","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/case-studies/index.astro","pathname":"/case-studies","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[{"type":"external","src":"_astro/contact.DHZaXq33.css"}],"routeData":{"route":"/contact","isIndex":false,"type":"page","pattern":"^\\/contact\\/?$","segments":[[{"content":"contact","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/contact.astro","pathname":"/contact","prerender":false,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/cookie-policy","isIndex":false,"type":"page","pattern":"^\\/cookie-policy\\/?$","segments":[[{"content":"cookie-policy","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/cookie-policy.astro","pathname":"/cookie-policy","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/documentation/api-reference","isIndex":false,"type":"page","pattern":"^\\/documentation\\/api-reference\\/?$","segments":[[{"content":"documentation","dynamic":false,"spread":false}],[{"content":"api-reference","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/documentation/api-reference.astro","pathname":"/documentation/api-reference","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/documentation","isIndex":true,"type":"page","pattern":"^\\/documentation\\/?$","segments":[[{"content":"documentation","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/documentation/index.astro","pathname":"/documentation","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/documentation","isIndex":false,"type":"page","pattern":"^\\/documentation\\/?$","segments":[[{"content":"documentation","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/documentation.astro","pathname":"/documentation","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/endesarrollo","isIndex":false,"type":"page","pattern":"^\\/endesarrollo\\/?$","segments":[[{"content":"endesarrollo","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/endesarrollo.astro","pathname":"/endesarrollo","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/login","isIndex":false,"type":"page","pattern":"^\\/login\\/?$","segments":[[{"content":"login","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/login.astro","pathname":"/login","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/pricing","isIndex":false,"type":"page","pattern":"^\\/pricing\\/?$","segments":[[{"content":"pricing","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/pricing.astro","pathname":"/pricing","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/privacy-policy","isIndex":false,"type":"page","pattern":"^\\/privacy-policy\\/?$","segments":[[{"content":"privacy-policy","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/privacy-policy.astro","pathname":"/privacy-policy","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/product","isIndex":false,"type":"page","pattern":"^\\/product\\/?$","segments":[[{"content":"product","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/product.astro","pathname":"/product","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/solutions","isIndex":false,"type":"page","pattern":"^\\/solutions\\/?$","segments":[[{"content":"solutions","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/solutions.astro","pathname":"/solutions","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/terms-of-use","isIndex":false,"type":"page","pattern":"^\\/terms-of-use\\/?$","segments":[[{"content":"terms-of-use","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/terms-of-use.astro","pathname":"/terms-of-use","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/tutorials","isIndex":true,"type":"page","pattern":"^\\/tutorials\\/?$","segments":[[{"content":"tutorials","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/tutorials/index.astro","pathname":"/tutorials","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/","isIndex":true,"type":"page","pattern":"^\\/$","segments":[],"params":[],"component":"src/pages/index.astro","pathname":"/","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}}],"serverLike":true,"middlewareMode":"classic","site":"https://turnapp.ferreiraric.com","base":"/","trailingSlash":"ignore","compressHTML":true,"experimentalQueuedRendering":{"enabled":false,"poolSize":0,"contentCache":false},"componentMetadata":[["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/404.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/about-us.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/blog/[slug].astro",{"propagation":"in-tree","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/blog/index.astro",{"propagation":"in-tree","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/book-demo.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/careers.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/case-studies/index.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/cookie-policy.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/documentation.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/documentation/api-reference.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/documentation/index.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/endesarrollo.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/index.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/login.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/pricing.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/privacy-policy.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/product.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/solutions.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/terms-of-use.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/tutorials/index.astro",{"propagation":"none","containsHead":true}],["\u0000astro:content",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:page:src/pages/blog/[slug]@_@astro",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:pages",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:manifest",{"propagation":"in-tree","containsHead":false}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/node_modules/astro/dist/entrypoints/prerender.js",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:page:src/pages/blog/index@_@astro",{"propagation":"in-tree","containsHead":false}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/contact.astro",{"propagation":"none","containsHead":true}]],"renderers":[],"clientDirectives":[["idle","(()=>{var l=(n,t)=>{let i=async()=>{await(await n())()},e=typeof t.value==\"object\"?t.value:void 0,s={timeout:e==null?void 0:e.timeout};\"requestIdleCallback\"in window?window.requestIdleCallback(i,s):setTimeout(i,s.timeout||200)};(self.Astro||(self.Astro={})).idle=l;window.dispatchEvent(new Event(\"astro:idle\"));})();"],["load","(()=>{var e=async t=>{await(await t())()};(self.Astro||(self.Astro={})).load=e;window.dispatchEvent(new Event(\"astro:load\"));})();"],["media","(()=>{var n=(a,t)=>{let i=async()=>{await(await a())()};if(t.value){let e=matchMedia(t.value);e.matches?i():e.addEventListener(\"change\",i,{once:!0})}};(self.Astro||(self.Astro={})).media=n;window.dispatchEvent(new Event(\"astro:media\"));})();"],["only","(()=>{var e=async t=>{await(await t())()};(self.Astro||(self.Astro={})).only=e;window.dispatchEvent(new Event(\"astro:only\"));})();"],["visible","(()=>{var a=(s,i,o)=>{let r=async()=>{await(await s())()},t=typeof i.value==\"object\"?i.value:void 0,c={rootMargin:t==null?void 0:t.rootMargin},n=new IntersectionObserver(e=>{for(let l of e)if(l.isIntersecting){n.disconnect(),r();break}},c);for(let e of o.children)n.observe(e)};(self.Astro||(self.Astro={})).visible=a;window.dispatchEvent(new Event(\"astro:visible\"));})();"]],"entryModules":{"\u0000virtual:astro:actions/noop-entrypoint":"chunks/noop-entrypoint_BOlrdqWF.mjs","\u0000noop-middleware":"virtual_astro_middleware.mjs","\u0000virtual:astro:session-driver":"chunks/_virtual_astro_session-driver_DYx9Bb3p.mjs","\u0000virtual:astro:server-island-manifest":"chunks/_virtual_astro_server-island-manifest_CQQ1F5PF.mjs","\u0000virtual:astro:page:src/pages/404@_@astro":"chunks/404_YnVcpWGv.mjs","\u0000virtual:astro:page:src/pages/about-us@_@astro":"chunks/about-us_DvS3a28q.mjs","\u0000virtual:astro:page:src/pages/blog/[slug]@_@astro":"chunks/_slug__BJ6wcCOw.mjs","\u0000virtual:astro:page:src/pages/blog/index@_@astro":"chunks/index_CxuZYUit.mjs","\u0000virtual:astro:page:src/pages/book-demo@_@astro":"chunks/book-demo_BxeuXgM8.mjs","\u0000virtual:astro:page:src/pages/careers@_@astro":"chunks/careers_2bbxQxn6.mjs","\u0000virtual:astro:page:src/pages/case-studies/index@_@astro":"chunks/index_DRaNgz50.mjs","\u0000virtual:astro:page:src/pages/cookie-policy@_@astro":"chunks/cookie-policy_BJLovt_-.mjs","\u0000virtual:astro:page:src/pages/documentation/api-reference@_@astro":"chunks/api-reference_DXL16Fsq.mjs","\u0000virtual:astro:page:src/pages/documentation/index@_@astro":"chunks/index_BCOiJSJt.mjs","\u0000virtual:astro:page:src/pages/documentation@_@astro":"chunks/documentation_7Wb5bR3H.mjs","\u0000virtual:astro:page:src/pages/endesarrollo@_@astro":"chunks/endesarrollo_CmmJFCQm.mjs","\u0000virtual:astro:page:src/pages/login@_@astro":"chunks/login_Bnxqmg67.mjs","\u0000virtual:astro:page:src/pages/pricing@_@astro":"chunks/pricing_CZNqY5zN.mjs","\u0000virtual:astro:page:src/pages/privacy-policy@_@astro":"chunks/privacy-policy_DQQ8b3IA.mjs","\u0000virtual:astro:page:src/pages/product@_@astro":"chunks/product_1LvlDvfi.mjs","\u0000virtual:astro:page:src/pages/solutions@_@astro":"chunks/solutions_JWpwu_YN.mjs","\u0000virtual:astro:page:src/pages/terms-of-use@_@astro":"chunks/terms-of-use_BF3d5lSR.mjs","\u0000virtual:astro:page:src/pages/tutorials/index@_@astro":"chunks/index_DUCq4J8W.mjs","\u0000virtual:astro:page:src/pages/index@_@astro":"chunks/index_BvzjpMtV.mjs","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/node_modules/astro/dist/assets/services/sharp.js":"chunks/sharp_C0lFVLHM.mjs","C:\\Users\\Ferreira_x2\\Desktop\\dev\\turnapp-web-page\\.astro\\content-assets.mjs":"chunks/content-assets_DleWbedO.mjs","\u0000astro:data-layer-content":"chunks/_astro_data-layer-content_V2dGt0hc.mjs","astro/entrypoints/prerender":"prerender-entry.CCrNFC6d.mjs","@astrojs/vercel/entrypoint":"entry.mjs","\u0000virtual:astro:page:node_modules/astro/dist/assets/endpoint/generic@_@js":"chunks/generic_wrJP7Z3I.mjs","\u0000virtual:astro:page:src/pages/contact@_@astro":"chunks/contact_BKyIQmfq.mjs","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/node_modules/astro/components/ClientRouter.astro?astro&type=script&index=0&lang.ts":"_astro/ClientRouter.astro_astro_type_script_index_0_lang.DQAK6ZHT.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/Features.astro?astro&type=script&index=0&lang.ts":"_astro/Features.astro_astro_type_script_index_0_lang.Cj-dhqA4.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/Header.astro?astro&type=script&index=0&lang.ts":"_astro/Header.astro_astro_type_script_index_0_lang.C34phMF9.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/Hero.astro?astro&type=script&index=0&lang.ts":"_astro/Hero.astro_astro_type_script_index_0_lang.DOoUef6z.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/SocialProof.astro?astro&type=script&index=0&lang.ts":"_astro/SocialProof.astro_astro_type_script_index_0_lang.BMNpwfG1.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/layouts/Layout.astro?astro&type=script&index=0&lang.ts":"_astro/Layout.astro_astro_type_script_index_0_lang.BAQDUpRY.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/blog/[slug].astro?astro&type=script&index=0&lang.ts":"_astro/_slug_.astro_astro_type_script_index_0_lang.xLGdccrv.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/book-demo.astro?astro&type=script&index=0&lang.ts":"_astro/book-demo.astro_astro_type_script_index_0_lang.BSNAhYHB.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/contact.astro?astro&type=script&index=0&lang.ts":"_astro/contact.astro_astro_type_script_index_0_lang.BKWyVA67.js","astro:scripts/page.js":"_astro/page.BOdB6yKo.js","astro:scripts/before-hydration.js":""},"inlinedScripts":[["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/Header.astro?astro&type=script&index=0&lang.ts","document.addEventListener(\"astro:page-load\",()=>{const e=document.getElementById(\"menu-toggle\"),t=document.getElementById(\"mobile-menu\");e&&t&&e.addEventListener(\"click\",()=>{const n=e.getAttribute(\"aria-expanded\")===\"true\";e.setAttribute(\"aria-expanded\",String(!n)),e.classList.toggle(\"menu-open\"),t.classList.toggle(\"mobile-menu-open\")})});"],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/Hero.astro?astro&type=script&index=0&lang.ts","const m=()=>{const l=document.querySelector(\".image-gallery\");if(!l)return()=>{};const r=l.querySelectorAll(\".gallery-item\");let n=0,o=null;const a=()=>{const e=r[n];e.style.opacity=\"0\",e.setAttribute(\"data-active\",\"false\");const t=e.querySelector(\"video\");t&&(t.pause(),t.currentTime=0),n=(n+1)%r.length;const s=r[n];s.style.opacity=\"1\",s.setAttribute(\"data-active\",\"true\");const d=s.querySelector(\"video\");d&&(d.currentTime=0,d.play().catch(i=>console.error(\"Error video:\",i)));const u=s.getAttribute(\"data-duration\"),v=u?parseInt(u):5e3;o=setTimeout(a,v),l.querySelectorAll(\".gallery-dot\").forEach((i,g)=>{g===n?(i.classList.add(\"bg-white\",\"w-8\"),i.classList.remove(\"bg-white/40\",\"w-2\")):(i.classList.remove(\"bg-white\",\"w-8\"),i.classList.add(\"bg-white/40\",\"w-2\"))})},y=()=>{o&&clearTimeout(o);const e=r[0].getAttribute(\"data-duration\"),t=e?parseInt(e):35e3;o=setTimeout(a,t)},c=r[0].querySelector(\"video\");return c&&(c.addEventListener(\"ended\",()=>a()),c.addEventListener(\"error\",()=>{console.warn(\"Error cargando el video, continuando con imágenes...\"),setTimeout(a,35e3)}),c.play().catch(e=>console.error(\"Error al reproducir el video inicial:\",e))),y(),()=>{o&&clearTimeout(o),r.forEach(e=>{const t=e.querySelector(\"video\");t&&(t.pause(),t.currentTime=0)})}};document.addEventListener(\"DOMContentLoaded\",()=>{m()});document.addEventListener(\"astro:after-swap\",()=>{m()});"],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/SocialProof.astro?astro&type=script&index=0&lang.ts","const i=[{location:\"Clínica San Juan\",detail:\"Redujo el tiempo de espera de sus pacientes en un 45% usando las filas inteligentes de TurnApp.\",time:\"Este mes\"},{location:\"Banco Nacional\",detail:\"Aumentó la satisfacción del cliente al 98% implementando emisión de turnos por QR.\",time:\"Reciente\"},{location:\"Centro de Servicios\",detail:\"Procesó 500+ turnos diarios sin aglomeraciones gracias a las pantallas HUB.\",time:\"Hace 2 meses\"},{location:\"Hospital Central\",detail:\"Organizó 4 departamentos médicos con un flujo de atención unificado y transparente.\",time:\"Este trimestre\"},{location:\"Agencia de Envíos\",detail:\"Optimizó la estación de sus 12 agentes, reduciendo el tiempo por transacción a la mitad.\",time:\"Este año\"}];let n=0,c=!1;function l(){if(c)return;const t=document.getElementById(\"social-proof-toast\"),e=document.getElementById(\"sp-location\"),s=document.getElementById(\"sp-detail\"),o=document.getElementById(\"sp-time\");if(!t||!e||!s||!o)return;const a=i[n];e.textContent=`Éxito: ${a.location}`,s.textContent=a.detail,o.textContent=a.time,t.classList.remove(\"translate-y-20\",\"opacity-0\"),t.classList.add(\"translate-y-0\",\"opacity-100\"),setTimeout(()=>{t.classList.add(\"translate-y-20\",\"opacity-0\"),t.classList.remove(\"translate-y-0\",\"opacity-100\"),n=(n+1)%i.length},8e3)}document.addEventListener(\"DOMContentLoaded\",()=>{const t=document.getElementById(\"sp-close\");t&&t.addEventListener(\"click\",()=>{c=!0;const e=document.getElementById(\"social-proof-toast\");e&&(e.classList.add(\"translate-y-20\",\"opacity-0\"),e.classList.remove(\"translate-y-0\",\"opacity-100\"))}),setTimeout(()=>{l(),setInterval(l,35e3)},6e3)});"],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/blog/[slug].astro?astro&type=script&index=0&lang.ts","document.addEventListener(\"astro:page-load\",()=>{const r=document.getElementById(\"reading-progress\"),c=document.querySelector(\"article\");if(r&&c){const t=()=>{const e=window.scrollY,o=c.clientHeight-window.innerHeight,i=Math.min(100,Math.max(0,e/o*100));r.style.width=`${i}%`,r.setAttribute(\"aria-valuenow\",i.toString())};window.addEventListener(\"scroll\",t,{passive:!0}),t()}const s=document.getElementById(\"copy-link\"),a=document.getElementById(\"copy-link-mobile\"),l=window.location.href;[s,a].forEach(t=>{t&&t.addEventListener(\"click\",async()=>{try{await navigator.clipboard.writeText(l);const e=t.querySelector(\"span\"),o=t.querySelector(\"svg\"),i=e?.textContent||\"Copy Link\";if(o&&(o.style.color=\"#7928CA\"),e){e.textContent=\"Copied!\";const n=document.createElement(\"div\");n.setAttribute(\"aria-live\",\"polite\"),n.setAttribute(\"aria-atomic\",\"true\"),n.className=\"sr-only\",n.textContent=\"Link copied to clipboard\",document.body.appendChild(n),setTimeout(()=>{e.textContent=i,o&&(o.style.color=\"\"),document.body.removeChild(n)},2e3)}}catch(e){console.error(\"Failed to copy URL:\",e)}})})});"],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/book-demo.astro?astro&type=script&index=0&lang.ts","const g=()=>{const l=document.getElementById(\"demo-form\");if(!l)return;const p=document.querySelectorAll(\".step-content\"),f=document.querySelectorAll(\"#progress-steps > div\"),c=document.getElementById(\"prev-step\"),a=document.getElementById(\"next-step\"),u=document.getElementById(\"submit-form\");let e=1;function d(){p.forEach((o,n)=>{o.classList.toggle(\"hidden\",n+1!==e)}),f.forEach((o,n)=>{const t=o.querySelector(\".step-circle\");if(t){const s=n+1<=e;o.classList.toggle(\"bg-payflo-purple/5\",s),s?(t.classList.add(\"bg-payflo-purple\",\"text-white\"),t.classList.remove(\"bg-gray-200\",\"text-gray-600\")):(t.classList.add(\"bg-gray-200\",\"text-gray-600\"),t.classList.remove(\"bg-payflo-purple\",\"text-white\"))}}),c&&(c.style.display=e===1?\"none\":\"block\"),a&&(a.style.display=e===2?\"none\":\"block\"),u&&(u.style.display=e===2?\"block\":\"none\")}function m(o){if(o===1){const n=document.getElementById(\"company\")?.value,t=document.getElementById(\"company-size\")?.value,s=document.getElementById(\"industry\")?.value;if(!n||!t||!s){const i=[];return n||i.push(\"Nombre de la Institución\"),t||i.push(\"Tamaño de la Institución\"),s||i.push(\"Tipo de Institución\"),alert(`Por favor complete los siguientes campos obligatorios:\n${i.join(`\n`)}`),!1}return!0}if(o===2){const n=document.getElementById(\"first-name\")?.value,t=document.getElementById(\"last-name\")?.value,s=document.getElementById(\"work-email\")?.value,i=document.getElementById(\"job-title\")?.value;if(!n||!t||!s||!i){const r=[];return n||r.push(\"Nombre\"),t||r.push(\"Apellido\"),s||r.push(\"Correo Electrónico Laboral\"),i||r.push(\"Cargo\"),alert(`Por favor complete los siguientes campos obligatorios:\n${r.join(`\n`)}`),!1}return/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(s)?!0:(alert(\"Por favor ingrese una dirección de correo electrónico válida\"),!1)}return!0}c&&c.addEventListener(\"click\",()=>{e>1&&(e--,d(),window.scrollTo({top:0,behavior:\"smooth\"}))}),a&&a.addEventListener(\"click\",()=>{m(e)&&(e++,d(),window.scrollTo({top:0,behavior:\"smooth\"}))}),l&&l.addEventListener(\"submit\",o=>{o.preventDefault(),m(e)&&(alert(\"¡Gracias por solicitar una demostración! Nos pondremos en contacto contigo pronto.\"),l.reset(),e=1,d(),window.scrollTo({top:0,behavior:\"smooth\"}))}),d()};document.addEventListener(\"DOMContentLoaded\",g);"],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/contact.astro?astro&type=script&index=0&lang.ts","const e=document.querySelector(\"form\"),t=document.getElementById(\"submit-btn\");e&&t&&e.addEventListener(\"submit\",s=>{t.classList.add(\"btn-loading\"),t.setAttribute(\"disabled\",\"true\"),t.classList.add(\"opacity-80\",\"cursor-not-allowed\")});"]],"assets":["/favicon.svg","/grid-pattern.svg","/partner-logo-1.svg","/partner-logo-2.svg","/partner-logo-3.svg","/partner-logo-4.svg","/partner-logo-5.svg","/partner-logo-6.svg","/testimonial-avatar-1.jpg","/testimonial-avatar-2.jpg","/testimonial-avatar-3.jpg","/turnapp-promo-2.mp4","/avatars/female-avatar.png","/avatars/male-avatar.png","/blog/building-payroll.jpg","/blog/compliance.jpg","/blog/future-payroll.jpg","/blog/introducing-payflo.jpg","/_astro/ClientRouter.astro_astro_type_script_index_0_lang.DQAK6ZHT.js","/_astro/Features.astro_astro_type_script_index_0_lang.Cj-dhqA4.js","/_astro/index.B0NqHVf_.js","/_astro/Layout.astro_astro_type_script_index_0_lang.BAQDUpRY.js","/_astro/page.BOdB6yKo.js","/_astro/ft1.ky6eWvY0.webp","/_astro/ft2.DzQzUEfW.webp","/_astro/ft3.QqNdIg_A.webp","/_astro/ft4.pMkNw8Bc.webp","/_astro/ft5.mDAns9ax.webp","/_astro/ft6.BxTWgsUL.webp","/_astro/team-photo.CbtWTGVv.jpg","/_astro/present_sin_slogan.DNOz9wRE.png","/_astro/m3.BiAObFqx.png","/_astro/m2.bvHbhU1V.png","/_astro/m4.E1SnpbV_.png","/_astro/m5.pzDR1MXo.png","/_astro/logo-wide-transparent.Bk_t4l8r.png","/_astro/m1.26pEMezb.png","/_astro/favicon.cN_Yg_zq.svg","/_astro/m6.DxZySiuK.png","/_astro/Layout.FnTcTuJU.css","/_astro/contact.DHZaXq33.css","/_astro/page.BOdB6yKo.js","/404.html","/about-us/index.html","/blog/index.html","/book-demo/index.html","/careers/index.html","/case-studies/index.html","/cookie-policy/index.html","/documentation/api-reference/index.html","/documentation/index.html","/documentation/index.html","/endesarrollo/index.html","/login/index.html","/pricing/index.html","/privacy-policy/index.html","/product/index.html","/solutions/index.html","/terms-of-use/index.html","/tutorials/index.html","/index.html"],"buildFormat":"directory","checkOrigin":true,"actionBodySizeLimit":1048576,"serverIslandBodySizeLimit":1048576,"allowedDomains":[],"key":"xz7nKMt0pZ1vsWHlxRDAZPF58+I2gldzafmHxq6F+ro=","image":{},"devToolbar":{"enabled":false,"debugInfoOutput":""},"logLevel":"info","shouldInjectCspMetaTags":false}));
 					const manifestRoutes = _manifest.routes;
 					
 					const manifest = Object.assign(_manifest, {

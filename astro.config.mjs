@@ -13,7 +13,7 @@ export default defineConfig({
 
   vite: {
     ssr: {
-      noExternal: ['@vercel/routing-utils']
+      noExternal: ['@vercel/routing-utils', 'path-to-regexp']
     }
   },
 
