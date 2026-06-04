@@ -17,7 +17,7 @@ const features = [
   {
     title: "Monitoreo en Tiempo Real",
     description:
-      "Dashboard centralizado para visualizar al instante el estado de todas las colas y módulos.",
+      "Dashboard centralizado para visualizar al instante el estado de todas las filas y módulos.",
     icon: "ph:monitor-duotone",
     image: featureImage1,
     spanClasses: "md:col-span-2 md:row-span-2",
@@ -35,7 +35,7 @@ const features = [
   {
     title: "Emisión Multicanal",
     description:
-      "Tickets impresos y turnos QR.",
+      "Emisión mediante Kiosko e interfaz web.",
     icon: "ph:ticket-duotone",
     image: featureImage3,
     spanClasses: "md:col-span-1 md:row-span-1",
@@ -77,7 +77,14 @@ const features = [
 >
   <!-- HERO CINEMÁTICO -->
   <section class="pt-20 pb-10 md:pt-28 md:pb-16 flex flex-col items-center text-center overflow-hidden relative">
-    <div class="absolute inset-0 opacity-5 parallax" data-speed="0.1">
+    <!-- Decorative Radial Gradients -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+      <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-payflo-blue/20 blur-[120px]"></div>
+      <div class="absolute top-[20%] right-[-10%] w-[40%] h-[60%] rounded-full bg-blue-400/10 blur-[130px]"></div>
+      <div class="absolute bottom-[-20%] left-[20%] w-[60%] h-[40%] rounded-full bg-blue-300/15 blur-[150px]"></div>
+    </div>
+
+    <div class="absolute inset-0 opacity-5 parallax z-0" data-speed="0.1">
       <div class="absolute inset-0 bg-repeat" style="background-image: url('/grid-pattern.svg');"></div>
     </div>
     
@@ -87,10 +94,11 @@ const features = [
         <span>El futuro del servicio al cliente</span>
       </div>
       
-      <h1 class="text-5xl md:text-7xl lg:text-[5.5rem] font-bold tracking-tight max-w-[1000px] leading-[1.05] text-payflo-dark">
-        <span class="animate-on-scroll delay-1 inline-block">Una visión</span>
+      <h1 class="text-4xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-bold tracking-tight max-w-[1000px] leading-[1.05] text-payflo-dark flex flex-wrap justify-center gap-x-2 sm:gap-x-3">
+        <span class="animate-on-scroll delay-1 inline-block">Una Visión</span>
         <span class="animate-on-scroll delay-2 inline-block gradient-text">Moderna</span>
-        <span class="animate-on-scroll delay-3 inline-block">para tu gestión.</span>
+        <span class="animate-on-scroll delay-3 inline-block">para la Gestión de</span>
+        <span class="animate-on-scroll delay-4 inline-block gradient-text">Turnos</span>
       </h1>
       
       <p class="mt-8 text-xl md:text-2xl text-gray-500 max-w-2xl animate-on-scroll delay-4 leading-relaxed font-light">
@@ -99,7 +107,7 @@ const features = [
       </p>
       
       <div class="mt-12 flex flex-col sm:flex-row gap-4 animate-on-scroll delay-5">
-        <a href="/book-demo" class="btn btn-primary btn-magnetic px-8 py-4 text-lg">Agendar llamada</a>
+        <a href="https://calendar.app.google/66gajcn26cj5iZVB7" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-magnetic px-8 py-4 text-lg">Agendar una demo</a>
         <a href="/documentation" class="btn btn-secondary btn-magnetic px-8 py-4 text-lg border border-gray-300">Documentación</a>
         <a href="/contact" class="btn btn-secondary btn-magnetic px-8 py-4 text-lg border border-gray-300 opacity-80 hover:opacity-100">Contacto</a>
       </div>

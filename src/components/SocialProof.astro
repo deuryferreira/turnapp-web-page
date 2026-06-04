@@ -6,23 +6,23 @@ import { Icon } from "astro-icon/components";
 
 <div
   id="social-proof-toast"
-  class="fixed bottom-8 left-8 z-[100] transform translate-y-20 opacity-0 transition-all duration-700 ease-out pointer-events-none md:pointer-events-auto"
+  class="fixed bottom-4 left-4 right-[88px] md:right-auto md:bottom-8 md:left-8 z-[100] transform translate-y-20 opacity-0 transition-all duration-700 ease-out pointer-events-none md:pointer-events-auto"
 >
-  <div class="bg-white/90 backdrop-blur-xl p-5 rounded-2xl flex items-start gap-4 max-w-sm shadow-2xl border border-white">
-    <div class="h-10 w-10 mt-1 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex-shrink-0 flex items-center justify-center text-white shadow-lg">
-      <Icon name="ph:check-circle-duotone" class="w-6 h-6" />
+  <div class="bg-white/95 backdrop-blur-xl p-3 sm:p-4 md:p-5 rounded-xl md:rounded-2xl flex items-start gap-3 md:gap-4 w-full md:max-w-sm shadow-2xl border border-white">
+    <div class="h-8 w-8 md:h-10 md:w-10 mt-0.5 md:mt-1 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex-shrink-0 flex items-center justify-center text-white shadow-lg">
+      <Icon name="ph:check-circle-duotone" class="w-5 h-5 md:w-6 md:h-6" />
     </div>
-    <div>
-      <p class="text-sm font-bold text-gray-900 leading-tight" id="sp-location">Caso de Éxito</p>
-      <p class="text-sm text-gray-600 mt-1.5 leading-relaxed" id="sp-detail">Cargando...</p>
-      <p class="text-[10px] text-green-600 font-bold mt-2 uppercase tracking-widest flex items-center gap-1">
+    <div class="flex-grow pr-4 md:pr-6">
+      <p class="text-xs sm:text-sm font-bold text-gray-900 leading-tight" id="sp-location">Caso de Éxito</p>
+      <p class="text-[11px] sm:text-xs md:text-sm text-gray-600 mt-1 md:mt-1.5 leading-relaxed" id="sp-detail">Cargando...</p>
+      <p class="text-[9px] md:text-[10px] text-green-600 font-bold mt-1.5 md:mt-2 uppercase tracking-widest flex items-center gap-1">
         <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
         <span id="sp-time">Verificado</span>
       </p>
     </div>
     
-    <button id="sp-close" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors">
-      <Icon name="ph:x-circle-duotone" class="w-5 h-5" />
+    <button id="sp-close" class="absolute top-2 right-2 md:top-3 md:right-3 text-gray-400 hover:text-gray-600 transition-colors p-1" aria-label="Cerrar notificación">
+      <Icon name="ph:x-circle-duotone" class="w-4 h-4 md:w-5 md:h-5" />
     </button>
   </div>
 </div>
@@ -31,7 +31,7 @@ import { Icon } from "astro-icon/components";
   const data = [
     { 
       location: "Clínica San Juan", 
-      detail: "Redujo el tiempo de espera de sus pacientes en un 45% usando las colas inteligentes de TurnApp.", 
+      detail: "Redujo el tiempo de espera de sus pacientes en un 45% usando las filas inteligentes de TurnApp.", 
       time: "Este mes" 
     },
     { 

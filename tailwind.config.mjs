@@ -8,7 +8,13 @@ export default {
         "payflo-blue": "#0055C4",
         "payflo-pink": "#FF4D4D",
         "payflo-gray": "#F4F7FA",
-        "payflo-dark": "#111111",
+        "payflo-dark": "#202020",
+        "step-1": "#2563EB",
+        "step-2": "#6366F1",
+        "step-3": "#0055C4",
+        gray: {
+          900: "#202020",
+        },
       },
       fontFamily: {
         sans: ["Inter Variable", "sans-serif"],

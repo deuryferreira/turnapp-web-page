@@ -1,13 +1,15 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { Icon } from 'astro-icon/components';
+import Layout from "../layouts/Layout.astro";
+import { Icon } from "astro-icon/components";
 ---
 
-<Layout 
+<Layout
   title="Login - Payflo Payroll Infrastructure"
   description="Log in to your Payflo account to manage your payroll infrastructure."
 >
-  <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-payflo-gray/50 to-white">
+  <div
+    class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-payflo-gray/50 to-white"
+  >
     <div class="max-w-md w-full">
       <!-- Logo -->
       <div class="flex justify-center mb-8">
@@ -15,7 +17,7 @@ import { Icon } from 'astro-icon/components';
           <img src="/src/assets/logo.svg" alt="Payflo" class="h-8 w-auto" />
         </a>
       </div>
-      
+
       <!-- Login Form -->
       <div class="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
         <div class="text-center mb-8">
@@ -42,7 +44,10 @@ import { Icon } from 'astro-icon/components';
           </div>
 
           <div>
-            <label for="password" class="block text-sm font-medium text-gray-700">
+            <label
+              for="password"
+              class="block text-sm font-medium text-gray-700"
+            >
               Password
             </label>
             <div class="mt-1">
@@ -71,7 +76,10 @@ import { Icon } from 'astro-icon/components';
               </label>
             </div>
 
-            <a href="#" class="text-sm font-medium text-payflo-purple hover:text-payflo-purple/80">
+            <a
+              href="#"
+              class="text-sm font-medium text-payflo-purple hover:text-payflo-purple/80"
+            >
               Forgot your password?
             </a>
           </div>
@@ -117,7 +125,10 @@ import { Icon } from 'astro-icon/components';
       <!-- Sign up link -->
       <p class="mt-8 text-center text-sm text-gray-600">
         Don't have an account?
-        <a href="/book-demo" class="font-medium text-payflo-purple hover:text-payflo-purple/80">
+        <a
+          href="https://calendar.app.google/66gajcn26cj5iZVB7" target="_blank" rel="noopener noreferrer"
+          class="font-medium text-payflo-purple hover:text-payflo-purple/80"
+        >
           Book a demo
         </a>
       </p>

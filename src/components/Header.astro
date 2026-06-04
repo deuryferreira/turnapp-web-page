@@ -1,5 +1,6 @@
 ---
 import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
 import logoWideSrc from "../assets/logo-wide-transparent.png";
 
 const navItems = [
@@ -20,12 +21,10 @@ const navItems = [
       class="flex items-center transition-transform duration-300 hover:scale-105 focus:scale-105 focus:outline-none focus:ring-2 focus:ring-payflo-purple focus:ring-offset-2 rounded"
       aria-label="Inicio TurnApp"
     >
-      <Image
-        src={logoWideSrc}
+      <img
+        src={logoWideSrc.src}
         alt="TurnApp Logo"
-        width={171}
-        height={40}
-        class="transition-all duration-300 hover:brightness-110 focus:brightness-110 h-10 w-auto"
+        class="transition-all duration-300 hover:brightness-110 focus:brightness-110 h-8 md:h-10 w-auto"
       />
     </a>
 
@@ -46,24 +45,31 @@ const navItems = [
       }
     </nav>
 
-    <div class="flex items-center space-x-4">
-      <!-- <a
-        href="/login"
-        class="hidden md:inline-block text-payflo-dark hover:text-payflo-purple focus:text-payflo-purple transition-all duration-300 relative focus:outline-none focus:ring-2 focus:ring-payflo-purple focus:ring-offset-2 rounded px-2 py-1"
-      >
-        Iniciar Sesión <span
-          class="absolute bottom-0 left-0 w-0 h-0.5 bg-payflo-purple transition-all duration-300 group-hover:w-full"
-        ></span>
-      </a> -->
+    <div class="flex items-center space-x-3 md:space-x-4">
+      <!-- Icon CTA on mobile, Full Text on desktop -->
       <a
-        href="/book-demo"
-        class="hidden md:inline-flex btn btn-primary focus:outline-none focus:ring-2 focus:ring-payflo-purple focus:ring-offset-2"
-        >Agendar una llamada</a
+        href="https://calendar.app.google/66gajcn26cj5iZVB7"
+        target="_blank" rel="noopener noreferrer"
+        class="inline-flex md:hidden items-center justify-center w-10 h-10 rounded-full bg-payflo-purple text-white hover:bg-payflo-purple/90 focus:outline-none focus:ring-2 focus:ring-payflo-purple focus:ring-offset-2 transition-colors"
+        aria-label="Agendar una demo"
       >
+        <Icon name="ph:calendar-duotone" class="w-5 h-5" />
+      </a>
 
+      <!-- Desktop Full Button CTA -->
+      <div class="hidden md:block">
+        <a
+          href="https://calendar.app.google/66gajcn26cj5iZVB7"
+          target="_blank" rel="noopener noreferrer"
+          class="btn btn-primary focus:outline-none focus:ring-2 focus:ring-payflo-purple focus:ring-offset-2 !px-5 !py-2.5 text-sm"
+          >Agendar una demo</a
+        >
+      </div>
+
+      <!-- Hamburger Menu Toggle -->
       <button
         id="menu-toggle"
-        class="md:hidden flex items-center transition-transform duration-300 focus:outline-none focus:ring-2 focus:ring-payflo-purple focus:ring-offset-2 rounded p-1"
+        class="md:hidden flex items-center transition-transform duration-300 focus:outline-none focus:ring-2 focus:ring-payflo-purple focus:ring-offset-2 rounded p-2 text-gray-700 hover:text-payflo-purple bg-gray-100/50 hover:bg-gray-100"
         aria-label="Toggle navigation menu"
         aria-expanded="false"
         aria-controls="mobile-menu"
@@ -88,29 +94,38 @@ const navItems = [
 
   <nav
     id="mobile-menu"
-    class="hidden md:hidden bg-white w-full border-t border-gray-100 shadow-lg absolute left-0 right-0"
+    class="md:hidden bg-white w-full border-t border-gray-100 shadow-lg absolute left-0 right-0"
     role="navigation"
     aria-label="Mobile navigation"
   >
-    <div class="container-custom py-4 space-y-4">
+    <div class="container-custom py-4 space-y-2">
       {
         navItems.map((item, index) => (
           <a
             href={item.href}
-            class="block py-2 px-2 text-gray-700 hover:text-payflo-purple focus:text-payflo-purple transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-payflo-purple focus:ring-offset-2 rounded font-medium"
+            class="block py-3 px-4 text-gray-700 hover:text-payflo-purple hover:bg-gray-50 focus:text-payflo-purple transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-payflo-purple focus:ring-offset-2 rounded-lg font-medium"
             style={`transition-delay: ${index * 50}ms;`}
           >
             {item.name}{" "}
           </a>
         ))
       }
-      <div class="pt-4 border-t border-gray-100 mt-2">
-        <a
-          href="/book-demo"
-          class="block w-full text-center py-3 px-4 bg-payflo-purple text-white hover:bg-payflo-purple/90 transition-all duration-300 rounded-lg font-medium"
-          >Agendar una llamada</a
-        >
-      </div>
     </div>
   </nav>
 </header>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const menuToggle = document.getElementById("menu-toggle");
+    const mobileMenu = document.getElementById("mobile-menu");
+
+    if (menuToggle && mobileMenu) {
+      menuToggle.addEventListener("click", () => {
+        const isExpanded = menuToggle.getAttribute("aria-expanded") === "true";
+        menuToggle.setAttribute("aria-expanded", String(!isExpanded));
+        menuToggle.classList.toggle("menu-open");
+        mobileMenu.classList.toggle("mobile-menu-open");
+      });
+    }
+  });
+</script>

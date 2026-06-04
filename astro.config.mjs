@@ -3,6 +3,7 @@ import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import tailwind from "@astrojs/tailwind";
 import icon from "astro-icon";
+import node from "@astrojs/node";
 
 export default defineConfig({
   site: "https://turnapp.ferreiraric.com",
@@ -31,6 +32,7 @@ export default defineConfig({
           "target-duotone",
           "lightbulb-duotone",
           "star-duotone",
+          "star-four-duotone",
           "lightning-duotone",
           "globe-duotone",
           "users-duotone",
@@ -63,10 +65,9 @@ export default defineConfig({
           "lifebuoy-duotone",
           "handshake-duotone",
           "megaphone-duotone",
-          "flow-chart-duotone", // AGREGAR ESTE
+          "flow-chart-duotone",
           "wrench-duotone",
           "youtube-logo-duotone",
-          // AGREGAR ESTOS NUEVOS ICONOS
           "package-duotone",
           "chart-bar-duotone",
           "megaphone-simple-duotone",
@@ -93,5 +94,7 @@ export default defineConfig({
     },
   },
 
-  adapter: undefined,
+  adapter: node({
+    mode: "standalone"
+  }),
 });
