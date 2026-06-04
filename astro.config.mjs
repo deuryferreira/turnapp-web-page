@@ -11,12 +11,6 @@ export default defineConfig({
   outDir: "build",
   prefetch: true,
 
-  vite: {
-    ssr: {
-      noExternal: ['@astrojs/vercel', '@vercel/routing-utils', 'path-to-regexp', 'path-to-regexp-updated']
-    }
-  },
-
   server: {
     host: "0.0.0.0",
   },
