@@ -1,9 +1,8 @@
-import { c as createComponent, $ as $$Image, a as getImage } from './_astro_assets_CUqlVTF6.mjs';
+import { c as createComponent, $ as $$Image, a as getImage } from './_astro_assets_CBRKl_JR.mjs';
 import 'piccolore';
-import { c as createRenderInstruction, b as addAttribute, r as renderTemplate, m as maybeRenderHead, s as spreadAttributes, d as renderComponent, F as Fragment, u as unescapeHTML, g as generateCspDigest, e as renderSlot, f as renderHead } from './entrypoint_C6Jj0f0Y.mjs';
+import { c as createRenderInstruction, b as addAttribute, r as renderTemplate, m as maybeRenderHead, s as spreadAttributes, d as renderComponent, F as Fragment, u as unescapeHTML, g as generateCspDigest, e as renderSlot, f as renderHead } from './entrypoint_BXfWDG8I.mjs';
 import 'clsx';
 import { getIconData, iconToSVG } from '@iconify/utils';
-import { Resend } from 'resend';
 
 async function renderScript(result, id) {
   const inlined = result.inlinedScripts.get(id);
@@ -259,12 +258,15 @@ const $$Contact = createComponent(async ($$result, $$props, $$slots) => {
       formData.company = data.get("company")?.toString() || "";
       formData.subject = data.get("subject")?.toString() || "";
       formData.message = data.get("message")?.toString() || "";
-      const resend = new Resend("re_WLSAjgSt_MKZbM27fmMLPuHFrP5j8oJQG");
-      const emailResponse = await resend.emails.send({
-        from: "onboarding@resend.dev",
-        to: "deury.fr@gmail.com",
-        subject: `Nuevo Mensaje de Contacto: ${formData.subject || "Sin Asunto"}`,
-        html: `
+      const apiKey = "re_WLSAjgSt_MKZbM27fmMLPuHFrP5j8oJQG";
+      if (!apiKey) ; else {
+        const { Resend } = await import('resend');
+        const resend = new Resend(apiKey);
+        const emailResponse = await resend.emails.send({
+          from: "onboarding@resend.dev",
+          to: "deury.fr@gmail.com",
+          subject: `Nuevo Mensaje de Contacto: ${formData.subject || "Sin Asunto"}`,
+          html: `
         <!DOCTYPE html>
         <html>
         <head>
@@ -326,13 +328,14 @@ const $$Contact = createComponent(async ($$result, $$props, $$slots) => {
         </body>
         </html>
       `
-      });
-      if (emailResponse.error) {
-        console.error(emailResponse.error);
-        errorMessage = "Hubo un error al enviar el mensaje. Por favor intenta de nuevo.";
-      } else {
-        successMessage = "¡Tu mensaje ha sido enviado con éxito! Nos pondremos en contacto contigo pronto.";
-        formData = { name: "", email: "", company: "", subject: "", message: "" };
+        });
+        if (emailResponse.error) {
+          console.error(emailResponse.error);
+          errorMessage = "Hubo un error al enviar el mensaje. Por favor intenta de nuevo.";
+        } else {
+          successMessage = "¡Tu mensaje ha sido enviado con éxito! Nos pondremos en contacto contigo pronto.";
+          formData = { name: "", email: "", company: "", subject: "", message: "" };
+        }
       }
     } catch (error) {
       console.error(error);
