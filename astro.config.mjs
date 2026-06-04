@@ -8,6 +8,7 @@ import vercel from "@astrojs/vercel";
 export default defineConfig({
   site: "https://turnapp.ferreiraric.com",
   output: "server",
+  outDir: "build",
   prefetch: true,
 
   server: {
@@ -65,7 +66,6 @@ export default defineConfig({
           "lifebuoy-duotone",
           "handshake-duotone",
           "megaphone-duotone",
-          "flow-chart-duotone",
           "wrench-duotone",
           "youtube-logo-duotone",
           "package-duotone",

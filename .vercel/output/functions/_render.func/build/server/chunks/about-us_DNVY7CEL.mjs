@@ -1,0 +1,51 @@
+import { $ as $$Layout, a as $$Icon } from './Layout_Dh9wb1E-.mjs';
+import { c as createComponent } from './_astro_assets_CTTKv510.mjs';
+import 'piccolore';
+import { r as renderComponent, b as renderTemplate, m as maybeRenderHead, c as addAttribute } from './entrypoint_L3AIX5NG.mjs';
+import { $ as $$CTASection } from './CTASection_DCDI87C-.mjs';
+
+const $$AboutUs = createComponent(($$result, $$props, $$slots) => {
+  const teamMembers = [
+    {
+      name: "Deury Ferreira",
+      role: "Fundador & CEO",
+      bio: "Más de 15 años de experiencia liderando la transformación digital de servicios al cliente en Latinoamérica. Fundó TurnApp bajo el ecosistema de Ferreira TIC con la misión de eliminar el caos en las instituciones mediante tecnología intuitiva.",
+      avatar: "/avatars/male-avatar.png",
+      social: {
+        linkedin: "https://linkedin.com/in/deury-ferreira"
+      }
+    },
+    {
+      name: "Rocío Ferreira",
+      role: "Directora Comercial",
+      bio: "Experta en el desarrollo de soluciones de software para la gestión de servicios con más de 12 años de trayectoria. Lidera el crecimiento comercial y la relación estratégica con instituciones de salud y gobierno.",
+      avatar: "/avatars/female-avatar.png",
+      social: {
+        linkedin: "https://linkedin.com/in/rocio-ferreira"
+      }
+    }
+  ];
+  return renderTemplate`${renderComponent($$result, "Layout", $$Layout, { "title": "TurnApp - Nosotros", "description": "Conoce nuestra misión y el equipo detrás de TurnApp, orgullosamente parte de la familia Ferreira TIC." }, { "default": ($$result2) => renderTemplate`  ${maybeRenderHead()}<section class="pt-24 pb-16 md:pt-32 md:pb-24 bg-white relative overflow-hidden"> <!-- Decorative Radial Gradients --> <div class="absolute inset-0 overflow-hidden pointer-events-none z-0"> <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-payflo-blue/20 blur-[120px]"></div> <div class="absolute top-[20%] right-[-10%] w-[40%] h-[60%] rounded-full bg-blue-400/10 blur-[130px]"></div> <div class="absolute bottom-[-20%] left-[20%] w-[60%] h-[40%] rounded-full bg-blue-300/15 blur-[150px]"></div> </div> <div class="absolute inset-0 opacity-5 z-0"> <div class="absolute inset-0 bg-repeat" style="background-image: url('/grid-pattern.svg');"></div> </div> <div class="container-custom relative"> <div class="max-w-4xl mx-auto text-center animate-on-scroll"> <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-8">
+Nuestra <span class="gradient-text">Historia</span> y Visión
+</h1> <div class="space-y-6 text-xl text-gray-600 leading-relaxed text-balance"> <p> <span class="font-bold text-payflo-purple">TurnApp</span> pertenece a la familia de
+<span class="font-bold text-gray-900 border-b-2 border-payflo-blue">Ferreira TIC</span>, 
+            una organización dedicada a impulsar la eficiencia operativa mediante software de alta fidelidad.
+</p> <p>
+Desde nuestro origen, nos hemos enfocado en resolver el problema más crítico de la atención presencial: 
+            el tiempo de espera. Creemos que cada minuto cuenta, tanto para la institución como para el ciudadano.
+</p> </div> </div> </div> </section>  <section class="py-20 bg-payflo-gray relative"> <div class="container-custom"> <div class="text-center max-w-2xl mx-auto mb-16 animate-on-scroll"> <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gray-900">Sobre el Equipo</h2> <div class="h-1.5 w-24 bg-gradient-to-r from-payflo-purple to-payflo-blue mx-auto rounded-full"></div> </div> <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto"> ${teamMembers.map((member, index) => renderTemplate`<div class="glass-card p-10 flex flex-col items-center text-center animate-on-scroll group hover:scale-[1.02] transition-transform duration-500"${addAttribute(`animation-delay: ${index * 0.1}s`, "style")}> <div class="relative mb-8"> <div class="absolute -inset-2 bg-gradient-to-r from-payflo-purple to-payflo-blue rounded-full blur opacity-20 group-hover:opacity-40 transition-opacity"></div> <img${addAttribute(member.avatar, "src")}${addAttribute(member.name, "alt")} class="w-32 h-32 rounded-full relative grayscale hover:grayscale-0 transition-all duration-500 border-4 border-white shadow-xl"> </div> <h3 class="text-2xl font-bold text-gray-900">${member.name}</h3> <p class="text-payflo-purple font-semibold text-lg mb-6">${member.role}</p> <p class="text-gray-600 leading-relaxed text-balance mb-8"> ${member.bio} </p> ${member.social.linkedin && renderTemplate`<a${addAttribute(member.social.linkedin, "href")} target="_blank" rel="noopener noreferrer" class="p-3 rounded-full bg-white shadow-md text-payflo-purple hover:bg-payflo-purple hover:text-white transition-all duration-300"> ${renderComponent($$result2, "Icon", $$Icon, { "name": "ph:linkedin-logo-duotone", "class": "h-6 w-6" })} </a>`} </div>`)} </div> </div> </section> ${renderComponent($$result2, "CTASection", $$CTASection, {})} ` })}`;
+}, "C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/about-us.astro", void 0);
+
+const $$file = "C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/about-us.astro";
+const $$url = "/about-us";
+
+const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: $$AboutUs,
+  file: $$file,
+  url: $$url
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const page = () => _page;
+
+export { page };
