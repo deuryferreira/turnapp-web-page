@@ -9,6 +9,12 @@ export default defineConfig({
   site: "https://turnapp.ferreiraric.com",
   output: "static",
   outDir: "build",
+  adapter: vercel({
+    includeFiles: [
+      './node_modules/path-to-regexp-updated/**/*',
+      './node_modules/path-to-regexp/**/*'
+    ]
+  }),
   prefetch: true,
 
   server: {
@@ -94,5 +100,4 @@ export default defineConfig({
     },
   },
 
-  adapter: vercel(),
 });
