@@ -1,5 +1,5 @@
-import { c as createComponent, $ as $$Image, a as getImage } from './_astro_assets_DNOMjHS1.mjs';
-import { c as createRenderInstruction, b as addAttribute, r as renderTemplate, m as maybeRenderHead, s as spreadAttributes, d as renderComponent, F as Fragment, u as unescapeHTML, g as generateCspDigest, e as renderSlot, f as renderHead } from './entrypoint_Du2bC9ll.mjs';
+import { c as createComponent, $ as $$Image, a as getImage } from './_astro_assets_BPHN09ZJ.mjs';
+import { c as createRenderInstruction, b as addAttribute, r as renderTemplate, m as maybeRenderHead, s as spreadAttributes, d as renderComponent, F as Fragment, u as unescapeHTML, g as generateCspDigest, e as renderSlot, f as renderHead } from './entrypoint_vGVmE3D-.mjs';
 
 async function renderScript(result, id) {
   const inlined = result.inlinedScripts.get(id);
@@ -524,18 +524,75 @@ const $$Layout = createComponent(async ($$result, $$props, $$slots) => {
   return renderTemplate(_a || (_a = __template(['<html lang="en"> <head><meta charset="UTF-8"><meta name="description"', '><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" type="image/png"', '><meta name="generator"', "><title>", "</title>", '<!-- Preload critical resources --><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><!-- Structured data --><script type="application/ld+json">\n      {\n        "@context": "https://schema.org",\n        "@type": "Organization",\n        "name": "Payflo",\n        "url": "https://payflo.dev",\n        "logo": "https://payflo.dev/logo.png",\n        "sameAs": [\n          "https://twitter.com/payflo_dev",\n          "https://www.linkedin.com/company/payflo-dev"\n        ]\n      }\n    <\/script><!-- Open Graph --><meta property="og:title"', '><meta property="og:description"', '><meta property="og:type" content="website"><meta property="og:url"', '><meta property="og:image" content="https://payflo.dev/og-image.jpg"><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@payflo_dev"><meta name="twitter:title"', '><meta name="twitter:description"', '><meta name="twitter:image" content="https://payflo.dev/twitter-image.jpg">', '</head> <body class="min-h-screen flex flex-col"> <a href="#main-content" class="skip-link">Skip to main content</a> ', ' <main id="main-content" class="flex-grow"> ', " </main> ", ' <!-- Floating WhatsApp Button --> <a href="https://wa.me/8293270889" target="_blank" rel="noopener noreferrer" class="fixed bottom-6 right-6 z-[100] bg-[#25D366] text-white p-3 rounded-full shadow-xl hover:scale-110 hover:shadow-[0_0_20px_rgba(37,211,102,0.6)] transition-all duration-300 flex items-center justify-center group" aria-label="Contactar por WhatsApp"> <!-- Tooltip --> <span class="absolute right-full mr-4 bg-white text-gray-800 text-sm font-medium py-1.5 px-3 rounded-lg shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap border border-gray-100">\n¿Necesitas ayuda?\n</span> <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"></path></svg> </a> <!-- Animations and Smooth Scroll --> ', " </body> </html>"])), addAttribute(description, "content"), addAttribute(faviconImg.src, "href"), addAttribute(Astro2.generator, "content"), title, renderComponent($$result, "ClientRouter", $$ClientRouter, {}), addAttribute(title, "content"), addAttribute(description, "content"), addAttribute(Astro2.url, "content"), addAttribute(title, "content"), addAttribute(description, "content"), renderHead(), renderComponent($$result, "Header", $$Header, {}), renderSlot($$result, $$slots["default"]), renderComponent($$result, "Footer", $$Footer, {}), renderScript($$result, "C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/layouts/Layout.astro?astro&type=script&index=0&lang.ts"));
 }, "C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/layouts/Layout.astro", void 0);
 
+const captchas = [
+  { q: "¿Cuánto es 2 + 2?", a: "4" },
+  { q: "¿De qué color es el cielo despejado de día?", a: "azul" },
+  { q: "¿Cuántas patas tiene un perro normal?", a: "4" },
+  { q: "¿Qué animal maúlla?", a: "gato" },
+  { q: "¿Cuál es la capital de Francia?", a: "paris" },
+  { q: "¿Cuánto es 5 + 5?", a: "10" },
+  { q: "¿Qué líquido bebemos para sobrevivir?", a: "agua" },
+  { q: "¿Cuántos días tiene una semana?", a: "7" },
+  { q: "¿De qué color es la sangre humana?", a: "rojo" },
+  { q: "¿Qué número sigue después del 3?", a: "4" },
+  { q: "¿Cuánto es 10 - 5?", a: "5" },
+  { q: "¿En qué planeta vivimos?", a: "tierra" },
+  { q: "¿Qué animal da leche y dice 'muuu'?", a: "vaca" },
+  { q: "¿Cuántos dedos tiene una mano normal?", a: "5" },
+  { q: "¿Qué herramienta se usa para clavar clavos?", a: "martillo" },
+  { q: "¿De qué color es una naranja madura?", a: "naranja" },
+  { q: "¿Cuánto es 3 x 3?", a: "9" },
+  { q: "¿Qué calienta nuestro planeta durante el día?", a: "sol" },
+  { q: "¿Cuál es la primera letra del abecedario?", a: "a" },
+  { q: "¿Qué animal ladra?", a: "perro" },
+  { q: "¿Cuántos meses tiene un año?", a: "12" },
+  { q: "¿De qué color son las hojas de un árbol en primavera?", a: "verde" },
+  { q: "¿Cuánto es 8 / 2?", a: "4" },
+  { q: "¿Qué usamos para ver en la oscuridad si no hay electricidad?", a: "linterna" },
+  { q: "¿Cómo se llama el centro de un huevo?", a: "yema" },
+  { q: "¿Qué fruta amarilla es famosa por gustarle a los monos?", a: "platano" },
+  { q: "¿Cuánto es 1 + 1?", a: "2" },
+  { q: "¿Cuál es el opuesto de 'arriba'?", a: "abajo" },
+  { q: "¿Qué vehículo tiene dos ruedas y pedales?", a: "bicicleta" },
+  { q: "¿De qué color es la nieve?", a: "blanco" },
+  { q: "¿Cuánto es 20 - 10?", a: "10" },
+  { q: "¿Cuál es el opuesto de 'frío'?", a: "caliente" },
+  { q: "¿Qué usamos en los pies antes de ponernos los zapatos?", a: "medias" },
+  { q: "¿De qué animal obtenemos la lana?", a: "oveja" },
+  { q: "¿Cuánto es 4 + 4?", a: "8" },
+  { q: "¿En qué mes celebramos la Navidad?", a: "diciembre" },
+  { q: "¿Qué mueble usamos para dormir?", a: "cama" },
+  { q: "¿De qué color es un tomate maduro?", a: "rojo" },
+  { q: "¿Cuánto es 6 - 2?", a: "4" },
+  { q: "¿Qué usamos en la cabeza para protegernos del sol?", a: "sombrero" },
+  { q: "¿Qué animal tiene una trompa larga?", a: "elefante" },
+  { q: "¿Cuál es el opuesto de 'noche'?", a: "dia" },
+  { q: "¿Qué objeto usamos para cortar papel?", a: "tijeras" },
+  { q: "¿De qué color es el carbón?", a: "negro" },
+  { q: "¿Cuánto es 7 + 3?", a: "10" },
+  { q: "¿Qué idioma hablamos en la mayoría de Latinoamérica?", a: "español" },
+  { q: "¿Qué animal salta y tiene una bolsa para sus crías?", a: "canguro" },
+  { q: "¿Cuál es el opuesto de 'grande'?", a: "pequeño" },
+  { q: "¿Qué usamos en los ojos para ver mejor?", a: "lentes" },
+  { q: "¿Cuánto es 5 x 2?", a: "10" }
+];
+
 const prerender = false;
 const $$Contact = createComponent(async ($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$props, $$slots);
   Astro2.self = $$Contact;
   let successMessage = "";
   let errorMessage = "";
+  const hasSubmittedCookie = Astro2.cookies.get("turnapp_contact_sent");
+  const requiresCaptcha = hasSubmittedCookie ? true : false;
+  let currentCaptchaIdx = Math.floor(Math.random() * captchas.length);
   let formData = {
     name: "",
     email: "",
     company: "",
     subject: "",
-    message: ""
+    message: "",
+    captcha_answer: ""
   };
   if (Astro2.request.method === "POST") {
     try {
@@ -545,15 +602,26 @@ const $$Contact = createComponent(async ($$result, $$props, $$slots) => {
       formData.company = data.get("company")?.toString() || "";
       formData.subject = data.get("subject")?.toString() || "";
       formData.message = data.get("message")?.toString() || "";
-      const apiKey = "re_WLSAjgSt_MKZbM27fmMLPuHFrP5j8oJQG";
-      if (!apiKey) ; else {
-        const { Resend } = await import('./index_CTb3hl93.mjs');
-        const resend = new Resend(apiKey);
-        const emailResponse = await resend.emails.send({
-          from: "onboarding@resend.dev",
-          to: "deury.fr@gmail.com",
-          subject: `Nuevo Mensaje de Contacto: ${formData.subject || "Sin Asunto"}`,
-          html: `
+      formData.captcha_answer = data.get("captcha_answer")?.toString().trim().toLowerCase() || "";
+      const botField = data.get("bot_field")?.toString() || "";
+      const submittedCaptchaIdx = parseInt(data.get("captcha_idx")?.toString() || "0");
+      if (formData.name.length > 100 || formData.email.length > 150 || formData.message.length > 3e3 || formData.subject.length > 200) {
+        errorMessage = "Los datos ingresados exceden el tamaño máximo permitido.";
+      } else if (botField !== "") {
+        successMessage = "Mensaje enviado correctamente. Nos pondremos en contacto pronto.";
+      } else if (requiresCaptcha && formData.captcha_answer !== captchas[submittedCaptchaIdx].a) {
+        errorMessage = "La respuesta de seguridad es incorrecta. Por favor intenta de nuevo.";
+        currentCaptchaIdx = Math.floor(Math.random() * captchas.length);
+      } else {
+        const apiKey = "re_WLSAjgSt_MKZbM27fmMLPuHFrP5j8oJQG";
+        if (!apiKey) ; else {
+          const { Resend } = await import('./index_CTb3hl93.mjs');
+          const resend = new Resend(apiKey);
+          const emailResponse = await resend.emails.send({
+            from: "onboarding@resend.dev",
+            to: "deury.fr@gmail.com",
+            subject: `TurnAp Website - ${formData.subject || "Nuevo Mensaje de Contacto"}`,
+            html: `
         <!DOCTYPE html>
         <html>
         <head>
@@ -615,18 +683,24 @@ const $$Contact = createComponent(async ($$result, $$props, $$slots) => {
         </body>
         </html>
       `
-        });
-        if (emailResponse.error) {
-          console.error(emailResponse.error);
-          errorMessage = "Hubo un error al enviar el mensaje. Por favor intenta de nuevo.";
-        } else {
-          successMessage = "¡Tu mensaje ha sido enviado con éxito! Nos pondremos en contacto contigo pronto.";
-          formData = { name: "", email: "", company: "", subject: "", message: "" };
+          });
+          if (emailResponse.error) {
+            console.error(emailResponse.error);
+            errorMessage = "Hubo un error al enviar el mensaje. Por favor intenta de nuevo.";
+          } else {
+            successMessage = "¡Tu mensaje ha sido enviado con éxito! Nos pondremos en contacto contigo pronto.";
+            formData = { name: "", email: "", company: "", subject: "", message: "", captcha_answer: "" };
+            Astro2.cookies.set("turnapp_contact_sent", "true", {
+              path: "/",
+              maxAge: 60 * 60 * 24
+              // 24 hours
+            });
+          }
         }
       }
     } catch (error) {
-      console.error(error);
-      errorMessage = "Ocurrió un error inesperado. Por favor intenta más tarde.";
+      console.error("Error procesando form:", error);
+      errorMessage = "Ocurrió un error al procesar tu solicitud. Por favor intenta más tarde.";
     }
   }
   return renderTemplate`${renderComponent($$result, "Layout", $$Layout, { "title": "Contáctanos - Ferreira TIC", "description": "Ponte en contacto con nuestro equipo para consultas generales, soporte técnico o oportunidades de colaboración.", "data-astro-cid-uw5kdbxl": true }, { "default": async ($$result2) => renderTemplate` ${maybeRenderHead()}<section class="pt-20 pb-16 md:pt-28 md:pb-24 relative overflow-hidden" data-astro-cid-uw5kdbxl> <!-- Decorative Radial Gradients --> <div class="absolute inset-0 overflow-hidden pointer-events-none z-0" data-astro-cid-uw5kdbxl> <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-payflo-blue/20 blur-[120px]" data-astro-cid-uw5kdbxl></div> <div class="absolute top-[20%] right-[-10%] w-[40%] h-[60%] rounded-full bg-blue-400/10 blur-[130px]" data-astro-cid-uw5kdbxl></div> <div class="absolute bottom-[-20%] left-[20%] w-[60%] h-[40%] rounded-full bg-blue-300/15 blur-[150px]" data-astro-cid-uw5kdbxl></div> </div> <!-- Subtle grid pattern (optional for consistency) --> <div class="absolute inset-0 opacity-5 z-0 pointer-events-none" data-astro-cid-uw5kdbxl> <div class="absolute inset-0 bg-repeat" style="background-image: url('/grid-pattern.svg');" data-astro-cid-uw5kdbxl></div> </div> <div class="container-custom relative z-10" data-astro-cid-uw5kdbxl> <div class="text-center max-w-3xl mx-auto animate-on-scroll mb-16" data-astro-cid-uw5kdbxl> <h1 class="text-4xl md:text-5xl font-bold leading-tight" data-astro-cid-uw5kdbxl>
@@ -655,7 +729,8 @@ Envíanos un Mensaje
 </h2> <p class="text-gray-600 mb-8" data-astro-cid-uw5kdbxl>
 Completa el formulario y nos pondremos en contacto contigo
                 pronto.
-</p> ${successMessage && renderTemplate`<div class="mb-6 p-4 rounded-lg bg-green-50 border border-green-200 text-green-700 flex items-start" data-astro-cid-uw5kdbxl> ${renderComponent($$result2, "Icon", $$Icon, { "name": "ph:check-circle-duotone", "class": "h-6 w-6 mr-3 flex-shrink-0", "data-astro-cid-uw5kdbxl": true })} <p data-astro-cid-uw5kdbxl>${successMessage}</p> </div>`} ${errorMessage && renderTemplate`<div class="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 flex items-start" data-astro-cid-uw5kdbxl> ${renderComponent($$result2, "Icon", $$Icon, { "name": "ph:x-circle-duotone", "class": "h-6 w-6 mr-3 flex-shrink-0", "data-astro-cid-uw5kdbxl": true })} <p data-astro-cid-uw5kdbxl>${errorMessage}</p> </div>`} <form class="space-y-6" method="POST" data-astro-cid-uw5kdbxl> <div class="grid grid-cols-1 md:grid-cols-2 gap-6" data-astro-cid-uw5kdbxl> <div data-astro-cid-uw5kdbxl> <label for="name" class="block text-gray-700 font-medium mb-2" data-astro-cid-uw5kdbxl>Nombre</label> <input type="text" id="name" name="name"${addAttribute(formData.name, "value")} class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-payflo-purple focus:border-payflo-purple transition-all duration-200" required autocomplete="name" data-astro-cid-uw5kdbxl> </div> <div data-astro-cid-uw5kdbxl> <label for="email" class="block text-gray-700 font-medium mb-2" data-astro-cid-uw5kdbxl>Email</label> <input type="email" id="email" name="email"${addAttribute(formData.email, "value")} class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-payflo-purple focus:border-payflo-purple transition-all duration-200" required autocomplete="email" data-astro-cid-uw5kdbxl> </div> </div> <div data-astro-cid-uw5kdbxl> <label for="company" class="block text-gray-700 font-medium mb-2" data-astro-cid-uw5kdbxl>Empresa (Opcional)</label> <input type="text" id="company" name="company"${addAttribute(formData.company, "value")} class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-payflo-purple focus:border-payflo-purple transition-all duration-200" data-astro-cid-uw5kdbxl> </div> <div data-astro-cid-uw5kdbxl> <label for="subject" class="block text-gray-700 font-medium mb-2" data-astro-cid-uw5kdbxl>Asunto</label> <select id="subject" name="subject" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-payflo-purple focus:border-payflo-purple transition-all duration-200" required data-astro-cid-uw5kdbxl> <option value="" disabled${addAttribute(!formData.subject, "selected")} data-astro-cid-uw5kdbxl>Selecciona una opción</option> <option value="Consulta General"${addAttribute(formData.subject === "Consulta General", "selected")} data-astro-cid-uw5kdbxl>Consulta General</option> <option value="Soporte Técnico"${addAttribute(formData.subject === "Soporte Técnico", "selected")} data-astro-cid-uw5kdbxl>Soporte Técnico</option> <option value="Colaboración"${addAttribute(formData.subject === "Colaboración", "selected")} data-astro-cid-uw5kdbxl>Colaboración</option> <option value="Cotización"${addAttribute(formData.subject === "Cotización", "selected")} data-astro-cid-uw5kdbxl>Cotización</option> <option value="Otro"${addAttribute(formData.subject === "Otro", "selected")} data-astro-cid-uw5kdbxl>Otro</option> </select> </div> <div data-astro-cid-uw5kdbxl> <label for="message" class="block text-gray-700 font-medium mb-2" data-astro-cid-uw5kdbxl>Mensaje</label> <textarea id="message" name="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-payflo-purple focus:border-payflo-purple transition-all duration-200" placeholder="Describe tu consulta o solicitud..." required data-astro-cid-uw5kdbxl>${formData.message}</textarea> </div> <div data-astro-cid-uw5kdbxl> <button type="submit" id="submit-btn" class="contact-btn contact-btn-primary w-full justify-center relative transition-all duration-300" data-astro-cid-uw5kdbxl> <div id="btn-content" class="flex items-center justify-center" data-astro-cid-uw5kdbxl> ${renderComponent($$result2, "Icon", $$Icon, { "name": "ph:paper-plane-tilt", "class": "btn-icon", "data-astro-cid-uw5kdbxl": true })} <span class="btn-text" data-astro-cid-uw5kdbxl>Enviar Mensaje</span> </div> <div id="btn-spinner" class="absolute inset-0 flex items-center justify-center opacity-0" data-astro-cid-uw5kdbxl> <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" data-astro-cid-uw5kdbxl> <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" data-astro-cid-uw5kdbxl></circle> <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" data-astro-cid-uw5kdbxl></path> </svg> <span class="ml-2 font-medium" data-astro-cid-uw5kdbxl>Enviando...</span> </div> </button> </div> </form> </div> </div> </div> </div> </div> </section>  <section class="py-20 bg-white" data-astro-cid-uw5kdbxl> <div class="container-custom" data-astro-cid-uw5kdbxl> <div class="text-center max-w-3xl mx-auto animate-on-scroll" data-astro-cid-uw5kdbxl> <h2 class="text-3xl md:text-4xl font-bold text-payflo-dark" data-astro-cid-uw5kdbxl>
+</p> ${successMessage && renderTemplate`<div class="mb-6 p-4 rounded-lg bg-green-50 border border-green-200 text-green-700 flex items-start" data-astro-cid-uw5kdbxl> ${renderComponent($$result2, "Icon", $$Icon, { "name": "ph:check-circle-duotone", "class": "h-6 w-6 mr-3 flex-shrink-0", "data-astro-cid-uw5kdbxl": true })} <p data-astro-cid-uw5kdbxl>${successMessage}</p> </div>`} ${errorMessage && renderTemplate`<div class="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 flex items-start" data-astro-cid-uw5kdbxl> ${renderComponent($$result2, "Icon", $$Icon, { "name": "ph:x-circle-duotone", "class": "h-6 w-6 mr-3 flex-shrink-0", "data-astro-cid-uw5kdbxl": true })} <p data-astro-cid-uw5kdbxl>${errorMessage}</p> </div>`} <form method="POST" action="/contact" class="space-y-6" id="contact-form" data-astro-cid-uw5kdbxl> <!-- HONEYPOT FIELD (Anti-spam) --> <div style="display:none; position:absolute; left:-9999px;" aria-hidden="true" data-astro-cid-uw5kdbxl> <label for="bot_field" data-astro-cid-uw5kdbxl>No llenes este campo si eres humano</label> <input type="text" id="bot_field" name="bot_field" tabindex="-1" autocomplete="off" data-astro-cid-uw5kdbxl> </div> <div class="grid grid-cols-1 md:grid-cols-2 gap-6" data-astro-cid-uw5kdbxl> <div data-astro-cid-uw5kdbxl> <label for="name" class="block text-gray-700 font-medium mb-2" data-astro-cid-uw5kdbxl>Nombre</label> <input type="text" id="name" name="name"${addAttribute(formData.name, "value")} class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-payflo-purple focus:border-payflo-purple transition-all duration-200" required autocomplete="name" data-astro-cid-uw5kdbxl> </div> <div data-astro-cid-uw5kdbxl> <label for="email" class="block text-gray-700 font-medium mb-2" data-astro-cid-uw5kdbxl>Email</label> <input type="email" id="email" name="email"${addAttribute(formData.email, "value")} class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-payflo-purple focus:border-payflo-purple transition-all duration-200" required autocomplete="email" data-astro-cid-uw5kdbxl> </div> </div> <div data-astro-cid-uw5kdbxl> <label for="company" class="block text-gray-700 font-medium mb-2" data-astro-cid-uw5kdbxl>Empresa (Opcional)</label> <input type="text" id="company" name="company"${addAttribute(formData.company, "value")} class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-payflo-purple focus:border-payflo-purple transition-all duration-200" data-astro-cid-uw5kdbxl> </div> <div data-astro-cid-uw5kdbxl> <label for="subject" class="block text-gray-700 font-medium mb-2" data-astro-cid-uw5kdbxl>Asunto</label> <select id="subject" name="subject" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-payflo-purple focus:border-payflo-purple transition-all duration-200" required data-astro-cid-uw5kdbxl> <option value="" disabled${addAttribute(!formData.subject, "selected")} data-astro-cid-uw5kdbxl>Selecciona una opción</option> <option value="Consulta General"${addAttribute(formData.subject === "Consulta General", "selected")} data-astro-cid-uw5kdbxl>Consulta General</option> <option value="Soporte Técnico"${addAttribute(formData.subject === "Soporte Técnico", "selected")} data-astro-cid-uw5kdbxl>Soporte Técnico</option> <option value="Colaboración"${addAttribute(formData.subject === "Colaboración", "selected")} data-astro-cid-uw5kdbxl>Colaboración</option> <option value="Cotización"${addAttribute(formData.subject === "Cotización", "selected")} data-astro-cid-uw5kdbxl>Cotización</option> <option value="Otro"${addAttribute(formData.subject === "Otro", "selected")} data-astro-cid-uw5kdbxl>Otro</option> </select> </div> <div data-astro-cid-uw5kdbxl> <label for="message" class="block text-gray-700 font-medium mb-2" data-astro-cid-uw5kdbxl>Mensaje</label> <textarea id="message" name="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-payflo-purple focus:border-payflo-purple transition-all duration-200" placeholder="Describe tu consulta o solicitud..." required data-astro-cid-uw5kdbxl>${formData.message}</textarea> </div> ${requiresCaptcha && renderTemplate`<div class="p-4 bg-blue-50 border border-blue-100 rounded-lg" data-astro-cid-uw5kdbxl> <input type="hidden" name="captcha_idx"${addAttribute(currentCaptchaIdx, "value")} data-astro-cid-uw5kdbxl> <label for="captcha_answer" class="block text-sm font-medium text-blue-900 mb-2" data-astro-cid-uw5kdbxl>
+Pregunta de Seguridad: <strong data-astro-cid-uw5kdbxl>${captchas[currentCaptchaIdx].q}</strong> </label> <input type="text" id="captcha_answer" name="captcha_answer" class="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" placeholder="Tu respuesta..."${addAttribute(formData.captcha_answer, "value")} required data-astro-cid-uw5kdbxl> <p class="text-xs text-blue-700 mt-2" data-astro-cid-uw5kdbxl>Te pedimos esto porque ya enviaste un mensaje recientemente.</p> </div>`} <div data-astro-cid-uw5kdbxl> <button type="submit" id="submit-btn" class="contact-btn contact-btn-primary w-full justify-center relative transition-all duration-300" data-astro-cid-uw5kdbxl> <div id="btn-content" class="flex items-center justify-center" data-astro-cid-uw5kdbxl> ${renderComponent($$result2, "Icon", $$Icon, { "name": "ph:paper-plane-tilt", "class": "btn-icon", "data-astro-cid-uw5kdbxl": true })} <span class="btn-text" data-astro-cid-uw5kdbxl>Enviar Mensaje</span> </div> <div id="btn-spinner" class="absolute inset-0 flex items-center justify-center opacity-0" data-astro-cid-uw5kdbxl> <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" data-astro-cid-uw5kdbxl> <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" data-astro-cid-uw5kdbxl></circle> <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" data-astro-cid-uw5kdbxl></path> </svg> <span class="ml-2 font-medium" data-astro-cid-uw5kdbxl>Enviando...</span> </div> </button> </div> </form> </div> </div> </div> </div> </div> </section>  <section class="py-20 bg-white" data-astro-cid-uw5kdbxl> <div class="container-custom" data-astro-cid-uw5kdbxl> <div class="text-center max-w-3xl mx-auto animate-on-scroll" data-astro-cid-uw5kdbxl> <h2 class="text-3xl md:text-4xl font-bold text-payflo-dark" data-astro-cid-uw5kdbxl>
 Nuestra Ubicación
 </h2> <p class="mt-4 text-xl text-gray-600" data-astro-cid-uw5kdbxl>
 Estamos aquí para ayudarte en lo que necesites.

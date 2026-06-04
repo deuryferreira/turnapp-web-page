@@ -2,17 +2,25 @@
 import Layout from "../layouts/Layout.astro";
 import { Icon } from "astro-icon/components";
 
+import { captchas } from "../utils/captchas.js";
+
 export const prerender = false;
 
 let successMessage = "";
 let errorMessage = "";
+
+// Lógica de Sesión / Cookies
+const hasSubmittedCookie = Astro.cookies.get("turnapp_contact_sent");
+const requiresCaptcha = hasSubmittedCookie ? true : false;
+let currentCaptchaIdx = Math.floor(Math.random() * captchas.length);
 
 let formData = {
   name: "",
   email: "",
   company: "",
   subject: "",
-  message: ""
+  message: "",
+  captcha_answer: ""
 };
 
 if (Astro.request.method === "POST") {
@@ -23,8 +31,24 @@ if (Astro.request.method === "POST") {
     formData.company = data.get("company")?.toString() || "";
     formData.subject = data.get("subject")?.toString() || "";
     formData.message = data.get("message")?.toString() || "";
+    formData.captcha_answer = data.get("captcha_answer")?.toString().trim().toLowerCase() || "";
+    
+    const botField = data.get("bot_field")?.toString() || "";
+    const submittedCaptchaIdx = parseInt(data.get("captcha_idx")?.toString() || "0");
 
-    const apiKey = import.meta.env.RESEND_API_KEY || process.env.RESEND_API_KEY;
+    // Validaciones de seguridad básicas
+    if (formData.name.length > 100 || formData.email.length > 150 || formData.message.length > 3000 || formData.subject.length > 200) {
+      errorMessage = "Los datos ingresados exceden el tamaño máximo permitido.";
+    } else if (botField !== "") {
+      // Honeypot atrapó un bot
+      successMessage = "Mensaje enviado correctamente. Nos pondremos en contacto pronto.";
+    } else if (requiresCaptcha && formData.captcha_answer !== captchas[submittedCaptchaIdx].a) {
+      // Captcha fallido
+      errorMessage = "La respuesta de seguridad es incorrecta. Por favor intenta de nuevo.";
+      // Si falla, rotamos a otro captcha
+      currentCaptchaIdx = Math.floor(Math.random() * captchas.length);
+    } else {
+      const apiKey = import.meta.env.RESEND_API_KEY || process.env.RESEND_API_KEY;
     
     if (!apiKey) {
       errorMessage = "Error de configuración: La API Key de Resend no se detectó en Vercel.";
@@ -36,7 +60,7 @@ if (Astro.request.method === "POST") {
     const emailResponse = await resend.emails.send({
       from: "onboarding@resend.dev",
       to: "deury.fr@gmail.com",
-      subject: `Nuevo Mensaje de Contacto: ${formData.subject || 'Sin Asunto'}`,
+      subject: `TurnAp Website - ${formData.subject || 'Nuevo Mensaje de Contacto'}`,
       html: `
         <!DOCTYPE html>
         <html>
@@ -106,13 +130,19 @@ if (Astro.request.method === "POST") {
         errorMessage = "Hubo un error al enviar el mensaje. Por favor intenta de nuevo.";
       } else {
         successMessage = "¡Tu mensaje ha sido enviado con éxito! Nos pondremos en contacto contigo pronto.";
-        // Clear form on success
-        formData = { name: "", email: "", company: "", subject: "", message: "" };
+        formData = { name: "", email: "", company: "", subject: "", message: "", captcha_answer: "" };
+        
+        // Seteamos la cookie por 24 horas para habilitar el captcha en el futuro
+        Astro.cookies.set("turnapp_contact_sent", "true", {
+          path: "/",
+          maxAge: 60 * 60 * 24 // 24 hours
+        });
       }
-    }
+    } // Fin del bloque de apiKey
+    } // Fin de validaciones
   } catch (error) {
-    console.error(error);
-    errorMessage = "Ocurrió un error inesperado. Por favor intenta más tarde.";
+    console.error("Error procesando form:", error);
+    errorMessage = "Ocurrió un error al procesar tu solicitud. Por favor intenta más tarde.";
   }
 }
 
@@ -278,7 +308,13 @@ const contactMethods = [
                 </div>
               )}
 
-              <form class="space-y-6" method="POST">
+              <form method="POST" action="/contact" class="space-y-6" id="contact-form">
+                <!-- HONEYPOT FIELD (Anti-spam) -->
+                <div style="display:none; position:absolute; left:-9999px;" aria-hidden="true">
+                  <label for="bot_field">No llenes este campo si eres humano</label>
+                  <input type="text" id="bot_field" name="bot_field" tabindex="-1" autocomplete="off" />
+                </div>
+                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label
@@ -356,6 +392,29 @@ const contactMethods = [
                     placeholder="Describe tu consulta o solicitud..."
                     required>{formData.message}</textarea>
                 </div>
+                
+                {requiresCaptcha && (
+                  <div class="p-4 bg-blue-50 border border-blue-100 rounded-lg">
+                    <input type="hidden" name="captcha_idx" value={currentCaptchaIdx} />
+                    <label
+                      for="captcha_answer"
+                      class="block text-sm font-medium text-blue-900 mb-2"
+                    >
+                      Pregunta de Seguridad: <strong>{captchas[currentCaptchaIdx].q}</strong>
+                    </label>
+                    <input
+                      type="text"
+                      id="captcha_answer"
+                      name="captcha_answer"
+                      class="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                      placeholder="Tu respuesta..."
+                      value={formData.captcha_answer}
+                      required
+                    />
+                    <p class="text-xs text-blue-700 mt-2">Te pedimos esto porque ya enviaste un mensaje recientemente.</p>
+                  </div>
+                )}
+
                 <div>
                   <button
                     type="submit"
