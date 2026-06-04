@@ -11,6 +11,12 @@ export default defineConfig({
   outDir: "build",
   prefetch: true,
 
+  vite: {
+    ssr: {
+      noExternal: ['@vercel/routing-utils']
+    }
+  },
+
   server: {
     host: "0.0.0.0",
   },
