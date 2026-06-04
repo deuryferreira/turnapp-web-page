@@ -7,7 +7,7 @@ import vercel from "@astrojs/vercel";
 
 export default defineConfig({
   site: "https://turnapp.ferreiraric.com",
-  output: "static",
+  output: "server",
   prefetch: true,
 
   server: {
