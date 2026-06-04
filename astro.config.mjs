@@ -3,7 +3,7 @@ import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import tailwind from "@astrojs/tailwind";
 import icon from "astro-icon";
-import node from "@astrojs/node";
+import vercel from "@astrojs/vercel/serverless";
 
 export default defineConfig({
   site: "https://turnapp.ferreiraric.com",
@@ -94,7 +94,5 @@ export default defineConfig({
     },
   },
 
-  adapter: node({
-    mode: "standalone"
-  }),
+  adapter: vercel(),
 });
