@@ -1,15 +1,5 @@
 import require$$0 from 'url';
-import require$$2 from 'path-to-regexp-updated';
 import nodePath from 'node:path';
-import colors from 'piccolore';
-import { parse as parse$1, stringify as stringify$1, unflatten as unflatten$1 } from 'devalue';
-import 'es-module-lexer';
-import { serialize, parse as parse$2 } from 'cookie';
-import { escape } from 'html-escaper';
-import { clsx } from 'clsx';
-import { decodeBase64, encodeBase64, decodeHex, encodeHexUpperCase } from '@oslojs/encoding';
-import * as z from 'zod/v4';
-import { createStorage } from 'unstorage';
 
 function normalizeLF(code) {
   return code.replace(/\r\n|\r(?!\n)|\n/g, "\n");
@@ -382,6 +372,10 @@ const CacheNotEnabled = {
   hint: 'Use an adapter that provides a default cache provider, or set one explicitly: `experimental: { cache: { provider: "..." } }`. See https://docs.astro.build/en/reference/experimental-flags/route-caching/.'
 };
 
+function getDefaultExportFromCjs (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+}
+
 function getAugmentedNamespace(n) {
   if (Object.prototype.hasOwnProperty.call(n, '__esModule')) return n;
   var f = n.default;
@@ -411,7 +405,7 @@ function getAugmentedNamespace(n) {
 	return a;
 }
 
-var dist = {exports: {}};
+var dist$1 = {exports: {}};
 
 /**
  * Tokenize input string.
@@ -505,7 +499,7 @@ function lexer(str) {
 /**
  * Parse a string for the raw tokens.
  */
-function parse(str, options) {
+function parse$2(str, options) {
     if (options === void 0) { options = {}; }
     var tokens = lexer(str);
     var _a = options.prefixes, prefixes = _a === void 0 ? "./" : _a;
@@ -590,7 +584,7 @@ function parse(str, options) {
  * Compile a string to a template function for the path.
  */
 function compile(str, options) {
-    return tokensToFunction(parse(str, options), options);
+    return tokensToFunction(parse$2(str, options), options);
 }
 /**
  * Expose a method for transforming tokens into the path function.
@@ -734,7 +728,7 @@ function arrayToRegexp(paths, keys, options) {
  * Create a path regexp from string input.
  */
 function stringToRegexp(path, keys, options) {
-    return tokensToRegexp(parse(path, options), keys, options);
+    return tokensToRegexp(parse$2(path, options), keys, options);
 }
 /**
  * Expose a function for taking tokens and returning a RegExp.
@@ -814,14 +808,14 @@ const dist_es2015 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePropert
   __proto__: null,
   compile,
   match,
-  parse,
+  parse: parse$2,
   pathToRegexp,
   regexpToFunction,
   tokensToFunction,
   tokensToRegexp
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const require$$1 = /*@__PURE__*/getAugmentedNamespace(dist_es2015);
+const require$$2 = /*@__PURE__*/getAugmentedNamespace(dist_es2015);
 
 var superstatic;
 var hasRequiredSuperstatic;
@@ -860,7 +854,7 @@ function requireSuperstatic () {
 	});
 	superstatic = __toCommonJS(superstatic_exports);
 	var import_url = require$$0;
-	var import_path_to_regexp = require$$1;
+	var import_path_to_regexp = require$$2;
 	var import_path_to_regexp_updated = require$$2;
 	function cloneKeys(keys) {
 	  if (typeof keys === "undefined") {
@@ -1265,7 +1259,7 @@ function requireAppend () {
 	  appendRoutesToPhase: () => appendRoutesToPhase
 	});
 	append = __toCommonJS(append_exports);
-	var import_index = requireDist();
+	var import_index = requireDist$1();
 	function appendRoutesToPhase({
 	  routes: prevRoutes,
 	  newRoutes,
@@ -1335,7 +1329,7 @@ function requireMerge () {
 	  mergeRoutes: () => mergeRoutes
 	});
 	merge = __toCommonJS(merge_exports);
-	var import_index = requireDist();
+	var import_index = requireDist$1();
 	function getBuilderRoutesMapping(builds) {
 	  const builderRoutes = {};
 	  for (const { entrypoint, routes, use } of builds) {
@@ -2216,11 +2210,11 @@ function requireTypes () {
 	return types$1;
 }
 
-var hasRequiredDist;
+var hasRequiredDist$1;
 
-function requireDist () {
-	if (hasRequiredDist) return dist.exports;
-	hasRequiredDist = 1;
+function requireDist$1 () {
+	if (hasRequiredDist$1) return dist$1.exports;
+	hasRequiredDist$1 = 1;
 	(function (module) {
 		var __defProp = Object.defineProperty;
 		var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -2589,11 +2583,11 @@ function requireDist () {
 		  }
 		  return { routes, error: null };
 		}
-	} (dist));
-	return dist.exports;
+	} (dist$1));
+	return dist$1.exports;
 }
 
-requireDist();
+requireDist$1();
 
 function matchPattern(url, remotePattern) {
   return matchProtocol(url, remotePattern.protocol) && matchHostname(url, remotePattern.hostname, true) && matchPort(url, remotePattern.port) && matchPathname(url, remotePattern.pathname, true);
@@ -3716,7 +3710,838 @@ const ASTRO_PATH_PARAM = "x_astro_path";
 const ASTRO_LOCALS_HEADER = "x-astro-locals";
 const ASTRO_MIDDLEWARE_SECRET_HEADER = "x-astro-middleware-secret";
 
-const middlewareSecret = "1aa1a5b3-ec56-40cb-94df-105712da405c";
+const middlewareSecret = "0b61f3d1-2edb-4b3d-9edb-aec1e8219e7c";
+
+let e=globalThis.process||{},t=e.argv||[],n=e.env||{},r$1=!(n.NO_COLOR||t.includes(`--no-color`))&&(!!n.FORCE_COLOR||t.includes(`--color`)||e.platform===`win32`||(e.stdout||{}).isTTY&&n.TERM!==`dumb`||!!n.CI),i=(e,t,n=e)=>r=>{let i=``+r,o=i.indexOf(t,e.length);return ~o?e+a(i,t,n,o)+t:e+i+t},a=(e,t,n,r)=>{let i=``,a=0;do i+=e.substring(a,r)+n,a=r+t.length,r=e.indexOf(t,a);while(~r);return i+e.substring(a)},o=(e=r$1)=>{let t=e?i:()=>String;return {isColorSupported:e,reset:t(`\x1B[0m`,`\x1B[0m`),bold:t(`\x1B[1m`,`\x1B[22m`,`\x1B[22m\x1B[1m`),dim:t(`\x1B[2m`,`\x1B[22m`,`\x1B[22m\x1B[2m`),italic:t(`\x1B[3m`,`\x1B[23m`),underline:t(`\x1B[4m`,`\x1B[24m`),inverse:t(`\x1B[7m`,`\x1B[27m`),hidden:t(`\x1B[8m`,`\x1B[28m`),strikethrough:t(`\x1B[9m`,`\x1B[29m`),black:t(`\x1B[30m`,`\x1B[39m`),red:t(`\x1B[31m`,`\x1B[39m`),green:t(`\x1B[32m`,`\x1B[39m`),yellow:t(`\x1B[33m`,`\x1B[39m`),blue:t(`\x1B[34m`,`\x1B[39m`),magenta:t(`\x1B[35m`,`\x1B[39m`),cyan:t(`\x1B[36m`,`\x1B[39m`),white:t(`\x1B[37m`,`\x1B[39m`),gray:t(`\x1B[90m`,`\x1B[39m`),bgBlack:t(`\x1B[40m`,`\x1B[49m`),bgRed:t(`\x1B[41m`,`\x1B[49m`),bgGreen:t(`\x1B[42m`,`\x1B[49m`),bgYellow:t(`\x1B[43m`,`\x1B[49m`),bgBlue:t(`\x1B[44m`,`\x1B[49m`),bgMagenta:t(`\x1B[45m`,`\x1B[49m`),bgCyan:t(`\x1B[46m`,`\x1B[49m`),bgWhite:t(`\x1B[47m`,`\x1B[49m`),blackBright:t(`\x1B[90m`,`\x1B[39m`),redBright:t(`\x1B[91m`,`\x1B[39m`),greenBright:t(`\x1B[92m`,`\x1B[39m`),yellowBright:t(`\x1B[93m`,`\x1B[39m`),blueBright:t(`\x1B[94m`,`\x1B[39m`),magentaBright:t(`\x1B[95m`,`\x1B[39m`),cyanBright:t(`\x1B[96m`,`\x1B[39m`),whiteBright:t(`\x1B[97m`,`\x1B[39m`),bgBlackBright:t(`\x1B[100m`,`\x1B[49m`),bgRedBright:t(`\x1B[101m`,`\x1B[49m`),bgGreenBright:t(`\x1B[102m`,`\x1B[49m`),bgYellowBright:t(`\x1B[103m`,`\x1B[49m`),bgBlueBright:t(`\x1B[104m`,`\x1B[49m`),bgMagentaBright:t(`\x1B[105m`,`\x1B[49m`),bgCyanBright:t(`\x1B[106m`,`\x1B[49m`),bgWhiteBright:t(`\x1B[107m`,`\x1B[49m`)}};var s=o();
+
+const UNDEFINED = -1;
+const HOLE = -2;
+const NAN = -3;
+const POSITIVE_INFINITY = -4;
+const NEGATIVE_INFINITY = -5;
+const NEGATIVE_ZERO = -6;
+const SPARSE = -7;
+
+// The largest valid value for a JavaScript array's `length` property,
+// and the largest valid array index (one less than the max length).
+const MAX_ARRAY_LEN = 2 ** 32 - 1;
+const MAX_ARRAY_INDEX = MAX_ARRAY_LEN - 1;
+
+class DevalueError extends Error {
+	/**
+	 * @param {string} message
+	 * @param {string[]} keys
+	 * @param {any} [value] - The value that failed to be serialized
+	 * @param {any} [root] - The root value being serialized
+	 */
+	constructor(message, keys, value, root) {
+		super(message);
+		this.name = 'DevalueError';
+		this.path = keys.join('');
+		this.value = value;
+		this.root = root;
+	}
+}
+
+/** @param {any} thing */
+function is_primitive(thing) {
+	return thing === null || (typeof thing !== 'object' && typeof thing !== 'function');
+}
+
+const object_proto_names = /* @__PURE__ */ Object.getOwnPropertyNames(Object.prototype)
+	.sort()
+	.join('\0');
+
+/** @param {any} thing */
+function is_plain_object(thing) {
+	const proto = Object.getPrototypeOf(thing);
+
+	return (
+		proto === Object.prototype ||
+		proto === null ||
+		Object.getPrototypeOf(proto) === null ||
+		Object.getOwnPropertyNames(proto).sort().join('\0') === object_proto_names
+	);
+}
+
+/** @param {any} thing */
+function get_type(thing) {
+	return Object.prototype.toString.call(thing).slice(8, -1);
+}
+
+/** @param {string} char */
+function get_escaped_char(char) {
+	switch (char) {
+		case '"':
+			return '\\"';
+		case '<':
+			return '\\u003C';
+		case '\\':
+			return '\\\\';
+		case '\n':
+			return '\\n';
+		case '\r':
+			return '\\r';
+		case '\t':
+			return '\\t';
+		case '\b':
+			return '\\b';
+		case '\f':
+			return '\\f';
+		case '\u2028':
+			return '\\u2028';
+		case '\u2029':
+			return '\\u2029';
+		default:
+			return char < ' ' ? `\\u${char.charCodeAt(0).toString(16).padStart(4, '0')}` : '';
+	}
+}
+
+/** @param {string} str */
+function stringify_string(str) {
+	let result = '';
+	let last_pos = 0;
+	const len = str.length;
+
+	for (let i = 0; i < len; i += 1) {
+		const char = str[i];
+		const replacement = get_escaped_char(char);
+		if (replacement) {
+			result += str.slice(last_pos, i) + replacement;
+			last_pos = i + 1;
+		}
+	}
+
+	return `"${last_pos === 0 ? str : result + str.slice(last_pos)}"`;
+}
+
+/** @param {Record<string | symbol, any>} object */
+function enumerable_symbols(object) {
+	return Object.getOwnPropertySymbols(object).filter(
+		(symbol) => Object.getOwnPropertyDescriptor(object, symbol).enumerable
+	);
+}
+
+const is_identifier = /^[a-zA-Z_$][a-zA-Z_$0-9]*$/;
+
+/** @param {string} key */
+function stringify_key(key) {
+	return is_identifier.test(key) ? '.' + key : '[' + JSON.stringify(key) + ']';
+}
+
+/** @param {number} n */
+function is_valid_array_index(n) {
+	if (!Number.isInteger(n)) return false;
+	if (n < 0) return false;
+	if (n > MAX_ARRAY_INDEX) return false;
+	return true;
+}
+
+/** @param {number} n */
+function is_valid_array_len(n) {
+	if (!Number.isInteger(n)) return false;
+	if (n < 0) return false;
+	if (n > MAX_ARRAY_LEN) return false;
+	return true;
+}
+
+/** @param {string} s */
+function is_valid_array_index_string(s) {
+	if (s.length === 0) return false;
+	if (s.length > 1 && s.charCodeAt(0) === 48) return false; // leading zero
+	for (let i = 0; i < s.length; i++) {
+		const c = s.charCodeAt(i);
+		if (c < 48 || c > 57) return false;
+	}
+	// by this point we know it's a string of digits, but it has to be within
+	// the range of valid array indices
+	return is_valid_array_index(+s);
+}
+
+/**
+ * Finds the populated indices of an array.
+ * @param {unknown[]} array
+ */
+function valid_array_indices(array) {
+	const keys = Object.keys(array);
+	for (var i = keys.length - 1; i >= 0; i--) {
+		if (is_valid_array_index_string(keys[i])) {
+			break;
+		}
+	}
+	keys.length = i + 1;
+	return keys;
+}
+
+/* Baseline 2025 runtimes */
+
+/**	@type {(array_buffer: ArrayBuffer) => string} */
+function encode_native(array_buffer) {
+	return new Uint8Array(array_buffer).toBase64();
+}
+
+/**	@type {(base64: string) => ArrayBuffer} */
+function decode_native(base64) {
+	return Uint8Array.fromBase64(base64).buffer;
+}
+
+/* Node-compatible runtimes */
+
+/** @type {(array_buffer: ArrayBuffer) => string} */
+function encode_buffer(array_buffer) {
+	return Buffer.from(array_buffer).toString('base64');
+}
+
+/**	@type {(base64: string) => ArrayBuffer} */
+function decode_buffer(base64) {
+	return Uint8Array.from(Buffer.from(base64, 'base64')).buffer;
+}
+
+/* Legacy runtimes */
+
+/** @type {(array_buffer: ArrayBuffer) => string} */
+function encode_legacy(array_buffer) {
+	const array = new Uint8Array(array_buffer);
+	let binary = '';
+
+	// the maximum number of arguments to String.fromCharCode.apply
+	// should be around 0xFFFF in modern engines
+	const chunk_size = 0x8000;
+	for (let i = 0; i < array.length; i += chunk_size) {
+		const chunk = array.subarray(i, i + chunk_size);
+		binary += String.fromCharCode.apply(null, chunk);
+	}
+
+	return btoa(binary);
+}
+
+/**	@type {(base64: string) => ArrayBuffer} */
+function decode_legacy(base64) {
+	const binary_string = atob(base64);
+	const len = binary_string.length;
+	const array = new Uint8Array(len);
+
+	for (let i = 0; i < len; i++) {
+		array[i] = binary_string.charCodeAt(i);
+	}
+
+	return array.buffer;
+}
+
+const native = typeof Uint8Array.fromBase64 === 'function';
+const buffer = typeof process === 'object' && process.versions?.node !== undefined;
+
+const encode64 = native ? encode_native : buffer ? encode_buffer : encode_legacy;
+const decode64 = native ? decode_native : buffer ? decode_buffer : decode_legacy;
+
+/**
+ * Revive a value serialized with `devalue.stringify`
+ * @param {string} serialized
+ * @param {Record<string, (value: any) => any>} [revivers]
+ */
+function parse$1(serialized, revivers) {
+	return unflatten$1(JSON.parse(serialized), revivers);
+}
+
+/**
+ * Revive a value flattened with `devalue.stringify`
+ * @param {number | any[]} parsed
+ * @param {Record<string, (value: any) => any>} [revivers]
+ */
+function unflatten$1(parsed, revivers) {
+	if (typeof parsed === 'number') return hydrate(parsed, true);
+
+	if (!Array.isArray(parsed) || parsed.length === 0) {
+		throw new Error('Invalid input');
+	}
+
+	const values = /** @type {any[]} */ (parsed);
+
+	const hydrated = Array(values.length);
+
+	/**
+	 * A set of values currently being hydrated with custom revivers,
+	 * used to detect invalid cyclical dependencies
+	 * @type {Set<number> | null}
+	 */
+	let hydrating = null;
+
+	/**
+	 * @param {number} index
+	 * @returns {any}
+	 */
+	function hydrate(index, standalone = false) {
+		if (index === UNDEFINED) return undefined;
+		if (index === NAN) return NaN;
+		if (index === POSITIVE_INFINITY) return Infinity;
+		if (index === NEGATIVE_INFINITY) return -Infinity;
+		if (index === NEGATIVE_ZERO) return -0;
+
+		if (standalone || typeof index !== 'number') {
+			throw new Error(`Invalid input`);
+		}
+
+		if (index in hydrated) return hydrated[index];
+
+		const value = values[index];
+
+		if (!value || typeof value !== 'object') {
+			hydrated[index] = value;
+		} else if (Array.isArray(value)) {
+			if (typeof value[0] === 'string') {
+				const type = value[0];
+
+				const reviver = revivers && Object.hasOwn(revivers, type) ? revivers[type] : undefined;
+
+				if (reviver) {
+					let i = value[1];
+					if (typeof i !== 'number') {
+						// if it's not a number, it was serialized by a builtin reviver
+						// so we need to munge it into the format expected by a custom reviver
+						i = values.push(value[1]) - 1;
+					}
+
+					hydrating ??= new Set();
+
+					if (hydrating.has(i)) {
+						throw new Error('Invalid circular reference');
+					}
+
+					hydrating.add(i);
+					hydrated[index] = reviver(hydrate(i));
+					hydrating.delete(i);
+
+					return hydrated[index];
+				}
+
+				switch (type) {
+					case 'Date':
+						hydrated[index] = new Date(value[1]);
+						break;
+
+					case 'Set':
+						const set = new Set();
+						hydrated[index] = set;
+						for (let i = 1; i < value.length; i += 1) {
+							set.add(hydrate(value[i]));
+						}
+						break;
+
+					case 'Map':
+						const map = new Map();
+						hydrated[index] = map;
+						for (let i = 1; i < value.length; i += 2) {
+							map.set(hydrate(value[i]), hydrate(value[i + 1]));
+						}
+						break;
+
+					case 'RegExp':
+						hydrated[index] = new RegExp(value[1], value[2]);
+						break;
+
+					case 'Object': {
+						const wrapped_index = value[1];
+
+						if (
+							typeof values[wrapped_index] === 'object' &&
+							values[wrapped_index][0] !== 'BigInt'
+						) {
+							// avoid infinite recusion in case of malformed input
+							throw new Error('Invalid input');
+						}
+
+						hydrated[index] = Object(hydrate(wrapped_index));
+						break;
+					}
+
+					case 'BigInt':
+						hydrated[index] = BigInt(value[1]);
+						break;
+
+					case 'null':
+						const obj = Object.create(null);
+						hydrated[index] = obj;
+						for (let i = 1; i < value.length; i += 2) {
+							if (value[i] === '__proto__') {
+								throw new Error('Cannot parse an object with a `__proto__` property');
+							}
+
+							obj[value[i]] = hydrate(value[i + 1]);
+						}
+						break;
+
+					case 'Int8Array':
+					case 'Uint8Array':
+					case 'Uint8ClampedArray':
+					case 'Int16Array':
+					case 'Uint16Array':
+					case 'Float16Array':
+					case 'Int32Array':
+					case 'Uint32Array':
+					case 'Float32Array':
+					case 'Float64Array':
+					case 'BigInt64Array':
+					case 'BigUint64Array':
+					case 'DataView': {
+						if (values[value[1]][0] !== 'ArrayBuffer') {
+							// without this, if we receive malformed input we could
+							// end up trying to hydrate in a circle or allocate
+							// huge amounts of memory when we call `new TypedArrayConstructor(buffer)`
+							throw new Error('Invalid data');
+						}
+
+						const TypedArrayConstructor = globalThis[type];
+						const buffer = hydrate(value[1]);
+
+						hydrated[index] =
+							value[2] !== undefined
+								? new TypedArrayConstructor(buffer, value[2], value[3])
+								: new TypedArrayConstructor(buffer);
+
+						break;
+					}
+
+					case 'ArrayBuffer': {
+						const base64 = value[1];
+						if (typeof base64 !== 'string') {
+							throw new Error('Invalid ArrayBuffer encoding');
+						}
+						const arraybuffer = decode64(base64);
+						hydrated[index] = arraybuffer;
+						break;
+					}
+
+					case 'Temporal.Duration':
+					case 'Temporal.Instant':
+					case 'Temporal.PlainDate':
+					case 'Temporal.PlainTime':
+					case 'Temporal.PlainDateTime':
+					case 'Temporal.PlainMonthDay':
+					case 'Temporal.PlainYearMonth':
+					case 'Temporal.ZonedDateTime': {
+						const temporalName = type.slice(9);
+						// @ts-expect-error TS doesn't know about Temporal yet
+						hydrated[index] = Temporal[temporalName].from(value[1]);
+						break;
+					}
+
+					case 'URL': {
+						const url = new URL(value[1]);
+						hydrated[index] = url;
+						break;
+					}
+
+					case 'URLSearchParams': {
+						const url = new URLSearchParams(value[1]);
+						hydrated[index] = url;
+						break;
+					}
+
+					default:
+						throw new Error(`Unknown type ${type}`);
+				}
+			} else if (value[0] === SPARSE) {
+				// Sparse array encoding: [SPARSE, length, idx, val, idx, val, ...]
+				const len = value[1];
+
+				if (!is_valid_array_len(len)) {
+					throw new Error('Invalid input');
+				}
+
+				/** @type {any[]} */
+				const array = [];
+				hydrated[index] = array;
+
+				// Setting `array.length = len` (or equivalently calling `new Array(len)`)
+				// on an untrusted `len` is a DoS vector: V8 eagerly allocates a
+				// contiguous backing store for array lengths below ~10^8, so a
+				// small payload with a huge declared length can force arbitrary
+				// memory allocation. Touching the largest-possible index first
+				// forces V8 into dictionary-elements mode, where `length` is
+				// just a number and no contiguous allocation occurs.
+				array[MAX_ARRAY_INDEX] = undefined;
+				delete array[MAX_ARRAY_INDEX];
+
+				for (let i = 2; i < value.length; i += 2) {
+					const idx = value[i];
+
+					if (!is_valid_array_index(idx) || idx >= len) {
+						throw new Error('Invalid input');
+					}
+
+					array[idx] = hydrate(value[i + 1]);
+				}
+
+				array.length = len;
+			} else {
+				const array = new Array(value.length);
+				hydrated[index] = array;
+
+				for (let i = 0; i < value.length; i += 1) {
+					const n = value[i];
+					if (n === HOLE) continue;
+
+					array[i] = hydrate(n);
+				}
+			}
+		} else {
+			/** @type {Record<string, any>} */
+			const object = {};
+			hydrated[index] = object;
+
+			for (const key of Object.keys(value)) {
+				if (key === '__proto__') {
+					throw new Error('Cannot parse an object with a `__proto__` property');
+				}
+
+				const n = value[key];
+				object[key] = hydrate(n);
+			}
+		}
+
+		return hydrated[index];
+	}
+
+	return hydrate(0);
+}
+
+/**
+ * Turn a value into a JSON string that can be parsed with `devalue.parse`
+ * @param {any} value
+ * @param {Record<string, (value: any) => any>} [reducers]
+ */
+function stringify$2(value, reducers) {
+	const stringified = run(false, value, reducers);
+	return typeof stringified === 'string' ? stringified : `[${stringified.join(',')}]`;
+}
+
+/**
+ * @param {boolean} async
+ * @param {any} value
+ * @param {Record<string, (value: any) => any>} [reducers]
+ */
+function run(async, value, reducers) {
+	/** @type {any[]} */
+	const stringified = [];
+
+	/** @type {Map<any, number>} */
+	const indexes = new Map();
+
+	/** @type {Array<{ key: string, fn: (value: any) => any }>} */
+	const custom = [];
+	if (reducers) {
+		for (const key of Object.getOwnPropertyNames(reducers)) {
+			custom.push({ key, fn: reducers[key] });
+		}
+	}
+
+	/** @type {string[]} */
+	const keys = [];
+
+	let p = 0;
+
+	/**
+	 * @param {any} thing
+	 * @param {number} [index]
+	 */
+	function flatten(thing, index) {
+		if (thing === undefined) return UNDEFINED;
+		if (Number.isNaN(thing)) return NAN;
+		if (thing === Infinity) return POSITIVE_INFINITY;
+		if (thing === -Infinity) return NEGATIVE_INFINITY;
+		if (thing === 0 && 1 / thing < 0) return NEGATIVE_ZERO;
+
+		if (indexes.has(thing)) return /** @type {number} */ (indexes.get(thing));
+
+		index ??= p++;
+		indexes.set(thing, index);
+
+		for (const { key, fn } of custom) {
+			const value = fn(thing);
+			if (value) {
+				stringified[index] = `["${key}",${flatten(value)}]`;
+				return index;
+			}
+		}
+
+		if (typeof thing === 'function') {
+			throw new DevalueError(`Cannot stringify a function`, keys, thing, value);
+		} else if (typeof thing === 'symbol') {
+			throw new DevalueError(`Cannot stringify a Symbol primitive`, keys, thing, value);
+		}
+
+		/** @type {string | Promise<any>} */
+		let str = '';
+
+		if (is_primitive(thing)) {
+			str = stringify_primitive(thing);
+		} else if (typeof thing.then === 'function') {
+			{
+				throw new DevalueError(
+					`Cannot stringify a Promise or thenable — use stringifyAsync instead`,
+					keys,
+					thing,
+					value
+				);
+			}
+		} else {
+			const type = get_type(thing);
+
+			switch (type) {
+				case 'Number':
+				case 'String':
+				case 'Boolean':
+				case 'BigInt':
+					str = `["Object",${flatten(thing.valueOf())}]`;
+					break;
+
+				case 'Date':
+					const valid = !isNaN(thing.getDate());
+					str = `["Date","${valid ? thing.toISOString() : ''}"]`;
+					break;
+
+				case 'URL':
+					str = `["URL",${stringify_string(thing.toString())}]`;
+					break;
+
+				case 'URLSearchParams':
+					str = `["URLSearchParams",${stringify_string(thing.toString())}]`;
+					break;
+
+				case 'RegExp':
+					const { source, flags } = thing;
+					str = flags
+						? `["RegExp",${stringify_string(source)},"${flags}"]`
+						: `["RegExp",${stringify_string(source)}]`;
+					break;
+
+				case 'Array': {
+					// For dense arrays (no holes), we iterate normally.
+					// When we encounter the first hole, we call Object.keys
+					// to determine the sparseness, then decide between:
+					//   - HOLE encoding: [-2, val, -2, ...] (default)
+					//   - Sparse encoding: [-7, length, idx, val, ...] (for very sparse arrays)
+					// Only the sparse path avoids iterating every slot, which
+					// is what protects against the DoS of e.g. `arr[1000000] = 1`.
+					let mostly_dense = false;
+
+					str = '[';
+
+					for (let i = 0; i < thing.length; i += 1) {
+						if (i > 0) str += ',';
+
+						if (Object.hasOwn(thing, i)) {
+							keys.push(`[${i}]`);
+							str += flatten(thing[i]);
+							keys.pop();
+						} else if (mostly_dense) {
+							// Use dense encoding. The heuristic guarantees the
+							// array is only mildly sparse, so iterating over every
+							// slot is fine.
+							str += HOLE;
+						} else {
+							// Decide between HOLE encoding and sparse encoding.
+							//
+							// HOLE encoding: each hole is serialized as the HOLE
+							// sentinel (-2). For example, [, "a", ,] becomes
+							// [-2, 0, -2]. Each hole costs 3 chars ("-2" + comma).
+							//
+							// Sparse encoding: lists only populated indices.
+							// For example, [, "a", ,] becomes [-7, 3, 1, 0] — the
+							// -7 sentinel, the array length (3), then index-value
+							// pairs. This avoids paying per-hole, but each element
+							// costs extra chars to write its index.
+							//
+							// The values are the same size either way, so the
+							// choice comes down to structural overhead:
+							//
+							//   HOLE overhead:
+							//     3 chars per hole ("-2" + comma)
+							//     = (L - P) * 3
+							//
+							//   Sparse overhead:
+							//     "-7,"          — 3 chars (sparse sentinel + comma)
+							//     + length + "," — (d + 1) chars (array length + comma)
+							//     + per element: index + "," — (d + 1) chars
+							//     = (4 + d) + P * (d + 1)
+							//
+							// where L is the array length, P is the number of
+							// populated elements, and d is the number of digits
+							// in L (an upper bound on the digits in any index).
+							//
+							// Sparse encoding is cheaper when:
+							//   (4 + d) + P * (d + 1) < (L - P) * 3
+							const populated_keys = valid_array_indices(/** @type {any[]} */ (thing));
+							const population = populated_keys.length;
+							const d = String(thing.length).length;
+
+							const hole_cost = (thing.length - population) * 3;
+							const sparse_cost = 4 + d + population * (d + 1);
+
+							if (hole_cost > sparse_cost) {
+								str = '[' + SPARSE + ',' + thing.length;
+								for (let j = 0; j < populated_keys.length; j++) {
+									const key = populated_keys[j];
+									keys.push(`[${key}]`);
+									str += ',' + key + ',' + flatten(thing[key]);
+									keys.pop();
+								}
+								break;
+							} else {
+								mostly_dense = true;
+								str += HOLE;
+							}
+						}
+					}
+
+					str += ']';
+
+					break;
+				}
+
+				case 'Set':
+					str = '["Set"';
+
+					for (const value of thing) {
+						str += `,${flatten(value)}`;
+					}
+
+					str += ']';
+					break;
+
+				case 'Map':
+					str = '["Map"';
+
+					for (const [key, value] of thing) {
+						keys.push(`.get(${is_primitive(key) ? stringify_primitive(key) : '...'})`);
+						str += `,${flatten(key)},${flatten(value)}`;
+						keys.pop();
+					}
+
+					str += ']';
+					break;
+
+				case 'Int8Array':
+				case 'Uint8Array':
+				case 'Uint8ClampedArray':
+				case 'Int16Array':
+				case 'Uint16Array':
+				case 'Float16Array':
+				case 'Int32Array':
+				case 'Uint32Array':
+				case 'Float32Array':
+				case 'Float64Array':
+				case 'BigInt64Array':
+				case 'BigUint64Array':
+				case 'DataView': {
+					/** @type {import("./types.js").TypedArray} */
+					const typedArray = thing;
+					str = '["' + type + '",' + flatten(typedArray.buffer);
+
+					// handle subarrays
+					if (typedArray.byteLength !== typedArray.buffer.byteLength) {
+						// to be used with `new TypedArray(buffer, byteOffset, length)`
+						str += `,${typedArray.byteOffset},${typedArray.length}`;
+					}
+
+					str += ']';
+					break;
+				}
+
+				case 'ArrayBuffer': {
+					/** @type {ArrayBuffer} */
+					const arraybuffer = thing;
+					const base64 = encode64(arraybuffer);
+
+					str = `["ArrayBuffer","${base64}"]`;
+					break;
+				}
+
+				case 'Temporal.Duration':
+				case 'Temporal.Instant':
+				case 'Temporal.PlainDate':
+				case 'Temporal.PlainTime':
+				case 'Temporal.PlainDateTime':
+				case 'Temporal.PlainMonthDay':
+				case 'Temporal.PlainYearMonth':
+				case 'Temporal.ZonedDateTime':
+					str = `["${type}",${stringify_string(thing.toString())}]`;
+					break;
+
+				default:
+					if (!is_plain_object(thing)) {
+						throw new DevalueError(`Cannot stringify arbitrary non-POJOs`, keys, thing, value);
+					}
+
+					if (enumerable_symbols(thing).length > 0) {
+						throw new DevalueError(`Cannot stringify POJOs with symbolic keys`, keys, thing, value);
+					}
+
+					if (Object.getPrototypeOf(thing) === null) {
+						str = '["null"';
+						for (const key of Object.keys(thing)) {
+							if (key === '__proto__') {
+								throw new DevalueError(
+									`Cannot stringify objects with __proto__ keys`,
+									keys,
+									thing,
+									value
+								);
+							}
+
+							keys.push(stringify_key(key));
+							str += `,${stringify_string(key)},${flatten(thing[key])}`;
+							keys.pop();
+						}
+						str += ']';
+					} else {
+						str = '{';
+						let started = false;
+						for (const key of Object.keys(thing)) {
+							if (key === '__proto__') {
+								throw new DevalueError(
+									`Cannot stringify objects with __proto__ keys`,
+									keys,
+									thing,
+									value
+								);
+							}
+
+							if (started) str += ',';
+							started = true;
+							keys.push(stringify_key(key));
+							str += `${stringify_string(key)}:${flatten(thing[key])}`;
+							keys.pop();
+						}
+						str += '}';
+					}
+			}
+		}
+
+		stringified[index] = str;
+		return index;
+	}
+
+	const index = flatten(value);
+
+	// special case — value is represented as a negative index
+	if (index < 0) return `${index}`;
+
+	return stringified;
+}
+
+/**
+ * @param {any} thing
+ * @returns {string}
+ */
+function stringify_primitive(thing) {
+	const type = typeof thing;
+	if (type === 'string') return stringify_string(thing);
+	if (thing === void 0) return UNDEFINED.toString();
+	if (thing === 0 && 1 / thing < 0) return NEGATIVE_ZERO.toString();
+	if (type === 'bigint') return `["BigInt","${thing}"]`;
+	return String(thing);
+}
 
 const ACTION_QUERY_PARAMS = {
   actionName: "_action"};
@@ -3877,6 +4702,1856 @@ function getActionQueryString(name) {
   const searchParams = new URLSearchParams({ [ACTION_QUERY_PARAMS.actionName]: name });
   return `?${searchParams.toString()}`;
 }
+
+/* es-module-lexer 2.0.0 */
+var ImportType;!function(A){A[A.Static=1]="Static",A[A.Dynamic=2]="Dynamic",A[A.ImportMeta=3]="ImportMeta",A[A.StaticSourcePhase=4]="StaticSourcePhase",A[A.DynamicSourcePhase=5]="DynamicSourcePhase",A[A.StaticDeferPhase=6]="StaticDeferPhase",A[A.DynamicDeferPhase=7]="DynamicDeferPhase";}(ImportType||(ImportType={}));1===new Uint8Array(new Uint16Array([1]).buffer)[0];const E=()=>{return A="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","undefined"!=typeof Buffer?Buffer.from(A,"base64"):Uint8Array.from(atob(A),(A=>A.charCodeAt(0)));var A;};WebAssembly.compile(E()).then(WebAssembly.instantiate).then((({exports:A})=>{}));
+
+/** A special constant with type `never` */
+function $constructor(name, initializer, params) {
+    function init(inst, def) {
+        if (!inst._zod) {
+            Object.defineProperty(inst, "_zod", {
+                value: {
+                    def,
+                    constr: _,
+                    traits: new Set(),
+                },
+                enumerable: false,
+            });
+        }
+        if (inst._zod.traits.has(name)) {
+            return;
+        }
+        inst._zod.traits.add(name);
+        initializer(inst, def);
+        // support prototype modifications
+        const proto = _.prototype;
+        const keys = Object.keys(proto);
+        for (let i = 0; i < keys.length; i++) {
+            const k = keys[i];
+            if (!(k in inst)) {
+                inst[k] = proto[k].bind(inst);
+            }
+        }
+    }
+    // doesn't work if Parent has a constructor with arguments
+    const Parent = params?.Parent ?? Object;
+    class Definition extends Parent {
+    }
+    Object.defineProperty(Definition, "name", { value: name });
+    function _(def) {
+        var _a;
+        const inst = params?.Parent ? new Definition() : this;
+        init(inst, def);
+        (_a = inst._zod).deferred ?? (_a.deferred = []);
+        for (const fn of inst._zod.deferred) {
+            fn();
+        }
+        return inst;
+    }
+    Object.defineProperty(_, "init", { value: init });
+    Object.defineProperty(_, Symbol.hasInstance, {
+        value: (inst) => {
+            if (params?.Parent && inst instanceof params.Parent)
+                return true;
+            return inst?._zod?.traits?.has(name);
+        },
+    });
+    Object.defineProperty(_, "name", { value: name });
+    return _;
+}
+class $ZodAsyncError extends Error {
+    constructor() {
+        super(`Encountered Promise during synchronous parse. Use .parseAsync() instead.`);
+    }
+}
+class $ZodEncodeError extends Error {
+    constructor(name) {
+        super(`Encountered unidirectional transform during encode: ${name}`);
+        this.name = "ZodEncodeError";
+    }
+}
+const globalConfig = {};
+function config(newConfig) {
+    return globalConfig;
+}
+
+// functions
+function getEnumValues(entries) {
+    const numericValues = Object.values(entries).filter((v) => typeof v === "number");
+    const values = Object.entries(entries)
+        .filter(([k, _]) => numericValues.indexOf(+k) === -1)
+        .map(([_, v]) => v);
+    return values;
+}
+function jsonStringifyReplacer(_, value) {
+    if (typeof value === "bigint")
+        return value.toString();
+    return value;
+}
+function nullish(input) {
+    return input === null || input === undefined;
+}
+function cleanRegex(source) {
+    const start = source.startsWith("^") ? 1 : 0;
+    const end = source.endsWith("$") ? source.length - 1 : source.length;
+    return source.slice(start, end);
+}
+const EVALUATING = Symbol("evaluating");
+function defineLazy(object, key, getter) {
+    let value = undefined;
+    Object.defineProperty(object, key, {
+        get() {
+            if (value === EVALUATING) {
+                // Circular reference detected, return undefined to break the cycle
+                return undefined;
+            }
+            if (value === undefined) {
+                value = EVALUATING;
+                value = getter();
+            }
+            return value;
+        },
+        set(v) {
+            Object.defineProperty(object, key, {
+                value: v,
+                // configurable: true,
+            });
+            // object[key] = v;
+        },
+        configurable: true,
+    });
+}
+function mergeDefs(...defs) {
+    const mergedDescriptors = {};
+    for (const def of defs) {
+        const descriptors = Object.getOwnPropertyDescriptors(def);
+        Object.assign(mergedDescriptors, descriptors);
+    }
+    return Object.defineProperties({}, mergedDescriptors);
+}
+const captureStackTrace = ("captureStackTrace" in Error ? Error.captureStackTrace : (..._args) => { });
+function isObject(data) {
+    return typeof data === "object" && data !== null && !Array.isArray(data);
+}
+function isPlainObject(o) {
+    if (isObject(o) === false)
+        return false;
+    // modified constructor
+    const ctor = o.constructor;
+    if (ctor === undefined)
+        return true;
+    if (typeof ctor !== "function")
+        return true;
+    // modified prototype
+    const prot = ctor.prototype;
+    if (isObject(prot) === false)
+        return false;
+    // ctor doesn't have static `isPrototypeOf`
+    if (Object.prototype.hasOwnProperty.call(prot, "isPrototypeOf") === false) {
+        return false;
+    }
+    return true;
+}
+function shallowClone(o) {
+    if (isPlainObject(o))
+        return { ...o };
+    if (Array.isArray(o))
+        return [...o];
+    return o;
+}
+const propertyKeyTypes = new Set(["string", "number", "symbol"]);
+function escapeRegex(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+// zod-specific utils
+function clone(inst, def, params) {
+    const cl = new inst._zod.constr(def ?? inst._zod.def);
+    if (!def || params?.parent)
+        cl._zod.parent = inst;
+    return cl;
+}
+function normalizeParams(_params) {
+    const params = _params;
+    if (!params)
+        return {};
+    if (typeof params === "string")
+        return { error: () => params };
+    if (params?.message !== undefined) {
+        if (params?.error !== undefined)
+            throw new Error("Cannot specify both `message` and `error` params");
+        params.error = params.message;
+    }
+    delete params.message;
+    if (typeof params.error === "string")
+        return { ...params, error: () => params.error };
+    return params;
+}
+// invalid_type | too_big | too_small | invalid_format | not_multiple_of | unrecognized_keys | invalid_union | invalid_key | invalid_element | invalid_value | custom
+function aborted(x, startIndex = 0) {
+    if (x.aborted === true)
+        return true;
+    for (let i = startIndex; i < x.issues.length; i++) {
+        if (x.issues[i]?.continue !== true) {
+            return true;
+        }
+    }
+    return false;
+}
+function prefixIssues(path, issues) {
+    return issues.map((iss) => {
+        var _a;
+        (_a = iss).path ?? (_a.path = []);
+        iss.path.unshift(path);
+        return iss;
+    });
+}
+function unwrapMessage(message) {
+    return typeof message === "string" ? message : message?.message;
+}
+function finalizeIssue(iss, ctx, config) {
+    const full = { ...iss, path: iss.path ?? [] };
+    // for backwards compatibility
+    if (!iss.message) {
+        const message = unwrapMessage(iss.inst?._zod.def?.error?.(iss)) ??
+            unwrapMessage(ctx?.error?.(iss)) ??
+            unwrapMessage(config.customError?.(iss)) ??
+            unwrapMessage(config.localeError?.(iss)) ??
+            "Invalid input";
+        full.message = message;
+    }
+    // delete (full as any).def;
+    delete full.inst;
+    delete full.continue;
+    if (!ctx?.reportInput) {
+        delete full.input;
+    }
+    return full;
+}
+function getLengthableOrigin(input) {
+    if (Array.isArray(input))
+        return "array";
+    if (typeof input === "string")
+        return "string";
+    return "unknown";
+}
+function issue(...args) {
+    const [iss, input, inst] = args;
+    if (typeof iss === "string") {
+        return {
+            message: iss,
+            code: "custom",
+            input,
+            inst,
+        };
+    }
+    return { ...iss };
+}
+
+const initializer$1 = (inst, def) => {
+    inst.name = "$ZodError";
+    Object.defineProperty(inst, "_zod", {
+        value: inst._zod,
+        enumerable: false,
+    });
+    Object.defineProperty(inst, "issues", {
+        value: def,
+        enumerable: false,
+    });
+    inst.message = JSON.stringify(def, jsonStringifyReplacer, 2);
+    Object.defineProperty(inst, "toString", {
+        value: () => inst.message,
+        enumerable: false,
+    });
+};
+const $ZodError = $constructor("$ZodError", initializer$1);
+const $ZodRealError = $constructor("$ZodError", initializer$1, { Parent: Error });
+function flattenError(error, mapper = (issue) => issue.message) {
+    const fieldErrors = {};
+    const formErrors = [];
+    for (const sub of error.issues) {
+        if (sub.path.length > 0) {
+            fieldErrors[sub.path[0]] = fieldErrors[sub.path[0]] || [];
+            fieldErrors[sub.path[0]].push(mapper(sub));
+        }
+        else {
+            formErrors.push(mapper(sub));
+        }
+    }
+    return { formErrors, fieldErrors };
+}
+function formatError(error, mapper = (issue) => issue.message) {
+    const fieldErrors = { _errors: [] };
+    const processError = (error) => {
+        for (const issue of error.issues) {
+            if (issue.code === "invalid_union" && issue.errors.length) {
+                issue.errors.map((issues) => processError({ issues }));
+            }
+            else if (issue.code === "invalid_key") {
+                processError({ issues: issue.issues });
+            }
+            else if (issue.code === "invalid_element") {
+                processError({ issues: issue.issues });
+            }
+            else if (issue.path.length === 0) {
+                fieldErrors._errors.push(mapper(issue));
+            }
+            else {
+                let curr = fieldErrors;
+                let i = 0;
+                while (i < issue.path.length) {
+                    const el = issue.path[i];
+                    const terminal = i === issue.path.length - 1;
+                    if (!terminal) {
+                        curr[el] = curr[el] || { _errors: [] };
+                    }
+                    else {
+                        curr[el] = curr[el] || { _errors: [] };
+                        curr[el]._errors.push(mapper(issue));
+                    }
+                    curr = curr[el];
+                    i++;
+                }
+            }
+        }
+    };
+    processError(error);
+    return fieldErrors;
+}
+
+const _parse = (_Err) => (schema, value, _ctx, _params) => {
+    const ctx = _ctx ? Object.assign(_ctx, { async: false }) : { async: false };
+    const result = schema._zod.run({ value, issues: [] }, ctx);
+    if (result instanceof Promise) {
+        throw new $ZodAsyncError();
+    }
+    if (result.issues.length) {
+        const e = new (_params?.Err ?? _Err)(result.issues.map((iss) => finalizeIssue(iss, ctx, config())));
+        captureStackTrace(e, _params?.callee);
+        throw e;
+    }
+    return result.value;
+};
+const _parseAsync = (_Err) => async (schema, value, _ctx, params) => {
+    const ctx = _ctx ? Object.assign(_ctx, { async: true }) : { async: true };
+    let result = schema._zod.run({ value, issues: [] }, ctx);
+    if (result instanceof Promise)
+        result = await result;
+    if (result.issues.length) {
+        const e = new (params?.Err ?? _Err)(result.issues.map((iss) => finalizeIssue(iss, ctx, config())));
+        captureStackTrace(e, params?.callee);
+        throw e;
+    }
+    return result.value;
+};
+const _safeParse = (_Err) => (schema, value, _ctx) => {
+    const ctx = _ctx ? { ..._ctx, async: false } : { async: false };
+    const result = schema._zod.run({ value, issues: [] }, ctx);
+    if (result instanceof Promise) {
+        throw new $ZodAsyncError();
+    }
+    return result.issues.length
+        ? {
+            success: false,
+            error: new (_Err ?? $ZodError)(result.issues.map((iss) => finalizeIssue(iss, ctx, config()))),
+        }
+        : { success: true, data: result.value };
+};
+const safeParse$1 = /* @__PURE__*/ _safeParse($ZodRealError);
+const _safeParseAsync = (_Err) => async (schema, value, _ctx) => {
+    const ctx = _ctx ? Object.assign(_ctx, { async: true }) : { async: true };
+    let result = schema._zod.run({ value, issues: [] }, ctx);
+    if (result instanceof Promise)
+        result = await result;
+    return result.issues.length
+        ? {
+            success: false,
+            error: new _Err(result.issues.map((iss) => finalizeIssue(iss, ctx, config()))),
+        }
+        : { success: true, data: result.value };
+};
+const safeParseAsync$1 = /* @__PURE__*/ _safeParseAsync($ZodRealError);
+const _encode = (_Err) => (schema, value, _ctx) => {
+    const ctx = _ctx ? Object.assign(_ctx, { direction: "backward" }) : { direction: "backward" };
+    return _parse(_Err)(schema, value, ctx);
+};
+const _decode = (_Err) => (schema, value, _ctx) => {
+    return _parse(_Err)(schema, value, _ctx);
+};
+const _encodeAsync = (_Err) => async (schema, value, _ctx) => {
+    const ctx = _ctx ? Object.assign(_ctx, { direction: "backward" }) : { direction: "backward" };
+    return _parseAsync(_Err)(schema, value, ctx);
+};
+const _decodeAsync = (_Err) => async (schema, value, _ctx) => {
+    return _parseAsync(_Err)(schema, value, _ctx);
+};
+const _safeEncode = (_Err) => (schema, value, _ctx) => {
+    const ctx = _ctx ? Object.assign(_ctx, { direction: "backward" }) : { direction: "backward" };
+    return _safeParse(_Err)(schema, value, ctx);
+};
+const _safeDecode = (_Err) => (schema, value, _ctx) => {
+    return _safeParse(_Err)(schema, value, _ctx);
+};
+const _safeEncodeAsync = (_Err) => async (schema, value, _ctx) => {
+    const ctx = _ctx ? Object.assign(_ctx, { direction: "backward" }) : { direction: "backward" };
+    return _safeParseAsync(_Err)(schema, value, ctx);
+};
+const _safeDecodeAsync = (_Err) => async (schema, value, _ctx) => {
+    return _safeParseAsync(_Err)(schema, value, _ctx);
+};
+
+// import { $ZodType } from "./schemas.js";
+const $ZodCheck = /*@__PURE__*/ $constructor("$ZodCheck", (inst, def) => {
+    var _a;
+    inst._zod ?? (inst._zod = {});
+    inst._zod.def = def;
+    (_a = inst._zod).onattach ?? (_a.onattach = []);
+});
+const $ZodCheckMaxLength = /*@__PURE__*/ $constructor("$ZodCheckMaxLength", (inst, def) => {
+    var _a;
+    $ZodCheck.init(inst, def);
+    (_a = inst._zod.def).when ?? (_a.when = (payload) => {
+        const val = payload.value;
+        return !nullish(val) && val.length !== undefined;
+    });
+    inst._zod.onattach.push((inst) => {
+        const curr = (inst._zod.bag.maximum ?? Number.POSITIVE_INFINITY);
+        if (def.maximum < curr)
+            inst._zod.bag.maximum = def.maximum;
+    });
+    inst._zod.check = (payload) => {
+        const input = payload.value;
+        const length = input.length;
+        if (length <= def.maximum)
+            return;
+        const origin = getLengthableOrigin(input);
+        payload.issues.push({
+            origin,
+            code: "too_big",
+            maximum: def.maximum,
+            inclusive: true,
+            input,
+            inst,
+            continue: !def.abort,
+        });
+    };
+});
+const $ZodCheckMinLength = /*@__PURE__*/ $constructor("$ZodCheckMinLength", (inst, def) => {
+    var _a;
+    $ZodCheck.init(inst, def);
+    (_a = inst._zod.def).when ?? (_a.when = (payload) => {
+        const val = payload.value;
+        return !nullish(val) && val.length !== undefined;
+    });
+    inst._zod.onattach.push((inst) => {
+        const curr = (inst._zod.bag.minimum ?? Number.NEGATIVE_INFINITY);
+        if (def.minimum > curr)
+            inst._zod.bag.minimum = def.minimum;
+    });
+    inst._zod.check = (payload) => {
+        const input = payload.value;
+        const length = input.length;
+        if (length >= def.minimum)
+            return;
+        const origin = getLengthableOrigin(input);
+        payload.issues.push({
+            origin,
+            code: "too_small",
+            minimum: def.minimum,
+            inclusive: true,
+            input,
+            inst,
+            continue: !def.abort,
+        });
+    };
+});
+const $ZodCheckLengthEquals = /*@__PURE__*/ $constructor("$ZodCheckLengthEquals", (inst, def) => {
+    var _a;
+    $ZodCheck.init(inst, def);
+    (_a = inst._zod.def).when ?? (_a.when = (payload) => {
+        const val = payload.value;
+        return !nullish(val) && val.length !== undefined;
+    });
+    inst._zod.onattach.push((inst) => {
+        const bag = inst._zod.bag;
+        bag.minimum = def.length;
+        bag.maximum = def.length;
+        bag.length = def.length;
+    });
+    inst._zod.check = (payload) => {
+        const input = payload.value;
+        const length = input.length;
+        if (length === def.length)
+            return;
+        const origin = getLengthableOrigin(input);
+        const tooBig = length > def.length;
+        payload.issues.push({
+            origin,
+            ...(tooBig ? { code: "too_big", maximum: def.length } : { code: "too_small", minimum: def.length }),
+            inclusive: true,
+            exact: true,
+            input: payload.value,
+            inst,
+            continue: !def.abort,
+        });
+    };
+});
+const $ZodCheckOverwrite = /*@__PURE__*/ $constructor("$ZodCheckOverwrite", (inst, def) => {
+    $ZodCheck.init(inst, def);
+    inst._zod.check = (payload) => {
+        payload.value = def.tx(payload.value);
+    };
+});
+
+const version = {
+    major: 4,
+    minor: 3,
+    patch: 6,
+};
+
+const $ZodType = /*@__PURE__*/ $constructor("$ZodType", (inst, def) => {
+    var _a;
+    inst ?? (inst = {});
+    inst._zod.def = def; // set _def property
+    inst._zod.bag = inst._zod.bag || {}; // initialize _bag object
+    inst._zod.version = version;
+    const checks = [...(inst._zod.def.checks ?? [])];
+    // if inst is itself a checks.$ZodCheck, run it as a check
+    if (inst._zod.traits.has("$ZodCheck")) {
+        checks.unshift(inst);
+    }
+    for (const ch of checks) {
+        for (const fn of ch._zod.onattach) {
+            fn(inst);
+        }
+    }
+    if (checks.length === 0) {
+        // deferred initializer
+        // inst._zod.parse is not yet defined
+        (_a = inst._zod).deferred ?? (_a.deferred = []);
+        inst._zod.deferred?.push(() => {
+            inst._zod.run = inst._zod.parse;
+        });
+    }
+    else {
+        const runChecks = (payload, checks, ctx) => {
+            let isAborted = aborted(payload);
+            let asyncResult;
+            for (const ch of checks) {
+                if (ch._zod.def.when) {
+                    const shouldRun = ch._zod.def.when(payload);
+                    if (!shouldRun)
+                        continue;
+                }
+                else if (isAborted) {
+                    continue;
+                }
+                const currLen = payload.issues.length;
+                const _ = ch._zod.check(payload);
+                if (_ instanceof Promise && ctx?.async === false) {
+                    throw new $ZodAsyncError();
+                }
+                if (asyncResult || _ instanceof Promise) {
+                    asyncResult = (asyncResult ?? Promise.resolve()).then(async () => {
+                        await _;
+                        const nextLen = payload.issues.length;
+                        if (nextLen === currLen)
+                            return;
+                        if (!isAborted)
+                            isAborted = aborted(payload, currLen);
+                    });
+                }
+                else {
+                    const nextLen = payload.issues.length;
+                    if (nextLen === currLen)
+                        continue;
+                    if (!isAborted)
+                        isAborted = aborted(payload, currLen);
+                }
+            }
+            if (asyncResult) {
+                return asyncResult.then(() => {
+                    return payload;
+                });
+            }
+            return payload;
+        };
+        const handleCanaryResult = (canary, payload, ctx) => {
+            // abort if the canary is aborted
+            if (aborted(canary)) {
+                canary.aborted = true;
+                return canary;
+            }
+            // run checks first, then
+            const checkResult = runChecks(payload, checks, ctx);
+            if (checkResult instanceof Promise) {
+                if (ctx.async === false)
+                    throw new $ZodAsyncError();
+                return checkResult.then((checkResult) => inst._zod.parse(checkResult, ctx));
+            }
+            return inst._zod.parse(checkResult, ctx);
+        };
+        inst._zod.run = (payload, ctx) => {
+            if (ctx.skipChecks) {
+                return inst._zod.parse(payload, ctx);
+            }
+            if (ctx.direction === "backward") {
+                // run canary
+                // initial pass (no checks)
+                const canary = inst._zod.parse({ value: payload.value, issues: [] }, { ...ctx, skipChecks: true });
+                if (canary instanceof Promise) {
+                    return canary.then((canary) => {
+                        return handleCanaryResult(canary, payload, ctx);
+                    });
+                }
+                return handleCanaryResult(canary, payload, ctx);
+            }
+            // forward
+            const result = inst._zod.parse(payload, ctx);
+            if (result instanceof Promise) {
+                if (ctx.async === false)
+                    throw new $ZodAsyncError();
+                return result.then((result) => runChecks(result, checks, ctx));
+            }
+            return runChecks(result, checks, ctx);
+        };
+    }
+    // Lazy initialize ~standard to avoid creating objects for every schema
+    defineLazy(inst, "~standard", () => ({
+        validate: (value) => {
+            try {
+                const r = safeParse$1(inst, value);
+                return r.success ? { value: r.data } : { issues: r.error?.issues };
+            }
+            catch (_) {
+                return safeParseAsync$1(inst, value).then((r) => (r.success ? { value: r.data } : { issues: r.error?.issues }));
+            }
+        },
+        vendor: "zod",
+        version: 1,
+    }));
+});
+function handleArrayResult(result, final, index) {
+    if (result.issues.length) {
+        final.issues.push(...prefixIssues(index, result.issues));
+    }
+    final.value[index] = result.value;
+}
+const $ZodArray = /*@__PURE__*/ $constructor("$ZodArray", (inst, def) => {
+    $ZodType.init(inst, def);
+    inst._zod.parse = (payload, ctx) => {
+        const input = payload.value;
+        if (!Array.isArray(input)) {
+            payload.issues.push({
+                expected: "array",
+                code: "invalid_type",
+                input,
+                inst,
+            });
+            return payload;
+        }
+        payload.value = Array(input.length);
+        const proms = [];
+        for (let i = 0; i < input.length; i++) {
+            const item = input[i];
+            const result = def.element._zod.run({
+                value: item,
+                issues: [],
+            }, ctx);
+            if (result instanceof Promise) {
+                proms.push(result.then((result) => handleArrayResult(result, payload, i)));
+            }
+            else {
+                handleArrayResult(result, payload, i);
+            }
+        }
+        if (proms.length) {
+            return Promise.all(proms).then(() => payload);
+        }
+        return payload; //handleArrayResultsAsync(parseResults, final);
+    };
+});
+function handleUnionResults(results, final, inst, ctx) {
+    for (const result of results) {
+        if (result.issues.length === 0) {
+            final.value = result.value;
+            return final;
+        }
+    }
+    const nonaborted = results.filter((r) => !aborted(r));
+    if (nonaborted.length === 1) {
+        final.value = nonaborted[0].value;
+        return nonaborted[0];
+    }
+    final.issues.push({
+        code: "invalid_union",
+        input: final.value,
+        inst,
+        errors: results.map((result) => result.issues.map((iss) => finalizeIssue(iss, ctx, config()))),
+    });
+    return final;
+}
+const $ZodUnion = /*@__PURE__*/ $constructor("$ZodUnion", (inst, def) => {
+    $ZodType.init(inst, def);
+    defineLazy(inst._zod, "optin", () => def.options.some((o) => o._zod.optin === "optional") ? "optional" : undefined);
+    defineLazy(inst._zod, "optout", () => def.options.some((o) => o._zod.optout === "optional") ? "optional" : undefined);
+    defineLazy(inst._zod, "values", () => {
+        if (def.options.every((o) => o._zod.values)) {
+            return new Set(def.options.flatMap((option) => Array.from(option._zod.values)));
+        }
+        return undefined;
+    });
+    defineLazy(inst._zod, "pattern", () => {
+        if (def.options.every((o) => o._zod.pattern)) {
+            const patterns = def.options.map((o) => o._zod.pattern);
+            return new RegExp(`^(${patterns.map((p) => cleanRegex(p.source)).join("|")})$`);
+        }
+        return undefined;
+    });
+    const single = def.options.length === 1;
+    const first = def.options[0]._zod.run;
+    inst._zod.parse = (payload, ctx) => {
+        if (single) {
+            return first(payload, ctx);
+        }
+        let async = false;
+        const results = [];
+        for (const option of def.options) {
+            const result = option._zod.run({
+                value: payload.value,
+                issues: [],
+            }, ctx);
+            if (result instanceof Promise) {
+                results.push(result);
+                async = true;
+            }
+            else {
+                if (result.issues.length === 0)
+                    return result;
+                results.push(result);
+            }
+        }
+        if (!async)
+            return handleUnionResults(results, payload, inst, ctx);
+        return Promise.all(results).then((results) => {
+            return handleUnionResults(results, payload, inst, ctx);
+        });
+    };
+});
+const $ZodIntersection = /*@__PURE__*/ $constructor("$ZodIntersection", (inst, def) => {
+    $ZodType.init(inst, def);
+    inst._zod.parse = (payload, ctx) => {
+        const input = payload.value;
+        const left = def.left._zod.run({ value: input, issues: [] }, ctx);
+        const right = def.right._zod.run({ value: input, issues: [] }, ctx);
+        const async = left instanceof Promise || right instanceof Promise;
+        if (async) {
+            return Promise.all([left, right]).then(([left, right]) => {
+                return handleIntersectionResults(payload, left, right);
+            });
+        }
+        return handleIntersectionResults(payload, left, right);
+    };
+});
+function mergeValues(a, b) {
+    // const aType = parse.t(a);
+    // const bType = parse.t(b);
+    if (a === b) {
+        return { valid: true, data: a };
+    }
+    if (a instanceof Date && b instanceof Date && +a === +b) {
+        return { valid: true, data: a };
+    }
+    if (isPlainObject(a) && isPlainObject(b)) {
+        const bKeys = Object.keys(b);
+        const sharedKeys = Object.keys(a).filter((key) => bKeys.indexOf(key) !== -1);
+        const newObj = { ...a, ...b };
+        for (const key of sharedKeys) {
+            const sharedValue = mergeValues(a[key], b[key]);
+            if (!sharedValue.valid) {
+                return {
+                    valid: false,
+                    mergeErrorPath: [key, ...sharedValue.mergeErrorPath],
+                };
+            }
+            newObj[key] = sharedValue.data;
+        }
+        return { valid: true, data: newObj };
+    }
+    if (Array.isArray(a) && Array.isArray(b)) {
+        if (a.length !== b.length) {
+            return { valid: false, mergeErrorPath: [] };
+        }
+        const newArray = [];
+        for (let index = 0; index < a.length; index++) {
+            const itemA = a[index];
+            const itemB = b[index];
+            const sharedValue = mergeValues(itemA, itemB);
+            if (!sharedValue.valid) {
+                return {
+                    valid: false,
+                    mergeErrorPath: [index, ...sharedValue.mergeErrorPath],
+                };
+            }
+            newArray.push(sharedValue.data);
+        }
+        return { valid: true, data: newArray };
+    }
+    return { valid: false, mergeErrorPath: [] };
+}
+function handleIntersectionResults(result, left, right) {
+    // Track which side(s) report each key as unrecognized
+    const unrecKeys = new Map();
+    let unrecIssue;
+    for (const iss of left.issues) {
+        if (iss.code === "unrecognized_keys") {
+            unrecIssue ?? (unrecIssue = iss);
+            for (const k of iss.keys) {
+                if (!unrecKeys.has(k))
+                    unrecKeys.set(k, {});
+                unrecKeys.get(k).l = true;
+            }
+        }
+        else {
+            result.issues.push(iss);
+        }
+    }
+    for (const iss of right.issues) {
+        if (iss.code === "unrecognized_keys") {
+            for (const k of iss.keys) {
+                if (!unrecKeys.has(k))
+                    unrecKeys.set(k, {});
+                unrecKeys.get(k).r = true;
+            }
+        }
+        else {
+            result.issues.push(iss);
+        }
+    }
+    // Report only keys unrecognized by BOTH sides
+    const bothKeys = [...unrecKeys].filter(([, f]) => f.l && f.r).map(([k]) => k);
+    if (bothKeys.length && unrecIssue) {
+        result.issues.push({ ...unrecIssue, keys: bothKeys });
+    }
+    if (aborted(result))
+        return result;
+    const merged = mergeValues(left.value, right.value);
+    if (!merged.valid) {
+        throw new Error(`Unmergable intersection. Error path: ` + `${JSON.stringify(merged.mergeErrorPath)}`);
+    }
+    result.value = merged.data;
+    return result;
+}
+const $ZodEnum = /*@__PURE__*/ $constructor("$ZodEnum", (inst, def) => {
+    $ZodType.init(inst, def);
+    const values = getEnumValues(def.entries);
+    const valuesSet = new Set(values);
+    inst._zod.values = valuesSet;
+    inst._zod.pattern = new RegExp(`^(${values
+        .filter((k) => propertyKeyTypes.has(typeof k))
+        .map((o) => (typeof o === "string" ? escapeRegex(o) : o.toString()))
+        .join("|")})$`);
+    inst._zod.parse = (payload, _ctx) => {
+        const input = payload.value;
+        if (valuesSet.has(input)) {
+            return payload;
+        }
+        payload.issues.push({
+            code: "invalid_value",
+            values,
+            input,
+            inst,
+        });
+        return payload;
+    };
+});
+const $ZodTransform = /*@__PURE__*/ $constructor("$ZodTransform", (inst, def) => {
+    $ZodType.init(inst, def);
+    inst._zod.parse = (payload, ctx) => {
+        if (ctx.direction === "backward") {
+            throw new $ZodEncodeError(inst.constructor.name);
+        }
+        const _out = def.transform(payload.value, payload);
+        if (ctx.async) {
+            const output = _out instanceof Promise ? _out : Promise.resolve(_out);
+            return output.then((output) => {
+                payload.value = output;
+                return payload;
+            });
+        }
+        if (_out instanceof Promise) {
+            throw new $ZodAsyncError();
+        }
+        payload.value = _out;
+        return payload;
+    };
+});
+function handleOptionalResult(result, input) {
+    if (result.issues.length && input === undefined) {
+        return { issues: [], value: undefined };
+    }
+    return result;
+}
+const $ZodOptional = /*@__PURE__*/ $constructor("$ZodOptional", (inst, def) => {
+    $ZodType.init(inst, def);
+    inst._zod.optin = "optional";
+    inst._zod.optout = "optional";
+    defineLazy(inst._zod, "values", () => {
+        return def.innerType._zod.values ? new Set([...def.innerType._zod.values, undefined]) : undefined;
+    });
+    defineLazy(inst._zod, "pattern", () => {
+        const pattern = def.innerType._zod.pattern;
+        return pattern ? new RegExp(`^(${cleanRegex(pattern.source)})?$`) : undefined;
+    });
+    inst._zod.parse = (payload, ctx) => {
+        if (def.innerType._zod.optin === "optional") {
+            const result = def.innerType._zod.run(payload, ctx);
+            if (result instanceof Promise)
+                return result.then((r) => handleOptionalResult(r, payload.value));
+            return handleOptionalResult(result, payload.value);
+        }
+        if (payload.value === undefined) {
+            return payload;
+        }
+        return def.innerType._zod.run(payload, ctx);
+    };
+});
+const $ZodExactOptional = /*@__PURE__*/ $constructor("$ZodExactOptional", (inst, def) => {
+    // Call parent init - inherits optin/optout = "optional"
+    $ZodOptional.init(inst, def);
+    // Override values/pattern to NOT add undefined
+    defineLazy(inst._zod, "values", () => def.innerType._zod.values);
+    defineLazy(inst._zod, "pattern", () => def.innerType._zod.pattern);
+    // Override parse to just delegate (no undefined handling)
+    inst._zod.parse = (payload, ctx) => {
+        return def.innerType._zod.run(payload, ctx);
+    };
+});
+const $ZodNullable = /*@__PURE__*/ $constructor("$ZodNullable", (inst, def) => {
+    $ZodType.init(inst, def);
+    defineLazy(inst._zod, "optin", () => def.innerType._zod.optin);
+    defineLazy(inst._zod, "optout", () => def.innerType._zod.optout);
+    defineLazy(inst._zod, "pattern", () => {
+        const pattern = def.innerType._zod.pattern;
+        return pattern ? new RegExp(`^(${cleanRegex(pattern.source)}|null)$`) : undefined;
+    });
+    defineLazy(inst._zod, "values", () => {
+        return def.innerType._zod.values ? new Set([...def.innerType._zod.values, null]) : undefined;
+    });
+    inst._zod.parse = (payload, ctx) => {
+        // Forward direction (decode): allow null to pass through
+        if (payload.value === null)
+            return payload;
+        return def.innerType._zod.run(payload, ctx);
+    };
+});
+const $ZodDefault = /*@__PURE__*/ $constructor("$ZodDefault", (inst, def) => {
+    $ZodType.init(inst, def);
+    // inst._zod.qin = "true";
+    inst._zod.optin = "optional";
+    defineLazy(inst._zod, "values", () => def.innerType._zod.values);
+    inst._zod.parse = (payload, ctx) => {
+        if (ctx.direction === "backward") {
+            return def.innerType._zod.run(payload, ctx);
+        }
+        // Forward direction (decode): apply defaults for undefined input
+        if (payload.value === undefined) {
+            payload.value = def.defaultValue;
+            /**
+             * $ZodDefault returns the default value immediately in forward direction.
+             * It doesn't pass the default value into the validator ("prefault"). There's no reason to pass the default value through validation. The validity of the default is enforced by TypeScript statically. Otherwise, it's the responsibility of the user to ensure the default is valid. In the case of pipes with divergent in/out types, you can specify the default on the `in` schema of your ZodPipe to set a "prefault" for the pipe.   */
+            return payload;
+        }
+        // Forward direction: continue with default handling
+        const result = def.innerType._zod.run(payload, ctx);
+        if (result instanceof Promise) {
+            return result.then((result) => handleDefaultResult(result, def));
+        }
+        return handleDefaultResult(result, def);
+    };
+});
+function handleDefaultResult(payload, def) {
+    if (payload.value === undefined) {
+        payload.value = def.defaultValue;
+    }
+    return payload;
+}
+const $ZodPrefault = /*@__PURE__*/ $constructor("$ZodPrefault", (inst, def) => {
+    $ZodType.init(inst, def);
+    inst._zod.optin = "optional";
+    defineLazy(inst._zod, "values", () => def.innerType._zod.values);
+    inst._zod.parse = (payload, ctx) => {
+        if (ctx.direction === "backward") {
+            return def.innerType._zod.run(payload, ctx);
+        }
+        // Forward direction (decode): apply prefault for undefined input
+        if (payload.value === undefined) {
+            payload.value = def.defaultValue;
+        }
+        return def.innerType._zod.run(payload, ctx);
+    };
+});
+const $ZodNonOptional = /*@__PURE__*/ $constructor("$ZodNonOptional", (inst, def) => {
+    $ZodType.init(inst, def);
+    defineLazy(inst._zod, "values", () => {
+        const v = def.innerType._zod.values;
+        return v ? new Set([...v].filter((x) => x !== undefined)) : undefined;
+    });
+    inst._zod.parse = (payload, ctx) => {
+        const result = def.innerType._zod.run(payload, ctx);
+        if (result instanceof Promise) {
+            return result.then((result) => handleNonOptionalResult(result, inst));
+        }
+        return handleNonOptionalResult(result, inst);
+    };
+});
+function handleNonOptionalResult(payload, inst) {
+    if (!payload.issues.length && payload.value === undefined) {
+        payload.issues.push({
+            code: "invalid_type",
+            expected: "nonoptional",
+            input: payload.value,
+            inst,
+        });
+    }
+    return payload;
+}
+const $ZodCatch = /*@__PURE__*/ $constructor("$ZodCatch", (inst, def) => {
+    $ZodType.init(inst, def);
+    defineLazy(inst._zod, "optin", () => def.innerType._zod.optin);
+    defineLazy(inst._zod, "optout", () => def.innerType._zod.optout);
+    defineLazy(inst._zod, "values", () => def.innerType._zod.values);
+    inst._zod.parse = (payload, ctx) => {
+        if (ctx.direction === "backward") {
+            return def.innerType._zod.run(payload, ctx);
+        }
+        // Forward direction (decode): apply catch logic
+        const result = def.innerType._zod.run(payload, ctx);
+        if (result instanceof Promise) {
+            return result.then((result) => {
+                payload.value = result.value;
+                if (result.issues.length) {
+                    payload.value = def.catchValue({
+                        ...payload,
+                        error: {
+                            issues: result.issues.map((iss) => finalizeIssue(iss, ctx, config())),
+                        },
+                        input: payload.value,
+                    });
+                    payload.issues = [];
+                }
+                return payload;
+            });
+        }
+        payload.value = result.value;
+        if (result.issues.length) {
+            payload.value = def.catchValue({
+                ...payload,
+                error: {
+                    issues: result.issues.map((iss) => finalizeIssue(iss, ctx, config())),
+                },
+                input: payload.value,
+            });
+            payload.issues = [];
+        }
+        return payload;
+    };
+});
+const $ZodPipe = /*@__PURE__*/ $constructor("$ZodPipe", (inst, def) => {
+    $ZodType.init(inst, def);
+    defineLazy(inst._zod, "values", () => def.in._zod.values);
+    defineLazy(inst._zod, "optin", () => def.in._zod.optin);
+    defineLazy(inst._zod, "optout", () => def.out._zod.optout);
+    defineLazy(inst._zod, "propValues", () => def.in._zod.propValues);
+    inst._zod.parse = (payload, ctx) => {
+        if (ctx.direction === "backward") {
+            const right = def.out._zod.run(payload, ctx);
+            if (right instanceof Promise) {
+                return right.then((right) => handlePipeResult(right, def.in, ctx));
+            }
+            return handlePipeResult(right, def.in, ctx);
+        }
+        const left = def.in._zod.run(payload, ctx);
+        if (left instanceof Promise) {
+            return left.then((left) => handlePipeResult(left, def.out, ctx));
+        }
+        return handlePipeResult(left, def.out, ctx);
+    };
+});
+function handlePipeResult(left, next, ctx) {
+    if (left.issues.length) {
+        // prevent further checks
+        left.aborted = true;
+        return left;
+    }
+    return next._zod.run({ value: left.value, issues: left.issues }, ctx);
+}
+const $ZodReadonly = /*@__PURE__*/ $constructor("$ZodReadonly", (inst, def) => {
+    $ZodType.init(inst, def);
+    defineLazy(inst._zod, "propValues", () => def.innerType._zod.propValues);
+    defineLazy(inst._zod, "values", () => def.innerType._zod.values);
+    defineLazy(inst._zod, "optin", () => def.innerType?._zod?.optin);
+    defineLazy(inst._zod, "optout", () => def.innerType?._zod?.optout);
+    inst._zod.parse = (payload, ctx) => {
+        if (ctx.direction === "backward") {
+            return def.innerType._zod.run(payload, ctx);
+        }
+        const result = def.innerType._zod.run(payload, ctx);
+        if (result instanceof Promise) {
+            return result.then(handleReadonlyResult);
+        }
+        return handleReadonlyResult(result);
+    };
+});
+function handleReadonlyResult(payload) {
+    payload.value = Object.freeze(payload.value);
+    return payload;
+}
+const $ZodCustom = /*@__PURE__*/ $constructor("$ZodCustom", (inst, def) => {
+    $ZodCheck.init(inst, def);
+    $ZodType.init(inst, def);
+    inst._zod.parse = (payload, _) => {
+        return payload;
+    };
+    inst._zod.check = (payload) => {
+        const input = payload.value;
+        const r = def.fn(input);
+        if (r instanceof Promise) {
+            return r.then((r) => handleRefineResult(r, payload, input, inst));
+        }
+        handleRefineResult(r, payload, input, inst);
+        return;
+    };
+});
+function handleRefineResult(result, payload, input, inst) {
+    if (!result) {
+        const _iss = {
+            code: "custom",
+            input,
+            inst, // incorporates params.error into issue reporting
+            path: [...(inst._zod.def.path ?? [])], // incorporates params.error into issue reporting
+            continue: !inst._zod.def.abort,
+            // params: inst._zod.def.params,
+        };
+        if (inst._zod.def.params)
+            _iss.params = inst._zod.def.params;
+        payload.issues.push(issue(_iss));
+    }
+}
+
+var _a;
+class $ZodRegistry {
+    constructor() {
+        this._map = new WeakMap();
+        this._idmap = new Map();
+    }
+    add(schema, ..._meta) {
+        const meta = _meta[0];
+        this._map.set(schema, meta);
+        if (meta && typeof meta === "object" && "id" in meta) {
+            this._idmap.set(meta.id, schema);
+        }
+        return this;
+    }
+    clear() {
+        this._map = new WeakMap();
+        this._idmap = new Map();
+        return this;
+    }
+    remove(schema) {
+        const meta = this._map.get(schema);
+        if (meta && typeof meta === "object" && "id" in meta) {
+            this._idmap.delete(meta.id);
+        }
+        this._map.delete(schema);
+        return this;
+    }
+    get(schema) {
+        // return this._map.get(schema) as any;
+        // inherit metadata
+        const p = schema._zod.parent;
+        if (p) {
+            const pm = { ...(this.get(p) ?? {}) };
+            delete pm.id; // do not inherit id
+            const f = { ...pm, ...this._map.get(schema) };
+            return Object.keys(f).length ? f : undefined;
+        }
+        return this._map.get(schema);
+    }
+    has(schema) {
+        return this._map.has(schema);
+    }
+}
+// registries
+function registry() {
+    return new $ZodRegistry();
+}
+(_a = globalThis).__zod_globalRegistry ?? (_a.__zod_globalRegistry = registry());
+const globalRegistry = globalThis.__zod_globalRegistry;
+
+// @__NO_SIDE_EFFECTS__
+function _maxLength(maximum, params) {
+    const ch = new $ZodCheckMaxLength({
+        check: "max_length",
+        ...normalizeParams(params),
+        maximum,
+    });
+    return ch;
+}
+// @__NO_SIDE_EFFECTS__
+function _minLength(minimum, params) {
+    return new $ZodCheckMinLength({
+        check: "min_length",
+        ...normalizeParams(params),
+        minimum,
+    });
+}
+// @__NO_SIDE_EFFECTS__
+function _length(length, params) {
+    return new $ZodCheckLengthEquals({
+        check: "length_equals",
+        ...normalizeParams(params),
+        length,
+    });
+}
+// @__NO_SIDE_EFFECTS__
+function _overwrite(tx) {
+    return new $ZodCheckOverwrite({
+        check: "overwrite",
+        tx,
+    });
+}
+// @__NO_SIDE_EFFECTS__
+function _array(Class, element, params) {
+    return new Class({
+        type: "array",
+        element,
+        // get element() {
+        //   return element;
+        // },
+        ...normalizeParams(params),
+    });
+}
+// @__NO_SIDE_EFFECTS__
+function _custom(Class, fn, _params) {
+    const norm = normalizeParams(_params);
+    norm.abort ?? (norm.abort = true); // default to abort:false
+    const schema = new Class({
+        type: "custom",
+        check: "custom",
+        fn: fn,
+        ...norm,
+    });
+    return schema;
+}
+// same as _custom but defaults to abort:false
+// @__NO_SIDE_EFFECTS__
+function _refine(Class, fn, _params) {
+    const schema = new Class({
+        type: "custom",
+        check: "custom",
+        fn: fn,
+        ...normalizeParams(_params),
+    });
+    return schema;
+}
+// @__NO_SIDE_EFFECTS__
+function _superRefine(fn) {
+    const ch = _check((payload) => {
+        payload.addIssue = (issue$1) => {
+            if (typeof issue$1 === "string") {
+                payload.issues.push(issue(issue$1, payload.value, ch._zod.def));
+            }
+            else {
+                // for Zod 3 backwards compatibility
+                const _issue = issue$1;
+                if (_issue.fatal)
+                    _issue.continue = false;
+                _issue.code ?? (_issue.code = "custom");
+                _issue.input ?? (_issue.input = payload.value);
+                _issue.inst ?? (_issue.inst = ch);
+                _issue.continue ?? (_issue.continue = !ch._zod.def.abort); // abort is always undefined, so this is always true...
+                payload.issues.push(issue(_issue));
+            }
+        };
+        return fn(payload.value, payload);
+    });
+    return ch;
+}
+// @__NO_SIDE_EFFECTS__
+function _check(fn, params) {
+    const ch = new $ZodCheck({
+        check: "custom",
+        ...normalizeParams(params),
+    });
+    ch._zod.check = fn;
+    return ch;
+}
+
+// function initializeContext<T extends schemas.$ZodType>(inputs: JSONSchemaGeneratorParams<T>): ToJSONSchemaContext<T> {
+//   return {
+//     processor: inputs.processor,
+//     metadataRegistry: inputs.metadata ?? globalRegistry,
+//     target: inputs.target ?? "draft-2020-12",
+//     unrepresentable: inputs.unrepresentable ?? "throw",
+//   };
+// }
+function initializeContext(params) {
+    // Normalize target: convert old non-hyphenated versions to hyphenated versions
+    let target = params?.target ?? "draft-2020-12";
+    if (target === "draft-4")
+        target = "draft-04";
+    if (target === "draft-7")
+        target = "draft-07";
+    return {
+        processors: params.processors ?? {},
+        metadataRegistry: params?.metadata ?? globalRegistry,
+        target,
+        unrepresentable: params?.unrepresentable ?? "throw",
+        override: params?.override ?? (() => { }),
+        io: params?.io ?? "output",
+        counter: 0,
+        seen: new Map(),
+        cycles: params?.cycles ?? "ref",
+        reused: params?.reused ?? "inline",
+        external: params?.external ?? undefined,
+    };
+}
+function process$1(schema, ctx, _params = { path: [], schemaPath: [] }) {
+    var _a;
+    const def = schema._zod.def;
+    // check for schema in seens
+    const seen = ctx.seen.get(schema);
+    if (seen) {
+        seen.count++;
+        // check if cycle
+        const isCycle = _params.schemaPath.includes(schema);
+        if (isCycle) {
+            seen.cycle = _params.path;
+        }
+        return seen.schema;
+    }
+    // initialize
+    const result = { schema: {}, count: 1, cycle: undefined, path: _params.path };
+    ctx.seen.set(schema, result);
+    // custom method overrides default behavior
+    const overrideSchema = schema._zod.toJSONSchema?.();
+    if (overrideSchema) {
+        result.schema = overrideSchema;
+    }
+    else {
+        const params = {
+            ..._params,
+            schemaPath: [..._params.schemaPath, schema],
+            path: _params.path,
+        };
+        if (schema._zod.processJSONSchema) {
+            schema._zod.processJSONSchema(ctx, result.schema, params);
+        }
+        else {
+            const _json = result.schema;
+            const processor = ctx.processors[def.type];
+            if (!processor) {
+                throw new Error(`[toJSONSchema]: Non-representable type encountered: ${def.type}`);
+            }
+            processor(schema, ctx, _json, params);
+        }
+        const parent = schema._zod.parent;
+        if (parent) {
+            // Also set ref if processor didn't (for inheritance)
+            if (!result.ref)
+                result.ref = parent;
+            process$1(parent, ctx, params);
+            ctx.seen.get(parent).isParent = true;
+        }
+    }
+    // metadata
+    const meta = ctx.metadataRegistry.get(schema);
+    if (meta)
+        Object.assign(result.schema, meta);
+    if (ctx.io === "input" && isTransforming(schema)) {
+        // examples/defaults only apply to output type of pipe
+        delete result.schema.examples;
+        delete result.schema.default;
+    }
+    // set prefault as default
+    if (ctx.io === "input" && result.schema._prefault)
+        (_a = result.schema).default ?? (_a.default = result.schema._prefault);
+    delete result.schema._prefault;
+    // pulling fresh from ctx.seen in case it was overwritten
+    const _result = ctx.seen.get(schema);
+    return _result.schema;
+}
+function extractDefs(ctx, schema
+// params: EmitParams
+) {
+    // iterate over seen map;
+    const root = ctx.seen.get(schema);
+    if (!root)
+        throw new Error("Unprocessed schema. This is a bug in Zod.");
+    // Track ids to detect duplicates across different schemas
+    const idToSchema = new Map();
+    for (const entry of ctx.seen.entries()) {
+        const id = ctx.metadataRegistry.get(entry[0])?.id;
+        if (id) {
+            const existing = idToSchema.get(id);
+            if (existing && existing !== entry[0]) {
+                throw new Error(`Duplicate schema id "${id}" detected during JSON Schema conversion. Two different schemas cannot share the same id when converted together.`);
+            }
+            idToSchema.set(id, entry[0]);
+        }
+    }
+    // returns a ref to the schema
+    // defId will be empty if the ref points to an external schema (or #)
+    const makeURI = (entry) => {
+        // comparing the seen objects because sometimes
+        // multiple schemas map to the same seen object.
+        // e.g. lazy
+        // external is configured
+        const defsSegment = ctx.target === "draft-2020-12" ? "$defs" : "definitions";
+        if (ctx.external) {
+            const externalId = ctx.external.registry.get(entry[0])?.id; // ?? "__shared";// `__schema${ctx.counter++}`;
+            // check if schema is in the external registry
+            const uriGenerator = ctx.external.uri ?? ((id) => id);
+            if (externalId) {
+                return { ref: uriGenerator(externalId) };
+            }
+            // otherwise, add to __shared
+            const id = entry[1].defId ?? entry[1].schema.id ?? `schema${ctx.counter++}`;
+            entry[1].defId = id; // set defId so it will be reused if needed
+            return { defId: id, ref: `${uriGenerator("__shared")}#/${defsSegment}/${id}` };
+        }
+        if (entry[1] === root) {
+            return { ref: "#" };
+        }
+        // self-contained schema
+        const uriPrefix = `#`;
+        const defUriPrefix = `${uriPrefix}/${defsSegment}/`;
+        const defId = entry[1].schema.id ?? `__schema${ctx.counter++}`;
+        return { defId, ref: defUriPrefix + defId };
+    };
+    // stored cached version in `def` property
+    // remove all properties, set $ref
+    const extractToDef = (entry) => {
+        // if the schema is already a reference, do not extract it
+        if (entry[1].schema.$ref) {
+            return;
+        }
+        const seen = entry[1];
+        const { ref, defId } = makeURI(entry);
+        seen.def = { ...seen.schema };
+        // defId won't be set if the schema is a reference to an external schema
+        // or if the schema is the root schema
+        if (defId)
+            seen.defId = defId;
+        // wipe away all properties except $ref
+        const schema = seen.schema;
+        for (const key in schema) {
+            delete schema[key];
+        }
+        schema.$ref = ref;
+    };
+    // throw on cycles
+    // break cycles
+    if (ctx.cycles === "throw") {
+        for (const entry of ctx.seen.entries()) {
+            const seen = entry[1];
+            if (seen.cycle) {
+                throw new Error("Cycle detected: " +
+                    `#/${seen.cycle?.join("/")}/<root>` +
+                    '\n\nSet the `cycles` parameter to `"ref"` to resolve cyclical schemas with defs.');
+            }
+        }
+    }
+    // extract schemas into $defs
+    for (const entry of ctx.seen.entries()) {
+        const seen = entry[1];
+        // convert root schema to # $ref
+        if (schema === entry[0]) {
+            extractToDef(entry); // this has special handling for the root schema
+            continue;
+        }
+        // extract schemas that are in the external registry
+        if (ctx.external) {
+            const ext = ctx.external.registry.get(entry[0])?.id;
+            if (schema !== entry[0] && ext) {
+                extractToDef(entry);
+                continue;
+            }
+        }
+        // extract schemas with `id` meta
+        const id = ctx.metadataRegistry.get(entry[0])?.id;
+        if (id) {
+            extractToDef(entry);
+            continue;
+        }
+        // break cycles
+        if (seen.cycle) {
+            // any
+            extractToDef(entry);
+            continue;
+        }
+        // extract reused schemas
+        if (seen.count > 1) {
+            if (ctx.reused === "ref") {
+                extractToDef(entry);
+                // biome-ignore lint:
+                continue;
+            }
+        }
+    }
+}
+function finalize(ctx, schema) {
+    const root = ctx.seen.get(schema);
+    if (!root)
+        throw new Error("Unprocessed schema. This is a bug in Zod.");
+    // flatten refs - inherit properties from parent schemas
+    const flattenRef = (zodSchema) => {
+        const seen = ctx.seen.get(zodSchema);
+        // already processed
+        if (seen.ref === null)
+            return;
+        const schema = seen.def ?? seen.schema;
+        const _cached = { ...schema };
+        const ref = seen.ref;
+        seen.ref = null; // prevent infinite recursion
+        if (ref) {
+            flattenRef(ref);
+            const refSeen = ctx.seen.get(ref);
+            const refSchema = refSeen.schema;
+            // merge referenced schema into current
+            if (refSchema.$ref && (ctx.target === "draft-07" || ctx.target === "draft-04" || ctx.target === "openapi-3.0")) {
+                // older drafts can't combine $ref with other properties
+                schema.allOf = schema.allOf ?? [];
+                schema.allOf.push(refSchema);
+            }
+            else {
+                Object.assign(schema, refSchema);
+            }
+            // restore child's own properties (child wins)
+            Object.assign(schema, _cached);
+            const isParentRef = zodSchema._zod.parent === ref;
+            // For parent chain, child is a refinement - remove parent-only properties
+            if (isParentRef) {
+                for (const key in schema) {
+                    if (key === "$ref" || key === "allOf")
+                        continue;
+                    if (!(key in _cached)) {
+                        delete schema[key];
+                    }
+                }
+            }
+            // When ref was extracted to $defs, remove properties that match the definition
+            if (refSchema.$ref && refSeen.def) {
+                for (const key in schema) {
+                    if (key === "$ref" || key === "allOf")
+                        continue;
+                    if (key in refSeen.def && JSON.stringify(schema[key]) === JSON.stringify(refSeen.def[key])) {
+                        delete schema[key];
+                    }
+                }
+            }
+        }
+        // If parent was extracted (has $ref), propagate $ref to this schema
+        // This handles cases like: readonly().meta({id}).describe()
+        // where processor sets ref to innerType but parent should be referenced
+        const parent = zodSchema._zod.parent;
+        if (parent && parent !== ref) {
+            // Ensure parent is processed first so its def has inherited properties
+            flattenRef(parent);
+            const parentSeen = ctx.seen.get(parent);
+            if (parentSeen?.schema.$ref) {
+                schema.$ref = parentSeen.schema.$ref;
+                // De-duplicate with parent's definition
+                if (parentSeen.def) {
+                    for (const key in schema) {
+                        if (key === "$ref" || key === "allOf")
+                            continue;
+                        if (key in parentSeen.def && JSON.stringify(schema[key]) === JSON.stringify(parentSeen.def[key])) {
+                            delete schema[key];
+                        }
+                    }
+                }
+            }
+        }
+        // execute overrides
+        ctx.override({
+            zodSchema: zodSchema,
+            jsonSchema: schema,
+            path: seen.path ?? [],
+        });
+    };
+    for (const entry of [...ctx.seen.entries()].reverse()) {
+        flattenRef(entry[0]);
+    }
+    const result = {};
+    if (ctx.target === "draft-2020-12") {
+        result.$schema = "https://json-schema.org/draft/2020-12/schema";
+    }
+    else if (ctx.target === "draft-07") {
+        result.$schema = "http://json-schema.org/draft-07/schema#";
+    }
+    else if (ctx.target === "draft-04") {
+        result.$schema = "http://json-schema.org/draft-04/schema#";
+    }
+    else if (ctx.target === "openapi-3.0") ;
+    else ;
+    if (ctx.external?.uri) {
+        const id = ctx.external.registry.get(schema)?.id;
+        if (!id)
+            throw new Error("Schema is missing an `id` property");
+        result.$id = ctx.external.uri(id);
+    }
+    Object.assign(result, root.def ?? root.schema);
+    // build defs object
+    const defs = ctx.external?.defs ?? {};
+    for (const entry of ctx.seen.entries()) {
+        const seen = entry[1];
+        if (seen.def && seen.defId) {
+            defs[seen.defId] = seen.def;
+        }
+    }
+    // set definitions in result
+    if (ctx.external) ;
+    else {
+        if (Object.keys(defs).length > 0) {
+            if (ctx.target === "draft-2020-12") {
+                result.$defs = defs;
+            }
+            else {
+                result.definitions = defs;
+            }
+        }
+    }
+    try {
+        // this "finalizes" this schema and ensures all cycles are removed
+        // each call to finalize() is functionally independent
+        // though the seen map is shared
+        const finalized = JSON.parse(JSON.stringify(result));
+        Object.defineProperty(finalized, "~standard", {
+            value: {
+                ...schema["~standard"],
+                jsonSchema: {
+                    input: createStandardJSONSchemaMethod(schema, "input", ctx.processors),
+                    output: createStandardJSONSchemaMethod(schema, "output", ctx.processors),
+                },
+            },
+            enumerable: false,
+            writable: false,
+        });
+        return finalized;
+    }
+    catch (_err) {
+        throw new Error("Error converting schema to JSON.");
+    }
+}
+function isTransforming(_schema, _ctx) {
+    const ctx = _ctx ?? { seen: new Set() };
+    if (ctx.seen.has(_schema))
+        return false;
+    ctx.seen.add(_schema);
+    const def = _schema._zod.def;
+    if (def.type === "transform")
+        return true;
+    if (def.type === "array")
+        return isTransforming(def.element, ctx);
+    if (def.type === "set")
+        return isTransforming(def.valueType, ctx);
+    if (def.type === "lazy")
+        return isTransforming(def.getter(), ctx);
+    if (def.type === "promise" ||
+        def.type === "optional" ||
+        def.type === "nonoptional" ||
+        def.type === "nullable" ||
+        def.type === "readonly" ||
+        def.type === "default" ||
+        def.type === "prefault") {
+        return isTransforming(def.innerType, ctx);
+    }
+    if (def.type === "intersection") {
+        return isTransforming(def.left, ctx) || isTransforming(def.right, ctx);
+    }
+    if (def.type === "record" || def.type === "map") {
+        return isTransforming(def.keyType, ctx) || isTransforming(def.valueType, ctx);
+    }
+    if (def.type === "pipe") {
+        return isTransforming(def.in, ctx) || isTransforming(def.out, ctx);
+    }
+    if (def.type === "object") {
+        for (const key in def.shape) {
+            if (isTransforming(def.shape[key], ctx))
+                return true;
+        }
+        return false;
+    }
+    if (def.type === "union") {
+        for (const option of def.options) {
+            if (isTransforming(option, ctx))
+                return true;
+        }
+        return false;
+    }
+    if (def.type === "tuple") {
+        for (const item of def.items) {
+            if (isTransforming(item, ctx))
+                return true;
+        }
+        if (def.rest && isTransforming(def.rest, ctx))
+            return true;
+        return false;
+    }
+    return false;
+}
+/**
+ * Creates a toJSONSchema method for a schema instance.
+ * This encapsulates the logic of initializing context, processing, extracting defs, and finalizing.
+ */
+const createToJSONSchemaMethod = (schema, processors = {}) => (params) => {
+    const ctx = initializeContext({ ...params, processors });
+    process$1(schema, ctx);
+    extractDefs(ctx, schema);
+    return finalize(ctx, schema);
+};
+const createStandardJSONSchemaMethod = (schema, io, processors = {}) => (params) => {
+    const { libraryOptions, target } = params ?? {};
+    const ctx = initializeContext({ ...(libraryOptions ?? {}), target, io, processors });
+    process$1(schema, ctx);
+    extractDefs(ctx, schema);
+    return finalize(ctx, schema);
+};
+
+const enumProcessor = (schema, _ctx, json, _params) => {
+    const def = schema._zod.def;
+    const values = getEnumValues(def.entries);
+    // Number enums can have both string and number values
+    if (values.every((v) => typeof v === "number"))
+        json.type = "number";
+    if (values.every((v) => typeof v === "string"))
+        json.type = "string";
+    json.enum = values;
+};
+const customProcessor = (_schema, ctx, _json, _params) => {
+    if (ctx.unrepresentable === "throw") {
+        throw new Error("Custom types cannot be represented in JSON Schema");
+    }
+};
+const transformProcessor = (_schema, ctx, _json, _params) => {
+    if (ctx.unrepresentable === "throw") {
+        throw new Error("Transforms cannot be represented in JSON Schema");
+    }
+};
+// ==================== COMPOSITE TYPE PROCESSORS ====================
+const arrayProcessor = (schema, ctx, _json, params) => {
+    const json = _json;
+    const def = schema._zod.def;
+    const { minimum, maximum } = schema._zod.bag;
+    if (typeof minimum === "number")
+        json.minItems = minimum;
+    if (typeof maximum === "number")
+        json.maxItems = maximum;
+    json.type = "array";
+    json.items = process$1(def.element, ctx, { ...params, path: [...params.path, "items"] });
+};
+const unionProcessor = (schema, ctx, json, params) => {
+    const def = schema._zod.def;
+    // Exclusive unions (inclusive === false) use oneOf (exactly one match) instead of anyOf (one or more matches)
+    // This includes both z.xor() and discriminated unions
+    const isExclusive = def.inclusive === false;
+    const options = def.options.map((x, i) => process$1(x, ctx, {
+        ...params,
+        path: [...params.path, isExclusive ? "oneOf" : "anyOf", i],
+    }));
+    if (isExclusive) {
+        json.oneOf = options;
+    }
+    else {
+        json.anyOf = options;
+    }
+};
+const intersectionProcessor = (schema, ctx, json, params) => {
+    const def = schema._zod.def;
+    const a = process$1(def.left, ctx, {
+        ...params,
+        path: [...params.path, "allOf", 0],
+    });
+    const b = process$1(def.right, ctx, {
+        ...params,
+        path: [...params.path, "allOf", 1],
+    });
+    const isSimpleIntersection = (val) => "allOf" in val && Object.keys(val).length === 1;
+    const allOf = [
+        ...(isSimpleIntersection(a) ? a.allOf : [a]),
+        ...(isSimpleIntersection(b) ? b.allOf : [b]),
+    ];
+    json.allOf = allOf;
+};
+const nullableProcessor = (schema, ctx, json, params) => {
+    const def = schema._zod.def;
+    const inner = process$1(def.innerType, ctx, params);
+    const seen = ctx.seen.get(schema);
+    if (ctx.target === "openapi-3.0") {
+        seen.ref = def.innerType;
+        json.nullable = true;
+    }
+    else {
+        json.anyOf = [inner, { type: "null" }];
+    }
+};
+const nonoptionalProcessor = (schema, ctx, _json, params) => {
+    const def = schema._zod.def;
+    process$1(def.innerType, ctx, params);
+    const seen = ctx.seen.get(schema);
+    seen.ref = def.innerType;
+};
+const defaultProcessor = (schema, ctx, json, params) => {
+    const def = schema._zod.def;
+    process$1(def.innerType, ctx, params);
+    const seen = ctx.seen.get(schema);
+    seen.ref = def.innerType;
+    json.default = JSON.parse(JSON.stringify(def.defaultValue));
+};
+const prefaultProcessor = (schema, ctx, json, params) => {
+    const def = schema._zod.def;
+    process$1(def.innerType, ctx, params);
+    const seen = ctx.seen.get(schema);
+    seen.ref = def.innerType;
+    if (ctx.io === "input")
+        json._prefault = JSON.parse(JSON.stringify(def.defaultValue));
+};
+const catchProcessor = (schema, ctx, json, params) => {
+    const def = schema._zod.def;
+    process$1(def.innerType, ctx, params);
+    const seen = ctx.seen.get(schema);
+    seen.ref = def.innerType;
+    let catchValue;
+    try {
+        catchValue = def.catchValue(undefined);
+    }
+    catch {
+        throw new Error("Dynamic catch values are not supported in JSON Schema");
+    }
+    json.default = catchValue;
+};
+const pipeProcessor = (schema, ctx, _json, params) => {
+    const def = schema._zod.def;
+    const innerType = ctx.io === "input" ? (def.in._zod.def.type === "transform" ? def.out : def.in) : def.out;
+    process$1(innerType, ctx, params);
+    const seen = ctx.seen.get(schema);
+    seen.ref = innerType;
+};
+const readonlyProcessor = (schema, ctx, json, params) => {
+    const def = schema._zod.def;
+    process$1(def.innerType, ctx, params);
+    const seen = ctx.seen.get(schema);
+    seen.ref = def.innerType;
+    json.readOnly = true;
+};
+const optionalProcessor = (schema, ctx, _json, params) => {
+    const def = schema._zod.def;
+    process$1(def.innerType, ctx, params);
+    const seen = ctx.seen.get(schema);
+    seen.ref = def.innerType;
+};
 
 function shouldAppendForwardSlash(trailingSlash, buildFormat) {
   switch (trailingSlash) {
@@ -4119,7 +6794,7 @@ function serializeActionResult(res) {
   }
   let body;
   try {
-    body = stringify$1(res.data, {
+    body = stringify$2(res.data, {
       // Add support for URL objects
       URL: (value) => value instanceof URL && value.href
     });
@@ -4165,6 +6840,367 @@ function createCallAction(context) {
     return action(input);
   };
 }
+
+var dist = {};
+
+var hasRequiredDist;
+
+function requireDist () {
+	if (hasRequiredDist) return dist;
+	hasRequiredDist = 1;
+	Object.defineProperty(dist, "__esModule", { value: true });
+	dist.parseCookie = parseCookie;
+	dist.parse = parseCookie;
+	dist.stringifyCookie = stringifyCookie;
+	dist.stringifySetCookie = stringifySetCookie;
+	dist.serialize = stringifySetCookie;
+	dist.parseSetCookie = parseSetCookie;
+	dist.stringifySetCookie = stringifySetCookie;
+	dist.serialize = stringifySetCookie;
+	/**
+	 * RegExp to match cookie-name in RFC 6265 sec 4.1.1
+	 * This refers out to the obsoleted definition of token in RFC 2616 sec 2.2
+	 * which has been replaced by the token definition in RFC 7230 appendix B.
+	 *
+	 * cookie-name       = token
+	 * token             = 1*tchar
+	 * tchar             = "!" / "#" / "$" / "%" / "&" / "'" /
+	 *                     "*" / "+" / "-" / "." / "^" / "_" /
+	 *                     "`" / "|" / "~" / DIGIT / ALPHA
+	 *
+	 * Note: Allowing more characters - https://github.com/jshttp/cookie/issues/191
+	 * Allow same range as cookie value, except `=`, which delimits end of name.
+	 */
+	const cookieNameRegExp = /^[\u0021-\u003A\u003C\u003E-\u007E]+$/;
+	/**
+	 * RegExp to match cookie-value in RFC 6265 sec 4.1.1
+	 *
+	 * cookie-value      = *cookie-octet / ( DQUOTE *cookie-octet DQUOTE )
+	 * cookie-octet      = %x21 / %x23-2B / %x2D-3A / %x3C-5B / %x5D-7E
+	 *                     ; US-ASCII characters excluding CTLs,
+	 *                     ; whitespace DQUOTE, comma, semicolon,
+	 *                     ; and backslash
+	 *
+	 * Allowing more characters: https://github.com/jshttp/cookie/issues/191
+	 * Comma, backslash, and DQUOTE are not part of the parsing algorithm.
+	 */
+	const cookieValueRegExp = /^[\u0021-\u003A\u003C-\u007E]*$/;
+	/**
+	 * RegExp to match domain-value in RFC 6265 sec 4.1.1
+	 *
+	 * domain-value      = <subdomain>
+	 *                     ; defined in [RFC1034], Section 3.5, as
+	 *                     ; enhanced by [RFC1123], Section 2.1
+	 * <subdomain>       = <label> | <subdomain> "." <label>
+	 * <label>           = <let-dig> [ [ <ldh-str> ] <let-dig> ]
+	 *                     Labels must be 63 characters or less.
+	 *                     'let-dig' not 'letter' in the first char, per RFC1123
+	 * <ldh-str>         = <let-dig-hyp> | <let-dig-hyp> <ldh-str>
+	 * <let-dig-hyp>     = <let-dig> | "-"
+	 * <let-dig>         = <letter> | <digit>
+	 * <letter>          = any one of the 52 alphabetic characters A through Z in
+	 *                     upper case and a through z in lower case
+	 * <digit>           = any one of the ten digits 0 through 9
+	 *
+	 * Keep support for leading dot: https://github.com/jshttp/cookie/issues/173
+	 *
+	 * > (Note that a leading %x2E ("."), if present, is ignored even though that
+	 * character is not permitted, but a trailing %x2E ("."), if present, will
+	 * cause the user agent to ignore the attribute.)
+	 */
+	const domainValueRegExp = /^([.]?[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)([.][a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$/i;
+	/**
+	 * RegExp to match path-value in RFC 6265 sec 4.1.1
+	 *
+	 * path-value        = <any CHAR except CTLs or ";">
+	 * CHAR              = %x01-7F
+	 *                     ; defined in RFC 5234 appendix B.1
+	 */
+	const pathValueRegExp = /^[\u0020-\u003A\u003D-\u007E]*$/;
+	/**
+	 * RegExp to match max-age-value in RFC 6265 sec 5.6.2
+	 */
+	const maxAgeRegExp = /^-?\d+$/;
+	const __toString = Object.prototype.toString;
+	const NullObject = /* @__PURE__ */ (() => {
+	    const C = function () { };
+	    C.prototype = Object.create(null);
+	    return C;
+	})();
+	/**
+	 * Parse a `Cookie` header.
+	 *
+	 * Parse the given cookie header string into an object
+	 * The object has the various cookies as keys(names) => values
+	 */
+	function parseCookie(str, options) {
+	    const obj = new NullObject();
+	    const len = str.length;
+	    // RFC 6265 sec 4.1.1, RFC 2616 2.2 defines a cookie name consists of one char minimum, plus '='.
+	    if (len < 2)
+	        return obj;
+	    const dec = options?.decode || decode;
+	    let index = 0;
+	    do {
+	        const eqIdx = eqIndex(str, index, len);
+	        if (eqIdx === -1)
+	            break; // No more cookie pairs.
+	        const endIdx = endIndex(str, index, len);
+	        if (eqIdx > endIdx) {
+	            // backtrack on prior semicolon
+	            index = str.lastIndexOf(";", eqIdx - 1) + 1;
+	            continue;
+	        }
+	        const key = valueSlice(str, index, eqIdx);
+	        // only assign once
+	        if (obj[key] === undefined) {
+	            obj[key] = dec(valueSlice(str, eqIdx + 1, endIdx));
+	        }
+	        index = endIdx + 1;
+	    } while (index < len);
+	    return obj;
+	}
+	/**
+	 * Stringifies an object into an HTTP `Cookie` header.
+	 */
+	function stringifyCookie(cookie, options) {
+	    const enc = options?.encode || encodeURIComponent;
+	    const cookieStrings = [];
+	    for (const name of Object.keys(cookie)) {
+	        const val = cookie[name];
+	        if (val === undefined)
+	            continue;
+	        if (!cookieNameRegExp.test(name)) {
+	            throw new TypeError(`cookie name is invalid: ${name}`);
+	        }
+	        const value = enc(val);
+	        if (!cookieValueRegExp.test(value)) {
+	            throw new TypeError(`cookie val is invalid: ${val}`);
+	        }
+	        cookieStrings.push(`${name}=${value}`);
+	    }
+	    return cookieStrings.join("; ");
+	}
+	function stringifySetCookie(_name, _val, _opts) {
+	    const cookie = typeof _name === "object"
+	        ? _name
+	        : { ..._opts, name: _name, value: String(_val) };
+	    const options = typeof _val === "object" ? _val : _opts;
+	    const enc = options?.encode || encodeURIComponent;
+	    if (!cookieNameRegExp.test(cookie.name)) {
+	        throw new TypeError(`argument name is invalid: ${cookie.name}`);
+	    }
+	    const value = cookie.value ? enc(cookie.value) : "";
+	    if (!cookieValueRegExp.test(value)) {
+	        throw new TypeError(`argument val is invalid: ${cookie.value}`);
+	    }
+	    let str = cookie.name + "=" + value;
+	    if (cookie.maxAge !== undefined) {
+	        if (!Number.isInteger(cookie.maxAge)) {
+	            throw new TypeError(`option maxAge is invalid: ${cookie.maxAge}`);
+	        }
+	        str += "; Max-Age=" + cookie.maxAge;
+	    }
+	    if (cookie.domain) {
+	        if (!domainValueRegExp.test(cookie.domain)) {
+	            throw new TypeError(`option domain is invalid: ${cookie.domain}`);
+	        }
+	        str += "; Domain=" + cookie.domain;
+	    }
+	    if (cookie.path) {
+	        if (!pathValueRegExp.test(cookie.path)) {
+	            throw new TypeError(`option path is invalid: ${cookie.path}`);
+	        }
+	        str += "; Path=" + cookie.path;
+	    }
+	    if (cookie.expires) {
+	        if (!isDate(cookie.expires) || !Number.isFinite(cookie.expires.valueOf())) {
+	            throw new TypeError(`option expires is invalid: ${cookie.expires}`);
+	        }
+	        str += "; Expires=" + cookie.expires.toUTCString();
+	    }
+	    if (cookie.httpOnly) {
+	        str += "; HttpOnly";
+	    }
+	    if (cookie.secure) {
+	        str += "; Secure";
+	    }
+	    if (cookie.partitioned) {
+	        str += "; Partitioned";
+	    }
+	    if (cookie.priority) {
+	        const priority = typeof cookie.priority === "string"
+	            ? cookie.priority.toLowerCase()
+	            : undefined;
+	        switch (priority) {
+	            case "low":
+	                str += "; Priority=Low";
+	                break;
+	            case "medium":
+	                str += "; Priority=Medium";
+	                break;
+	            case "high":
+	                str += "; Priority=High";
+	                break;
+	            default:
+	                throw new TypeError(`option priority is invalid: ${cookie.priority}`);
+	        }
+	    }
+	    if (cookie.sameSite) {
+	        const sameSite = typeof cookie.sameSite === "string"
+	            ? cookie.sameSite.toLowerCase()
+	            : cookie.sameSite;
+	        switch (sameSite) {
+	            case true:
+	            case "strict":
+	                str += "; SameSite=Strict";
+	                break;
+	            case "lax":
+	                str += "; SameSite=Lax";
+	                break;
+	            case "none":
+	                str += "; SameSite=None";
+	                break;
+	            default:
+	                throw new TypeError(`option sameSite is invalid: ${cookie.sameSite}`);
+	        }
+	    }
+	    return str;
+	}
+	/**
+	 * Deserialize a `Set-Cookie` header into an object.
+	 *
+	 * deserialize('foo=bar; httpOnly')
+	 *   => { name: 'foo', value: 'bar', httpOnly: true }
+	 */
+	function parseSetCookie(str, options) {
+	    const dec = options?.decode || decode;
+	    const len = str.length;
+	    const endIdx = endIndex(str, 0, len);
+	    const eqIdx = eqIndex(str, 0, endIdx);
+	    const setCookie = eqIdx === -1
+	        ? { name: "", value: dec(valueSlice(str, 0, endIdx)) }
+	        : {
+	            name: valueSlice(str, 0, eqIdx),
+	            value: dec(valueSlice(str, eqIdx + 1, endIdx)),
+	        };
+	    let index = endIdx + 1;
+	    while (index < len) {
+	        const endIdx = endIndex(str, index, len);
+	        const eqIdx = eqIndex(str, index, endIdx);
+	        const attr = eqIdx === -1
+	            ? valueSlice(str, index, endIdx)
+	            : valueSlice(str, index, eqIdx);
+	        const val = eqIdx === -1 ? undefined : valueSlice(str, eqIdx + 1, endIdx);
+	        switch (attr.toLowerCase()) {
+	            case "httponly":
+	                setCookie.httpOnly = true;
+	                break;
+	            case "secure":
+	                setCookie.secure = true;
+	                break;
+	            case "partitioned":
+	                setCookie.partitioned = true;
+	                break;
+	            case "domain":
+	                setCookie.domain = val;
+	                break;
+	            case "path":
+	                setCookie.path = val;
+	                break;
+	            case "max-age":
+	                if (val && maxAgeRegExp.test(val))
+	                    setCookie.maxAge = Number(val);
+	                break;
+	            case "expires":
+	                if (!val)
+	                    break;
+	                const date = new Date(val);
+	                if (Number.isFinite(date.valueOf()))
+	                    setCookie.expires = date;
+	                break;
+	            case "priority":
+	                if (!val)
+	                    break;
+	                const priority = val.toLowerCase();
+	                if (priority === "low" ||
+	                    priority === "medium" ||
+	                    priority === "high") {
+	                    setCookie.priority = priority;
+	                }
+	                break;
+	            case "samesite":
+	                if (!val)
+	                    break;
+	                const sameSite = val.toLowerCase();
+	                if (sameSite === "lax" ||
+	                    sameSite === "strict" ||
+	                    sameSite === "none") {
+	                    setCookie.sameSite = sameSite;
+	                }
+	                break;
+	        }
+	        index = endIdx + 1;
+	    }
+	    return setCookie;
+	}
+	/**
+	 * Find the `;` character between `min` and `len` in str.
+	 */
+	function endIndex(str, min, len) {
+	    const index = str.indexOf(";", min);
+	    return index === -1 ? len : index;
+	}
+	/**
+	 * Find the `=` character between `min` and `max` in str.
+	 */
+	function eqIndex(str, min, max) {
+	    const index = str.indexOf("=", min);
+	    return index < max ? index : -1;
+	}
+	/**
+	 * Slice out a value between startPod to max.
+	 */
+	function valueSlice(str, min, max) {
+	    let start = min;
+	    let end = max;
+	    do {
+	        const code = str.charCodeAt(start);
+	        if (code !== 0x20 /*   */ && code !== 0x09 /* \t */)
+	            break;
+	    } while (++start < end);
+	    while (end > start) {
+	        const code = str.charCodeAt(end - 1);
+	        if (code !== 0x20 /*   */ && code !== 0x09 /* \t */)
+	            break;
+	        end--;
+	    }
+	    return str.slice(start, end);
+	}
+	/**
+	 * URL-decode string value. Optimized to skip native call when no %.
+	 */
+	function decode(str) {
+	    if (str.indexOf("%") === -1)
+	        return str;
+	    try {
+	        return decodeURIComponent(str);
+	    }
+	    catch (e) {
+	        return str;
+	    }
+	}
+	/**
+	 * Determine if value is a Date.
+	 */
+	function isDate(val) {
+	    return __toString.call(val) === "[object Date]";
+	}
+	
+	return dist;
+}
+
+var distExports = /*@__PURE__*/ requireDist();
 
 const DELETED_EXPIRATION = /* @__PURE__ */ new Date(0);
 const DELETED_VALUE = "deleted";
@@ -4221,7 +7257,7 @@ class AstroCookies {
     };
     this.#ensureOutgoingMap().set(key, [
       DELETED_VALUE,
-      serialize(key, DELETED_VALUE, serializeOptions),
+      distExports.serialize(key, DELETED_VALUE, serializeOptions),
       false
     ]);
   }
@@ -4305,7 +7341,7 @@ class AstroCookies {
     }
     this.#ensureOutgoingMap().set(key, [
       serializedValue,
-      serialize(key, serializedValue, serializeOptions),
+      distExports.serialize(key, serializedValue, serializeOptions),
       true
     ]);
     if (this.#request[responseSentSymbol]) {
@@ -4373,7 +7409,7 @@ class AstroCookies {
     if (!raw) {
       return;
     }
-    this.#requestValues = parse$2(raw, { decode: identity });
+    this.#requestValues = distExports.parse(raw, { decode: identity });
   }
 }
 
@@ -4506,6 +7542,49 @@ function createRequest({
   }
   return request;
 }
+
+/**
+ * Copyright (C) 2017-present by Andrea Giammarchi - @WebReflection
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+const {replace} = '';
+const ca = /[&<>'"]/g;
+
+const esca = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  "'": '&#39;',
+  '"': '&quot;'
+};
+const pe = m => esca[m];
+
+/**
+ * Safely escape HTML entities such as `&`, `<`, `>`, `"`, and `'`.
+ * @param {string} es the input to safely escape
+ * @returns {string} the escaped input, and it **throws** an error if
+ *  the input type is unexpected, except for boolean and numbers,
+ *  converted as string.
+ */
+const escape = es => replace.call(es, ca, pe);
 
 function template({
   title,
@@ -5126,7 +8205,7 @@ async function renderEndpoint(mod, context, isPrerendered, logger) {
   if (isPrerendered && !["GET", "HEAD"].includes(method)) {
     logger.warn(
       "router",
-      `${url.pathname} ${colors.bold(
+      `${url.pathname} ${s.bold(
         method
       )} requests are not available in static endpoints. Mark this page as server-rendered (\`export const prerender = false;\`) or update your config to \`output: 'server'\` to make all your pages server-rendered by default.`
     );
@@ -5292,6 +8371,8 @@ function isAPropagatingComponent(result, factory) {
 function getPropagationHint(result, factory) {
   return getPropagationHint$1(result, factory);
 }
+
+function r(e){var t,f,n="";if("string"==typeof e||"number"==typeof e)n+=e;else if("object"==typeof e)if(Array.isArray(e)){var o=e.length;for(t=0;t<o;t++)e[t]&&(f=r(e[t]))&&(n&&(n+=" "),n+=f);}else for(f in e)e[f]&&(n&&(n+=" "),n+=f);return n}function clsx(){for(var e,t,f=0,n="",o=arguments.length;f<o;f++)(e=arguments[f])&&(t=r(e))&&(n&&(n+=" "),n+=t);return n}
 
 const PROP_TYPE = {
   Value: 0,
@@ -5950,21 +9031,650 @@ function maybeRenderHead() {
   return createRenderInstruction({ type: "maybe-head" });
 }
 
+function encodeHexUpperCase(data) {
+    let result = "";
+    for (let i = 0; i < data.length; i++) {
+        result += alphabetUpperCase[data[i] >> 4];
+        result += alphabetUpperCase[data[i] & 0x0f];
+    }
+    return result;
+}
+function decodeHex(data) {
+    if (data.length % 2 !== 0) {
+        throw new Error("Invalid hex string");
+    }
+    const result = new Uint8Array(data.length / 2);
+    for (let i = 0; i < data.length; i += 2) {
+        if (!(data[i] in decodeMap)) {
+            throw new Error("Invalid character");
+        }
+        if (!(data[i + 1] in decodeMap)) {
+            throw new Error("Invalid character");
+        }
+        result[i / 2] |= decodeMap[data[i]] << 4;
+        result[i / 2] |= decodeMap[data[i + 1]];
+    }
+    return result;
+}
+const alphabetUpperCase = "0123456789ABCDEF";
+const decodeMap = {
+    "0": 0,
+    "1": 1,
+    "2": 2,
+    "3": 3,
+    "4": 4,
+    "5": 5,
+    "6": 6,
+    "7": 7,
+    "8": 8,
+    "9": 9,
+    a: 10,
+    A: 10,
+    b: 11,
+    B: 11,
+    c: 12,
+    C: 12,
+    d: 13,
+    D: 13,
+    e: 14,
+    E: 14,
+    f: 15,
+    F: 15
+};
+
+var EncodingPadding$1;
+(function (EncodingPadding) {
+    EncodingPadding[EncodingPadding["Include"] = 0] = "Include";
+    EncodingPadding[EncodingPadding["None"] = 1] = "None";
+})(EncodingPadding$1 || (EncodingPadding$1 = {}));
+var DecodingPadding$1;
+(function (DecodingPadding) {
+    DecodingPadding[DecodingPadding["Required"] = 0] = "Required";
+    DecodingPadding[DecodingPadding["Ignore"] = 1] = "Ignore";
+})(DecodingPadding$1 || (DecodingPadding$1 = {}));
+
+function encodeBase64(bytes) {
+    return encodeBase64_internal(bytes, base64Alphabet, EncodingPadding.Include);
+}
+function encodeBase64_internal(bytes, alphabet, padding) {
+    let result = "";
+    for (let i = 0; i < bytes.byteLength; i += 3) {
+        let buffer = 0;
+        let bufferBitSize = 0;
+        for (let j = 0; j < 3 && i + j < bytes.byteLength; j++) {
+            buffer = (buffer << 8) | bytes[i + j];
+            bufferBitSize += 8;
+        }
+        for (let j = 0; j < 4; j++) {
+            if (bufferBitSize >= 6) {
+                result += alphabet[(buffer >> (bufferBitSize - 6)) & 0x3f];
+                bufferBitSize -= 6;
+            }
+            else if (bufferBitSize > 0) {
+                result += alphabet[(buffer << (6 - bufferBitSize)) & 0x3f];
+                bufferBitSize = 0;
+            }
+            else if (padding === EncodingPadding.Include) {
+                result += "=";
+            }
+        }
+    }
+    return result;
+}
+const base64Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+function decodeBase64(encoded) {
+    return decodeBase64_internal(encoded, base64DecodeMap, DecodingPadding.Required);
+}
+function decodeBase64_internal(encoded, decodeMap, padding) {
+    const result = new Uint8Array(Math.ceil(encoded.length / 4) * 3);
+    let totalBytes = 0;
+    for (let i = 0; i < encoded.length; i += 4) {
+        let chunk = 0;
+        let bitsRead = 0;
+        for (let j = 0; j < 4; j++) {
+            if (padding === DecodingPadding.Required && encoded[i + j] === "=") {
+                continue;
+            }
+            if (padding === DecodingPadding.Ignore &&
+                (i + j >= encoded.length || encoded[i + j] === "=")) {
+                continue;
+            }
+            if (j > 0 && encoded[i + j - 1] === "=") {
+                throw new Error("Invalid padding");
+            }
+            if (!(encoded[i + j] in decodeMap)) {
+                throw new Error("Invalid character");
+            }
+            chunk |= decodeMap[encoded[i + j]] << ((3 - j) * 6);
+            bitsRead += 6;
+        }
+        if (bitsRead < 24) {
+            let unused;
+            if (bitsRead === 12) {
+                unused = chunk & 0xffff;
+            }
+            else if (bitsRead === 18) {
+                unused = chunk & 0xff;
+            }
+            else {
+                throw new Error("Invalid padding");
+            }
+            if (unused !== 0) {
+                throw new Error("Invalid padding");
+            }
+        }
+        const byteLength = Math.floor(bitsRead / 8);
+        for (let i = 0; i < byteLength; i++) {
+            result[totalBytes] = (chunk >> (16 - i * 8)) & 0xff;
+            totalBytes++;
+        }
+    }
+    return result.slice(0, totalBytes);
+}
+var EncodingPadding;
+(function (EncodingPadding) {
+    EncodingPadding[EncodingPadding["Include"] = 0] = "Include";
+    EncodingPadding[EncodingPadding["None"] = 1] = "None";
+})(EncodingPadding || (EncodingPadding = {}));
+var DecodingPadding;
+(function (DecodingPadding) {
+    DecodingPadding[DecodingPadding["Required"] = 0] = "Required";
+    DecodingPadding[DecodingPadding["Ignore"] = 1] = "Ignore";
+})(DecodingPadding || (DecodingPadding = {}));
+const base64DecodeMap = {
+    "0": 52,
+    "1": 53,
+    "2": 54,
+    "3": 55,
+    "4": 56,
+    "5": 57,
+    "6": 58,
+    "7": 59,
+    "8": 60,
+    "9": 61,
+    A: 0,
+    B: 1,
+    C: 2,
+    D: 3,
+    E: 4,
+    F: 5,
+    G: 6,
+    H: 7,
+    I: 8,
+    J: 9,
+    K: 10,
+    L: 11,
+    M: 12,
+    N: 13,
+    O: 14,
+    P: 15,
+    Q: 16,
+    R: 17,
+    S: 18,
+    T: 19,
+    U: 20,
+    V: 21,
+    W: 22,
+    X: 23,
+    Y: 24,
+    Z: 25,
+    a: 26,
+    b: 27,
+    c: 28,
+    d: 29,
+    e: 30,
+    f: 31,
+    g: 32,
+    h: 33,
+    i: 34,
+    j: 35,
+    k: 36,
+    l: 37,
+    m: 38,
+    n: 39,
+    o: 40,
+    p: 41,
+    q: 42,
+    r: 43,
+    s: 44,
+    t: 45,
+    u: 46,
+    v: 47,
+    w: 48,
+    x: 49,
+    y: 50,
+    z: 51,
+    "+": 62,
+    "/": 63
+};
+
+const initializer = (inst, issues) => {
+    $ZodError.init(inst, issues);
+    inst.name = "ZodError";
+    Object.defineProperties(inst, {
+        format: {
+            value: (mapper) => formatError(inst, mapper),
+            // enumerable: false,
+        },
+        flatten: {
+            value: (mapper) => flattenError(inst, mapper),
+            // enumerable: false,
+        },
+        addIssue: {
+            value: (issue) => {
+                inst.issues.push(issue);
+                inst.message = JSON.stringify(inst.issues, jsonStringifyReplacer, 2);
+            },
+            // enumerable: false,
+        },
+        addIssues: {
+            value: (issues) => {
+                inst.issues.push(...issues);
+                inst.message = JSON.stringify(inst.issues, jsonStringifyReplacer, 2);
+            },
+            // enumerable: false,
+        },
+        isEmpty: {
+            get() {
+                return inst.issues.length === 0;
+            },
+            // enumerable: false,
+        },
+    });
+    // Object.defineProperty(inst, "isEmpty", {
+    //   get() {
+    //     return inst.issues.length === 0;
+    //   },
+    // });
+};
+const ZodRealError = $constructor("ZodError", initializer, {
+    Parent: Error,
+});
+// /** @deprecated Use `z.core.$ZodErrorMapCtx` instead. */
+// export type ErrorMapCtx = core.$ZodErrorMapCtx;
+
+const parse = /* @__PURE__ */ _parse(ZodRealError);
+const parseAsync = /* @__PURE__ */ _parseAsync(ZodRealError);
+const safeParse = /* @__PURE__ */ _safeParse(ZodRealError);
+const safeParseAsync = /* @__PURE__ */ _safeParseAsync(ZodRealError);
+// Codec functions
+const encode = /* @__PURE__ */ _encode(ZodRealError);
+const decode = /* @__PURE__ */ _decode(ZodRealError);
+const encodeAsync = /* @__PURE__ */ _encodeAsync(ZodRealError);
+const decodeAsync = /* @__PURE__ */ _decodeAsync(ZodRealError);
+const safeEncode = /* @__PURE__ */ _safeEncode(ZodRealError);
+const safeDecode = /* @__PURE__ */ _safeDecode(ZodRealError);
+const safeEncodeAsync = /* @__PURE__ */ _safeEncodeAsync(ZodRealError);
+const safeDecodeAsync = /* @__PURE__ */ _safeDecodeAsync(ZodRealError);
+
+const ZodType = /*@__PURE__*/ $constructor("ZodType", (inst, def) => {
+    $ZodType.init(inst, def);
+    Object.assign(inst["~standard"], {
+        jsonSchema: {
+            input: createStandardJSONSchemaMethod(inst, "input"),
+            output: createStandardJSONSchemaMethod(inst, "output"),
+        },
+    });
+    inst.toJSONSchema = createToJSONSchemaMethod(inst, {});
+    inst.def = def;
+    inst.type = def.type;
+    Object.defineProperty(inst, "_def", { value: def });
+    // base methods
+    inst.check = (...checks) => {
+        return inst.clone(mergeDefs(def, {
+            checks: [
+                ...(def.checks ?? []),
+                ...checks.map((ch) => typeof ch === "function" ? { _zod: { check: ch, def: { check: "custom" }, onattach: [] } } : ch),
+            ],
+        }), {
+            parent: true,
+        });
+    };
+    inst.with = inst.check;
+    inst.clone = (def, params) => clone(inst, def, params);
+    inst.brand = () => inst;
+    inst.register = ((reg, meta) => {
+        reg.add(inst, meta);
+        return inst;
+    });
+    // parsing
+    inst.parse = (data, params) => parse(inst, data, params, { callee: inst.parse });
+    inst.safeParse = (data, params) => safeParse(inst, data, params);
+    inst.parseAsync = async (data, params) => parseAsync(inst, data, params, { callee: inst.parseAsync });
+    inst.safeParseAsync = async (data, params) => safeParseAsync(inst, data, params);
+    inst.spa = inst.safeParseAsync;
+    // encoding/decoding
+    inst.encode = (data, params) => encode(inst, data, params);
+    inst.decode = (data, params) => decode(inst, data, params);
+    inst.encodeAsync = async (data, params) => encodeAsync(inst, data, params);
+    inst.decodeAsync = async (data, params) => decodeAsync(inst, data, params);
+    inst.safeEncode = (data, params) => safeEncode(inst, data, params);
+    inst.safeDecode = (data, params) => safeDecode(inst, data, params);
+    inst.safeEncodeAsync = async (data, params) => safeEncodeAsync(inst, data, params);
+    inst.safeDecodeAsync = async (data, params) => safeDecodeAsync(inst, data, params);
+    // refinements
+    inst.refine = (check, params) => inst.check(refine(check, params));
+    inst.superRefine = (refinement) => inst.check(superRefine(refinement));
+    inst.overwrite = (fn) => inst.check(_overwrite(fn));
+    // wrappers
+    inst.optional = () => optional(inst);
+    inst.exactOptional = () => exactOptional(inst);
+    inst.nullable = () => nullable(inst);
+    inst.nullish = () => optional(nullable(inst));
+    inst.nonoptional = (params) => nonoptional(inst, params);
+    inst.array = () => array(inst);
+    inst.or = (arg) => union([inst, arg]);
+    inst.and = (arg) => intersection(inst, arg);
+    inst.transform = (tx) => pipe(inst, transform(tx));
+    inst.default = (def) => _default(inst, def);
+    inst.prefault = (def) => prefault(inst, def);
+    // inst.coalesce = (def, params) => coalesce(inst, def, params);
+    inst.catch = (params) => _catch(inst, params);
+    inst.pipe = (target) => pipe(inst, target);
+    inst.readonly = () => readonly(inst);
+    // meta
+    inst.describe = (description) => {
+        const cl = inst.clone();
+        globalRegistry.add(cl, { description });
+        return cl;
+    };
+    Object.defineProperty(inst, "description", {
+        get() {
+            return globalRegistry.get(inst)?.description;
+        },
+        configurable: true,
+    });
+    inst.meta = (...args) => {
+        if (args.length === 0) {
+            return globalRegistry.get(inst);
+        }
+        const cl = inst.clone();
+        globalRegistry.add(cl, args[0]);
+        return cl;
+    };
+    // helpers
+    inst.isOptional = () => inst.safeParse(undefined).success;
+    inst.isNullable = () => inst.safeParse(null).success;
+    inst.apply = (fn) => fn(inst);
+    return inst;
+});
+const ZodArray = /*@__PURE__*/ $constructor("ZodArray", (inst, def) => {
+    $ZodArray.init(inst, def);
+    ZodType.init(inst, def);
+    inst._zod.processJSONSchema = (ctx, json, params) => arrayProcessor(inst, ctx, json, params);
+    inst.element = def.element;
+    inst.min = (minLength, params) => inst.check(_minLength(minLength, params));
+    inst.nonempty = (params) => inst.check(_minLength(1, params));
+    inst.max = (maxLength, params) => inst.check(_maxLength(maxLength, params));
+    inst.length = (len, params) => inst.check(_length(len, params));
+    inst.unwrap = () => inst.element;
+});
+function array(element, params) {
+    return _array(ZodArray, element, params);
+}
+const ZodUnion = /*@__PURE__*/ $constructor("ZodUnion", (inst, def) => {
+    $ZodUnion.init(inst, def);
+    ZodType.init(inst, def);
+    inst._zod.processJSONSchema = (ctx, json, params) => unionProcessor(inst, ctx, json, params);
+    inst.options = def.options;
+});
+function union(options, params) {
+    return new ZodUnion({
+        type: "union",
+        options: options,
+        ...normalizeParams(params),
+    });
+}
+const ZodIntersection = /*@__PURE__*/ $constructor("ZodIntersection", (inst, def) => {
+    $ZodIntersection.init(inst, def);
+    ZodType.init(inst, def);
+    inst._zod.processJSONSchema = (ctx, json, params) => intersectionProcessor(inst, ctx, json, params);
+});
+function intersection(left, right) {
+    return new ZodIntersection({
+        type: "intersection",
+        left: left,
+        right: right,
+    });
+}
+const ZodEnum = /*@__PURE__*/ $constructor("ZodEnum", (inst, def) => {
+    $ZodEnum.init(inst, def);
+    ZodType.init(inst, def);
+    inst._zod.processJSONSchema = (ctx, json, params) => enumProcessor(inst, ctx, json);
+    inst.enum = def.entries;
+    inst.options = Object.values(def.entries);
+    const keys = new Set(Object.keys(def.entries));
+    inst.extract = (values, params) => {
+        const newEntries = {};
+        for (const value of values) {
+            if (keys.has(value)) {
+                newEntries[value] = def.entries[value];
+            }
+            else
+                throw new Error(`Key ${value} not found in enum`);
+        }
+        return new ZodEnum({
+            ...def,
+            checks: [],
+            ...normalizeParams(params),
+            entries: newEntries,
+        });
+    };
+    inst.exclude = (values, params) => {
+        const newEntries = { ...def.entries };
+        for (const value of values) {
+            if (keys.has(value)) {
+                delete newEntries[value];
+            }
+            else
+                throw new Error(`Key ${value} not found in enum`);
+        }
+        return new ZodEnum({
+            ...def,
+            checks: [],
+            ...normalizeParams(params),
+            entries: newEntries,
+        });
+    };
+});
+function _enum(values, params) {
+    const entries = Array.isArray(values) ? Object.fromEntries(values.map((v) => [v, v])) : values;
+    return new ZodEnum({
+        type: "enum",
+        entries,
+        ...normalizeParams(params),
+    });
+}
+const ZodTransform = /*@__PURE__*/ $constructor("ZodTransform", (inst, def) => {
+    $ZodTransform.init(inst, def);
+    ZodType.init(inst, def);
+    inst._zod.processJSONSchema = (ctx, json, params) => transformProcessor(inst, ctx);
+    inst._zod.parse = (payload, _ctx) => {
+        if (_ctx.direction === "backward") {
+            throw new $ZodEncodeError(inst.constructor.name);
+        }
+        payload.addIssue = (issue$1) => {
+            if (typeof issue$1 === "string") {
+                payload.issues.push(issue(issue$1, payload.value, def));
+            }
+            else {
+                // for Zod 3 backwards compatibility
+                const _issue = issue$1;
+                if (_issue.fatal)
+                    _issue.continue = false;
+                _issue.code ?? (_issue.code = "custom");
+                _issue.input ?? (_issue.input = payload.value);
+                _issue.inst ?? (_issue.inst = inst);
+                // _issue.continue ??= true;
+                payload.issues.push(issue(_issue));
+            }
+        };
+        const output = def.transform(payload.value, payload);
+        if (output instanceof Promise) {
+            return output.then((output) => {
+                payload.value = output;
+                return payload;
+            });
+        }
+        payload.value = output;
+        return payload;
+    };
+});
+function transform(fn) {
+    return new ZodTransform({
+        type: "transform",
+        transform: fn,
+    });
+}
+const ZodOptional = /*@__PURE__*/ $constructor("ZodOptional", (inst, def) => {
+    $ZodOptional.init(inst, def);
+    ZodType.init(inst, def);
+    inst._zod.processJSONSchema = (ctx, json, params) => optionalProcessor(inst, ctx, json, params);
+    inst.unwrap = () => inst._zod.def.innerType;
+});
+function optional(innerType) {
+    return new ZodOptional({
+        type: "optional",
+        innerType: innerType,
+    });
+}
+const ZodExactOptional = /*@__PURE__*/ $constructor("ZodExactOptional", (inst, def) => {
+    $ZodExactOptional.init(inst, def);
+    ZodType.init(inst, def);
+    inst._zod.processJSONSchema = (ctx, json, params) => optionalProcessor(inst, ctx, json, params);
+    inst.unwrap = () => inst._zod.def.innerType;
+});
+function exactOptional(innerType) {
+    return new ZodExactOptional({
+        type: "optional",
+        innerType: innerType,
+    });
+}
+const ZodNullable = /*@__PURE__*/ $constructor("ZodNullable", (inst, def) => {
+    $ZodNullable.init(inst, def);
+    ZodType.init(inst, def);
+    inst._zod.processJSONSchema = (ctx, json, params) => nullableProcessor(inst, ctx, json, params);
+    inst.unwrap = () => inst._zod.def.innerType;
+});
+function nullable(innerType) {
+    return new ZodNullable({
+        type: "nullable",
+        innerType: innerType,
+    });
+}
+const ZodDefault = /*@__PURE__*/ $constructor("ZodDefault", (inst, def) => {
+    $ZodDefault.init(inst, def);
+    ZodType.init(inst, def);
+    inst._zod.processJSONSchema = (ctx, json, params) => defaultProcessor(inst, ctx, json, params);
+    inst.unwrap = () => inst._zod.def.innerType;
+    inst.removeDefault = inst.unwrap;
+});
+function _default(innerType, defaultValue) {
+    return new ZodDefault({
+        type: "default",
+        innerType: innerType,
+        get defaultValue() {
+            return typeof defaultValue === "function" ? defaultValue() : shallowClone(defaultValue);
+        },
+    });
+}
+const ZodPrefault = /*@__PURE__*/ $constructor("ZodPrefault", (inst, def) => {
+    $ZodPrefault.init(inst, def);
+    ZodType.init(inst, def);
+    inst._zod.processJSONSchema = (ctx, json, params) => prefaultProcessor(inst, ctx, json, params);
+    inst.unwrap = () => inst._zod.def.innerType;
+});
+function prefault(innerType, defaultValue) {
+    return new ZodPrefault({
+        type: "prefault",
+        innerType: innerType,
+        get defaultValue() {
+            return typeof defaultValue === "function" ? defaultValue() : shallowClone(defaultValue);
+        },
+    });
+}
+const ZodNonOptional = /*@__PURE__*/ $constructor("ZodNonOptional", (inst, def) => {
+    $ZodNonOptional.init(inst, def);
+    ZodType.init(inst, def);
+    inst._zod.processJSONSchema = (ctx, json, params) => nonoptionalProcessor(inst, ctx, json, params);
+    inst.unwrap = () => inst._zod.def.innerType;
+});
+function nonoptional(innerType, params) {
+    return new ZodNonOptional({
+        type: "nonoptional",
+        innerType: innerType,
+        ...normalizeParams(params),
+    });
+}
+const ZodCatch = /*@__PURE__*/ $constructor("ZodCatch", (inst, def) => {
+    $ZodCatch.init(inst, def);
+    ZodType.init(inst, def);
+    inst._zod.processJSONSchema = (ctx, json, params) => catchProcessor(inst, ctx, json, params);
+    inst.unwrap = () => inst._zod.def.innerType;
+    inst.removeCatch = inst.unwrap;
+});
+function _catch(innerType, catchValue) {
+    return new ZodCatch({
+        type: "catch",
+        innerType: innerType,
+        catchValue: (typeof catchValue === "function" ? catchValue : () => catchValue),
+    });
+}
+const ZodPipe = /*@__PURE__*/ $constructor("ZodPipe", (inst, def) => {
+    $ZodPipe.init(inst, def);
+    ZodType.init(inst, def);
+    inst._zod.processJSONSchema = (ctx, json, params) => pipeProcessor(inst, ctx, json, params);
+    inst.in = def.in;
+    inst.out = def.out;
+});
+function pipe(in_, out) {
+    return new ZodPipe({
+        type: "pipe",
+        in: in_,
+        out: out,
+        // ...util.normalizeParams(params),
+    });
+}
+const ZodReadonly = /*@__PURE__*/ $constructor("ZodReadonly", (inst, def) => {
+    $ZodReadonly.init(inst, def);
+    ZodType.init(inst, def);
+    inst._zod.processJSONSchema = (ctx, json, params) => readonlyProcessor(inst, ctx, json, params);
+    inst.unwrap = () => inst._zod.def.innerType;
+});
+function readonly(innerType) {
+    return new ZodReadonly({
+        type: "readonly",
+        innerType: innerType,
+    });
+}
+const ZodCustom = /*@__PURE__*/ $constructor("ZodCustom", (inst, def) => {
+    $ZodCustom.init(inst, def);
+    ZodType.init(inst, def);
+    inst._zod.processJSONSchema = (ctx, json, params) => customProcessor(inst, ctx);
+});
+function custom(fn, _params) {
+    return _custom(ZodCustom, fn ?? (() => true), _params);
+}
+function refine(fn, _params = {}) {
+    return _refine(ZodCustom, fn, _params);
+}
+// superRefine
+function superRefine(fn) {
+    return _superRefine(fn);
+}
+
+// Zod 3 compat layer
+/** @deprecated Use the raw string literal codes instead, e.g. "invalid_type". */
+const ZodIssueCode = {
+    custom: "custom",
+};
+
 const ALGORITHMS = {
   "SHA-256": "sha256-",
   "SHA-384": "sha384-",
   "SHA-512": "sha512-"
 };
-const ALGORITHM_VALUES = Object.values(ALGORITHMS);
-z.enum(Object.keys(ALGORITHMS)).optional().default("SHA-256");
-z.custom((value) => {
-  if (typeof value !== "string") {
-    return false;
-  }
-  return ALGORITHM_VALUES.some((allowedValue) => {
-    return value.startsWith(allowedValue);
-  });
-});
+_enum(Object.keys(ALGORITHMS)).optional().default("SHA-256");
 const ALLOWED_DIRECTIVES = [
   "base-uri",
   "child-src",
@@ -5988,20 +9698,20 @@ const ALLOWED_DIRECTIVES = [
   "upgrade-insecure-requests",
   "worker-src"
 ];
-z.custom((v) => typeof v === "string").superRefine((value, ctx) => {
+custom((v) => typeof v === "string").superRefine((value, ctx) => {
   const isAllowed = ALLOWED_DIRECTIVES.some((allowedValue) => {
     return value.startsWith(allowedValue);
   });
   if (!isAllowed) {
     if (value.startsWith("script-src") || value.startsWith("style-src")) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: ZodIssueCode.custom,
         message: `Directives \`script-src\` and \`style-src\` are not allowed in \`security.csp.directives\`. Please use \`security.csp.scriptDirective\` and \`security.csp.styleDirective\` instead.`,
         fatal: true
       });
     } else {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: ZodIssueCode.custom,
         message: `Invalid directive: "${value}". Allowed directives are: ${ALLOWED_DIRECTIVES.join(", ")}`,
         fatal: true
       });
@@ -8938,7 +12648,7 @@ function getEventPrefix({ level, label }) {
   const timestamp = `${dateTimeFormat.format(/* @__PURE__ */ new Date())}`;
   const prefix = [];
   if (level === "error" || level === "warn") {
-    prefix.push(colors.bold(timestamp));
+    prefix.push(s.bold(timestamp));
     prefix.push(`[${level.toUpperCase()}]`);
   } else {
     prefix.push(timestamp);
@@ -8947,15 +12657,15 @@ function getEventPrefix({ level, label }) {
     prefix.push(`[${label}]`);
   }
   if (level === "error") {
-    return colors.red(prefix.join(" "));
+    return s.red(prefix.join(" "));
   }
   if (level === "warn") {
-    return colors.yellow(prefix.join(" "));
+    return s.yellow(prefix.join(" "));
   }
   if (prefix.length === 1) {
-    return colors.dim(prefix[0]);
+    return s.dim(prefix[0]);
   }
-  return colors.dim(prefix[0]) + " " + colors.blue(prefix.splice(1).join(" "));
+  return s.dim(prefix[0]) + " " + s.blue(prefix.splice(1).join(" "));
 }
 class AstroLogger {
   options;
@@ -10946,7 +14656,7 @@ class FetchState {
       if (pipeline.runtimeMode === "production") {
         pipeline.logger.warn(
           "csp",
-          `context.csp was used when rendering the route ${colors.green(state.routeData.route)}, but CSP was not configured. For more information, see https://docs.astro.build/en/reference/configuration-reference/#securitycsp`
+          `context.csp was used when rendering the route ${s.green(state.routeData.route)}, but CSP was not configured. For more information, see https://docs.astro.build/en/reference/configuration-reference/#securitycsp`
         );
       }
       return void 0;
@@ -11785,6 +15495,611 @@ async function renderRedirect(state) {
   return new Response(null, { status, headers });
 }
 
+const suspectProtoRx = /"(?:_|\\u0{2}5[Ff]){2}(?:p|\\u0{2}70)(?:r|\\u0{2}72)(?:o|\\u0{2}6[Ff])(?:t|\\u0{2}74)(?:o|\\u0{2}6[Ff])(?:_|\\u0{2}5[Ff]){2}"\s*:/;
+const suspectConstructorRx = /"(?:c|\\u0063)(?:o|\\u006[Ff])(?:n|\\u006[Ee])(?:s|\\u0073)(?:t|\\u0074)(?:r|\\u0072)(?:u|\\u0075)(?:c|\\u0063)(?:t|\\u0074)(?:o|\\u006[Ff])(?:r|\\u0072)"\s*:/;
+const JsonSigRx = /^\s*["[{]|^\s*-?\d{1,16}(\.\d{1,17})?([Ee][+-]?\d+)?\s*$/;
+function jsonParseTransform(key, value) {
+  if (key === "__proto__" || key === "constructor" && value && typeof value === "object" && "prototype" in value) {
+    warnKeyDropped(key);
+    return;
+  }
+  return value;
+}
+function warnKeyDropped(key) {
+  console.warn(`[destr] Dropping "${key}" key to prevent prototype pollution.`);
+}
+function destr(value, options = {}) {
+  if (typeof value !== "string") {
+    return value;
+  }
+  if (value[0] === '"' && value[value.length - 1] === '"' && value.indexOf("\\") === -1) {
+    return value.slice(1, -1);
+  }
+  const _value = value.trim();
+  if (_value.length <= 9) {
+    switch (_value.toLowerCase()) {
+      case "true": {
+        return true;
+      }
+      case "false": {
+        return false;
+      }
+      case "undefined": {
+        return void 0;
+      }
+      case "null": {
+        return null;
+      }
+      case "nan": {
+        return Number.NaN;
+      }
+      case "infinity": {
+        return Number.POSITIVE_INFINITY;
+      }
+      case "-infinity": {
+        return Number.NEGATIVE_INFINITY;
+      }
+    }
+  }
+  if (!JsonSigRx.test(value)) {
+    if (options.strict) {
+      throw new SyntaxError("[destr] Invalid JSON");
+    }
+    return value;
+  }
+  try {
+    if (suspectProtoRx.test(value) || suspectConstructorRx.test(value)) {
+      if (options.strict) {
+        throw new Error("[destr] Possible prototype pollution");
+      }
+      return JSON.parse(value, jsonParseTransform);
+    }
+    return JSON.parse(value);
+  } catch (error) {
+    if (options.strict) {
+      throw error;
+    }
+    return value;
+  }
+}
+
+function wrapToPromise(value) {
+  if (!value || typeof value.then !== "function") {
+    return Promise.resolve(value);
+  }
+  return value;
+}
+function asyncCall(function_, ...arguments_) {
+  try {
+    return wrapToPromise(function_(...arguments_));
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
+function isPrimitive(value) {
+  const type = typeof value;
+  return value === null || type !== "object" && type !== "function";
+}
+function isPureObject(value) {
+  const proto = Object.getPrototypeOf(value);
+  return !proto || proto.isPrototypeOf(Object);
+}
+function stringify$1(value) {
+  if (isPrimitive(value)) {
+    return String(value);
+  }
+  if (isPureObject(value) || Array.isArray(value)) {
+    return JSON.stringify(value);
+  }
+  if (typeof value.toJSON === "function") {
+    return stringify$1(value.toJSON());
+  }
+  throw new Error("[unstorage] Cannot stringify value!");
+}
+const BASE64_PREFIX = "base64:";
+function serializeRaw(value) {
+  if (typeof value === "string") {
+    return value;
+  }
+  return BASE64_PREFIX + base64Encode(value);
+}
+function deserializeRaw(value) {
+  if (typeof value !== "string") {
+    return value;
+  }
+  if (!value.startsWith(BASE64_PREFIX)) {
+    return value;
+  }
+  return base64Decode(value.slice(BASE64_PREFIX.length));
+}
+function base64Decode(input) {
+  if (globalThis.Buffer) {
+    return Buffer.from(input, "base64");
+  }
+  return Uint8Array.from(
+    globalThis.atob(input),
+    (c) => c.codePointAt(0)
+  );
+}
+function base64Encode(input) {
+  if (globalThis.Buffer) {
+    return Buffer.from(input).toString("base64");
+  }
+  return globalThis.btoa(String.fromCodePoint(...input));
+}
+function normalizeKey(key) {
+  if (!key) {
+    return "";
+  }
+  return key.split("?")[0]?.replace(/[/\\]/g, ":").replace(/:+/g, ":").replace(/^:|:$/g, "") || "";
+}
+function joinKeys(...keys) {
+  return normalizeKey(keys.join(":"));
+}
+function normalizeBaseKey(base) {
+  base = normalizeKey(base);
+  return base ? base + ":" : "";
+}
+function filterKeyByDepth(key, depth) {
+  if (depth === void 0) {
+    return true;
+  }
+  let substrCount = 0;
+  let index = key.indexOf(":");
+  while (index > -1) {
+    substrCount++;
+    index = key.indexOf(":", index + 1);
+  }
+  return substrCount <= depth;
+}
+function filterKeyByBase(key, base) {
+  if (base) {
+    return key.startsWith(base) && key[key.length - 1] !== "$";
+  }
+  return key[key.length - 1] !== "$";
+}
+
+function defineDriver(factory) {
+  return factory;
+}
+
+const DRIVER_NAME = "memory";
+const memory = defineDriver(() => {
+  const data = /* @__PURE__ */ new Map();
+  return {
+    name: DRIVER_NAME,
+    getInstance: () => data,
+    hasItem(key) {
+      return data.has(key);
+    },
+    getItem(key) {
+      return data.get(key) ?? null;
+    },
+    getItemRaw(key) {
+      return data.get(key) ?? null;
+    },
+    setItem(key, value) {
+      data.set(key, value);
+    },
+    setItemRaw(key, value) {
+      data.set(key, value);
+    },
+    removeItem(key) {
+      data.delete(key);
+    },
+    getKeys() {
+      return [...data.keys()];
+    },
+    clear() {
+      data.clear();
+    },
+    dispose() {
+      data.clear();
+    }
+  };
+});
+
+function createStorage(options = {}) {
+  const context = {
+    mounts: { "": options.driver || memory() },
+    mountpoints: [""],
+    watching: false,
+    watchListeners: [],
+    unwatch: {}
+  };
+  const getMount = (key) => {
+    for (const base of context.mountpoints) {
+      if (key.startsWith(base)) {
+        return {
+          base,
+          relativeKey: key.slice(base.length),
+          driver: context.mounts[base]
+        };
+      }
+    }
+    return {
+      base: "",
+      relativeKey: key,
+      driver: context.mounts[""]
+    };
+  };
+  const getMounts = (base, includeParent) => {
+    return context.mountpoints.filter(
+      (mountpoint) => mountpoint.startsWith(base) || includeParent && base.startsWith(mountpoint)
+    ).map((mountpoint) => ({
+      relativeBase: base.length > mountpoint.length ? base.slice(mountpoint.length) : void 0,
+      mountpoint,
+      driver: context.mounts[mountpoint]
+    }));
+  };
+  const onChange = (event, key) => {
+    if (!context.watching) {
+      return;
+    }
+    key = normalizeKey(key);
+    for (const listener of context.watchListeners) {
+      listener(event, key);
+    }
+  };
+  const startWatch = async () => {
+    if (context.watching) {
+      return;
+    }
+    context.watching = true;
+    for (const mountpoint in context.mounts) {
+      context.unwatch[mountpoint] = await watch(
+        context.mounts[mountpoint],
+        onChange,
+        mountpoint
+      );
+    }
+  };
+  const stopWatch = async () => {
+    if (!context.watching) {
+      return;
+    }
+    for (const mountpoint in context.unwatch) {
+      await context.unwatch[mountpoint]();
+    }
+    context.unwatch = {};
+    context.watching = false;
+  };
+  const runBatch = (items, commonOptions, cb) => {
+    const batches = /* @__PURE__ */ new Map();
+    const getBatch = (mount) => {
+      let batch = batches.get(mount.base);
+      if (!batch) {
+        batch = {
+          driver: mount.driver,
+          base: mount.base,
+          items: []
+        };
+        batches.set(mount.base, batch);
+      }
+      return batch;
+    };
+    for (const item of items) {
+      const isStringItem = typeof item === "string";
+      const key = normalizeKey(isStringItem ? item : item.key);
+      const value = isStringItem ? void 0 : item.value;
+      const options2 = isStringItem || !item.options ? commonOptions : { ...commonOptions, ...item.options };
+      const mount = getMount(key);
+      getBatch(mount).items.push({
+        key,
+        value,
+        relativeKey: mount.relativeKey,
+        options: options2
+      });
+    }
+    return Promise.all([...batches.values()].map((batch) => cb(batch))).then(
+      (r) => r.flat()
+    );
+  };
+  const storage = {
+    // Item
+    hasItem(key, opts = {}) {
+      key = normalizeKey(key);
+      const { relativeKey, driver } = getMount(key);
+      return asyncCall(driver.hasItem, relativeKey, opts);
+    },
+    getItem(key, opts = {}) {
+      key = normalizeKey(key);
+      const { relativeKey, driver } = getMount(key);
+      return asyncCall(driver.getItem, relativeKey, opts).then(
+        (value) => destr(value)
+      );
+    },
+    getItems(items, commonOptions = {}) {
+      return runBatch(items, commonOptions, (batch) => {
+        if (batch.driver.getItems) {
+          return asyncCall(
+            batch.driver.getItems,
+            batch.items.map((item) => ({
+              key: item.relativeKey,
+              options: item.options
+            })),
+            commonOptions
+          ).then(
+            (r) => r.map((item) => ({
+              key: joinKeys(batch.base, item.key),
+              value: destr(item.value)
+            }))
+          );
+        }
+        return Promise.all(
+          batch.items.map((item) => {
+            return asyncCall(
+              batch.driver.getItem,
+              item.relativeKey,
+              item.options
+            ).then((value) => ({
+              key: item.key,
+              value: destr(value)
+            }));
+          })
+        );
+      });
+    },
+    getItemRaw(key, opts = {}) {
+      key = normalizeKey(key);
+      const { relativeKey, driver } = getMount(key);
+      if (driver.getItemRaw) {
+        return asyncCall(driver.getItemRaw, relativeKey, opts);
+      }
+      return asyncCall(driver.getItem, relativeKey, opts).then(
+        (value) => deserializeRaw(value)
+      );
+    },
+    async setItem(key, value, opts = {}) {
+      if (value === void 0) {
+        return storage.removeItem(key);
+      }
+      key = normalizeKey(key);
+      const { relativeKey, driver } = getMount(key);
+      if (!driver.setItem) {
+        return;
+      }
+      await asyncCall(driver.setItem, relativeKey, stringify$1(value), opts);
+      if (!driver.watch) {
+        onChange("update", key);
+      }
+    },
+    async setItems(items, commonOptions) {
+      await runBatch(items, commonOptions, async (batch) => {
+        if (batch.driver.setItems) {
+          return asyncCall(
+            batch.driver.setItems,
+            batch.items.map((item) => ({
+              key: item.relativeKey,
+              value: stringify$1(item.value),
+              options: item.options
+            })),
+            commonOptions
+          );
+        }
+        if (!batch.driver.setItem) {
+          return;
+        }
+        await Promise.all(
+          batch.items.map((item) => {
+            return asyncCall(
+              batch.driver.setItem,
+              item.relativeKey,
+              stringify$1(item.value),
+              item.options
+            );
+          })
+        );
+      });
+    },
+    async setItemRaw(key, value, opts = {}) {
+      if (value === void 0) {
+        return storage.removeItem(key, opts);
+      }
+      key = normalizeKey(key);
+      const { relativeKey, driver } = getMount(key);
+      if (driver.setItemRaw) {
+        await asyncCall(driver.setItemRaw, relativeKey, value, opts);
+      } else if (driver.setItem) {
+        await asyncCall(driver.setItem, relativeKey, serializeRaw(value), opts);
+      } else {
+        return;
+      }
+      if (!driver.watch) {
+        onChange("update", key);
+      }
+    },
+    async removeItem(key, opts = {}) {
+      if (typeof opts === "boolean") {
+        opts = { removeMeta: opts };
+      }
+      key = normalizeKey(key);
+      const { relativeKey, driver } = getMount(key);
+      if (!driver.removeItem) {
+        return;
+      }
+      await asyncCall(driver.removeItem, relativeKey, opts);
+      if (opts.removeMeta || opts.removeMata) {
+        await asyncCall(driver.removeItem, relativeKey + "$", opts);
+      }
+      if (!driver.watch) {
+        onChange("remove", key);
+      }
+    },
+    // Meta
+    async getMeta(key, opts = {}) {
+      if (typeof opts === "boolean") {
+        opts = { nativeOnly: opts };
+      }
+      key = normalizeKey(key);
+      const { relativeKey, driver } = getMount(key);
+      const meta = /* @__PURE__ */ Object.create(null);
+      if (driver.getMeta) {
+        Object.assign(meta, await asyncCall(driver.getMeta, relativeKey, opts));
+      }
+      if (!opts.nativeOnly) {
+        const value = await asyncCall(
+          driver.getItem,
+          relativeKey + "$",
+          opts
+        ).then((value_) => destr(value_));
+        if (value && typeof value === "object") {
+          if (typeof value.atime === "string") {
+            value.atime = new Date(value.atime);
+          }
+          if (typeof value.mtime === "string") {
+            value.mtime = new Date(value.mtime);
+          }
+          Object.assign(meta, value);
+        }
+      }
+      return meta;
+    },
+    setMeta(key, value, opts = {}) {
+      return this.setItem(key + "$", value, opts);
+    },
+    removeMeta(key, opts = {}) {
+      return this.removeItem(key + "$", opts);
+    },
+    // Keys
+    async getKeys(base, opts = {}) {
+      base = normalizeBaseKey(base);
+      const mounts = getMounts(base, true);
+      let maskedMounts = [];
+      const allKeys = [];
+      let allMountsSupportMaxDepth = true;
+      for (const mount of mounts) {
+        if (!mount.driver.flags?.maxDepth) {
+          allMountsSupportMaxDepth = false;
+        }
+        const rawKeys = await asyncCall(
+          mount.driver.getKeys,
+          mount.relativeBase,
+          opts
+        );
+        for (const key of rawKeys) {
+          const fullKey = mount.mountpoint + normalizeKey(key);
+          if (!maskedMounts.some((p) => fullKey.startsWith(p))) {
+            allKeys.push(fullKey);
+          }
+        }
+        maskedMounts = [
+          mount.mountpoint,
+          ...maskedMounts.filter((p) => !p.startsWith(mount.mountpoint))
+        ];
+      }
+      const shouldFilterByDepth = opts.maxDepth !== void 0 && !allMountsSupportMaxDepth;
+      return allKeys.filter(
+        (key) => (!shouldFilterByDepth || filterKeyByDepth(key, opts.maxDepth)) && filterKeyByBase(key, base)
+      );
+    },
+    // Utils
+    async clear(base, opts = {}) {
+      base = normalizeBaseKey(base);
+      await Promise.all(
+        getMounts(base, false).map(async (m) => {
+          if (m.driver.clear) {
+            return asyncCall(m.driver.clear, m.relativeBase, opts);
+          }
+          if (m.driver.removeItem) {
+            const keys = await m.driver.getKeys(m.relativeBase || "", opts);
+            return Promise.all(
+              keys.map((key) => m.driver.removeItem(key, opts))
+            );
+          }
+        })
+      );
+    },
+    async dispose() {
+      await Promise.all(
+        Object.values(context.mounts).map((driver) => dispose(driver))
+      );
+    },
+    async watch(callback) {
+      await startWatch();
+      context.watchListeners.push(callback);
+      return async () => {
+        context.watchListeners = context.watchListeners.filter(
+          (listener) => listener !== callback
+        );
+        if (context.watchListeners.length === 0) {
+          await stopWatch();
+        }
+      };
+    },
+    async unwatch() {
+      context.watchListeners = [];
+      await stopWatch();
+    },
+    // Mount
+    mount(base, driver) {
+      base = normalizeBaseKey(base);
+      if (base && context.mounts[base]) {
+        throw new Error(`already mounted at ${base}`);
+      }
+      if (base) {
+        context.mountpoints.push(base);
+        context.mountpoints.sort((a, b) => b.length - a.length);
+      }
+      context.mounts[base] = driver;
+      if (context.watching) {
+        Promise.resolve(watch(driver, onChange, base)).then((unwatcher) => {
+          context.unwatch[base] = unwatcher;
+        }).catch(console.error);
+      }
+      return storage;
+    },
+    async unmount(base, _dispose = true) {
+      base = normalizeBaseKey(base);
+      if (!base || !context.mounts[base]) {
+        return;
+      }
+      if (context.watching && base in context.unwatch) {
+        context.unwatch[base]?.();
+        delete context.unwatch[base];
+      }
+      if (_dispose) {
+        await dispose(context.mounts[base]);
+      }
+      context.mountpoints = context.mountpoints.filter((key) => key !== base);
+      delete context.mounts[base];
+    },
+    getMount(key = "") {
+      key = normalizeKey(key) + ":";
+      const m = getMount(key);
+      return {
+        driver: m.driver,
+        base: m.base
+      };
+    },
+    getMounts(base = "", opts = {}) {
+      base = normalizeKey(base);
+      const mounts = getMounts(base, opts.parents);
+      return mounts.map((m) => ({
+        driver: m.driver,
+        base: m.mountpoint
+      }));
+    },
+    // Aliases
+    keys: (base, opts = {}) => storage.getKeys(base, opts),
+    get: (key, opts = {}) => storage.getItem(key, opts),
+    set: (key, value, opts = {}) => storage.setItem(key, value, opts),
+    has: (key, opts = {}) => storage.hasItem(key, opts),
+    del: (key, opts = {}) => storage.removeItem(key, opts),
+    remove: (key, opts = {}) => storage.removeItem(key, opts)
+  };
+  return storage;
+}
+function watch(driver, onChange, base) {
+  return driver.watch ? driver.watch((event, key) => onChange(event, base + key)) : () => {
+  };
+}
+async function dispose(driver) {
+  if (typeof driver.dispose === "function") {
+    await asyncCall(driver.dispose);
+  }
+}
+
 const PERSIST_SYMBOL = /* @__PURE__ */ Symbol();
 const DEFAULT_COOKIE_NAME = "astro-session";
 const VALID_COOKIE_REGEX = /^[\w-]+$/;
@@ -11794,7 +16109,7 @@ const unflatten = (parsed, _) => {
   });
 };
 const stringify = (data, _) => {
-  return stringify$1(data, {
+  return stringify$2(data, {
     // Support URL objects
     URL: (val) => val instanceof URL && val.href
   });
@@ -13098,14 +17413,14 @@ const renderers = [];
 const serializedData = [{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"type":"page","component":"_server-islands.astro","params":["name"],"segments":[[{"content":"_server-islands","dynamic":false,"spread":false}],[{"content":"name","dynamic":true,"spread":false}]],"pattern":"^\\/_server-islands\\/([^/]+?)\\/?$","prerender":false,"isIndex":false,"fallbackRoutes":[],"route":"/_server-islands/[name]","origin":"internal","distURL":[],"_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"route":"/_image","component":"node_modules/astro/dist/assets/endpoint/generic.js","params":[],"pathname":"/_image","pattern":"^\\/_image\\/?$","segments":[[{"content":"_image","dynamic":false,"spread":false}]],"type":"endpoint","prerender":false,"fallbackRoutes":[],"distURL":[],"isIndex":false,"origin":"internal","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"route":"/contact","isIndex":false,"type":"page","pattern":"^\\/contact\\/?$","segments":[[{"content":"contact","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/contact.astro","pathname":"/contact","prerender":false,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}}];
 				serializedData.map(deserializeRouteInfo);
 
-const _page0 = () => import('./generic_wrJP7Z3I.mjs');
-const _page1 = () => import('./contact_BKyIQmfq.mjs');
+const _page0 = () => import('./generic_DfoSvJar.mjs');
+const _page1 = () => import('./contact_CkcteQHU.mjs');
 const pageMap = new Map([
     ["node_modules/astro/dist/assets/endpoint/generic.js", _page0],
     ["src/pages/contact.astro", _page1]
 ]);
 
-const _manifest = deserializeManifest(({"rootDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/","cacheDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/node_modules/.astro/","outDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/build/","srcDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/","publicDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/public/","buildClientDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/build/client/","buildServerDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/build/server/","adapterName":"@astrojs/vercel","assetsDir":"_astro","routes":[{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"type":"page","component":"_server-islands.astro","params":["name"],"segments":[[{"content":"_server-islands","dynamic":false,"spread":false}],[{"content":"name","dynamic":true,"spread":false}]],"pattern":"^\\/_server-islands\\/([^/]+?)\\/?$","prerender":false,"isIndex":false,"fallbackRoutes":[],"route":"/_server-islands/[name]","origin":"internal","distURL":[],"_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/_image","component":"node_modules/astro/dist/assets/endpoint/generic.js","params":[],"pathname":"/_image","pattern":"^\\/_image\\/?$","segments":[[{"content":"_image","dynamic":false,"spread":false}]],"type":"endpoint","prerender":false,"fallbackRoutes":[],"distURL":[],"isIndex":false,"origin":"internal","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/404","isIndex":false,"type":"page","pattern":"^\\/404\\/?$","segments":[[{"content":"404","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/404.astro","pathname":"/404","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/about-us","isIndex":false,"type":"page","pattern":"^\\/about-us\\/?$","segments":[[{"content":"about-us","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/about-us.astro","pathname":"/about-us","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/blog/[slug]","isIndex":false,"type":"page","pattern":"^\\/blog\\/([^/]+?)\\/?$","segments":[[{"content":"blog","dynamic":false,"spread":false}],[{"content":"slug","dynamic":true,"spread":false}]],"params":["slug"],"component":"src/pages/blog/[slug].astro","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/blog","isIndex":true,"type":"page","pattern":"^\\/blog\\/?$","segments":[[{"content":"blog","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/blog/index.astro","pathname":"/blog","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/book-demo","isIndex":false,"type":"page","pattern":"^\\/book-demo\\/?$","segments":[[{"content":"book-demo","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/book-demo.astro","pathname":"/book-demo","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/careers","isIndex":false,"type":"page","pattern":"^\\/careers\\/?$","segments":[[{"content":"careers","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/careers.astro","pathname":"/careers","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/case-studies","isIndex":true,"type":"page","pattern":"^\\/case-studies\\/?$","segments":[[{"content":"case-studies","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/case-studies/index.astro","pathname":"/case-studies","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[{"type":"external","src":"_astro/contact.DHZaXq33.css"}],"routeData":{"route":"/contact","isIndex":false,"type":"page","pattern":"^\\/contact\\/?$","segments":[[{"content":"contact","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/contact.astro","pathname":"/contact","prerender":false,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/cookie-policy","isIndex":false,"type":"page","pattern":"^\\/cookie-policy\\/?$","segments":[[{"content":"cookie-policy","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/cookie-policy.astro","pathname":"/cookie-policy","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/documentation/api-reference","isIndex":false,"type":"page","pattern":"^\\/documentation\\/api-reference\\/?$","segments":[[{"content":"documentation","dynamic":false,"spread":false}],[{"content":"api-reference","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/documentation/api-reference.astro","pathname":"/documentation/api-reference","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/documentation","isIndex":true,"type":"page","pattern":"^\\/documentation\\/?$","segments":[[{"content":"documentation","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/documentation/index.astro","pathname":"/documentation","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/documentation","isIndex":false,"type":"page","pattern":"^\\/documentation\\/?$","segments":[[{"content":"documentation","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/documentation.astro","pathname":"/documentation","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/endesarrollo","isIndex":false,"type":"page","pattern":"^\\/endesarrollo\\/?$","segments":[[{"content":"endesarrollo","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/endesarrollo.astro","pathname":"/endesarrollo","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/login","isIndex":false,"type":"page","pattern":"^\\/login\\/?$","segments":[[{"content":"login","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/login.astro","pathname":"/login","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/pricing","isIndex":false,"type":"page","pattern":"^\\/pricing\\/?$","segments":[[{"content":"pricing","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/pricing.astro","pathname":"/pricing","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/privacy-policy","isIndex":false,"type":"page","pattern":"^\\/privacy-policy\\/?$","segments":[[{"content":"privacy-policy","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/privacy-policy.astro","pathname":"/privacy-policy","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/product","isIndex":false,"type":"page","pattern":"^\\/product\\/?$","segments":[[{"content":"product","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/product.astro","pathname":"/product","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/solutions","isIndex":false,"type":"page","pattern":"^\\/solutions\\/?$","segments":[[{"content":"solutions","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/solutions.astro","pathname":"/solutions","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/terms-of-use","isIndex":false,"type":"page","pattern":"^\\/terms-of-use\\/?$","segments":[[{"content":"terms-of-use","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/terms-of-use.astro","pathname":"/terms-of-use","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/tutorials","isIndex":true,"type":"page","pattern":"^\\/tutorials\\/?$","segments":[[{"content":"tutorials","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/tutorials/index.astro","pathname":"/tutorials","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/","isIndex":true,"type":"page","pattern":"^\\/$","segments":[],"params":[],"component":"src/pages/index.astro","pathname":"/","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}}],"serverLike":true,"middlewareMode":"classic","site":"https://turnapp.ferreiraric.com","base":"/","trailingSlash":"ignore","compressHTML":true,"experimentalQueuedRendering":{"enabled":false,"poolSize":0,"contentCache":false},"componentMetadata":[["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/404.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/about-us.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/blog/[slug].astro",{"propagation":"in-tree","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/blog/index.astro",{"propagation":"in-tree","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/book-demo.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/careers.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/case-studies/index.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/cookie-policy.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/documentation.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/documentation/api-reference.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/documentation/index.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/endesarrollo.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/index.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/login.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/pricing.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/privacy-policy.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/product.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/solutions.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/terms-of-use.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/tutorials/index.astro",{"propagation":"none","containsHead":true}],["\u0000astro:content",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:page:src/pages/blog/[slug]@_@astro",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:pages",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:manifest",{"propagation":"in-tree","containsHead":false}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/node_modules/astro/dist/entrypoints/prerender.js",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:page:src/pages/blog/index@_@astro",{"propagation":"in-tree","containsHead":false}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/contact.astro",{"propagation":"none","containsHead":true}]],"renderers":[],"clientDirectives":[["idle","(()=>{var l=(n,t)=>{let i=async()=>{await(await n())()},e=typeof t.value==\"object\"?t.value:void 0,s={timeout:e==null?void 0:e.timeout};\"requestIdleCallback\"in window?window.requestIdleCallback(i,s):setTimeout(i,s.timeout||200)};(self.Astro||(self.Astro={})).idle=l;window.dispatchEvent(new Event(\"astro:idle\"));})();"],["load","(()=>{var e=async t=>{await(await t())()};(self.Astro||(self.Astro={})).load=e;window.dispatchEvent(new Event(\"astro:load\"));})();"],["media","(()=>{var n=(a,t)=>{let i=async()=>{await(await a())()};if(t.value){let e=matchMedia(t.value);e.matches?i():e.addEventListener(\"change\",i,{once:!0})}};(self.Astro||(self.Astro={})).media=n;window.dispatchEvent(new Event(\"astro:media\"));})();"],["only","(()=>{var e=async t=>{await(await t())()};(self.Astro||(self.Astro={})).only=e;window.dispatchEvent(new Event(\"astro:only\"));})();"],["visible","(()=>{var a=(s,i,o)=>{let r=async()=>{await(await s())()},t=typeof i.value==\"object\"?i.value:void 0,c={rootMargin:t==null?void 0:t.rootMargin},n=new IntersectionObserver(e=>{for(let l of e)if(l.isIntersecting){n.disconnect(),r();break}},c);for(let e of o.children)n.observe(e)};(self.Astro||(self.Astro={})).visible=a;window.dispatchEvent(new Event(\"astro:visible\"));})();"]],"entryModules":{"\u0000virtual:astro:actions/noop-entrypoint":"chunks/noop-entrypoint_BOlrdqWF.mjs","\u0000noop-middleware":"virtual_astro_middleware.mjs","\u0000virtual:astro:session-driver":"chunks/_virtual_astro_session-driver_DYx9Bb3p.mjs","\u0000virtual:astro:server-island-manifest":"chunks/_virtual_astro_server-island-manifest_CQQ1F5PF.mjs","\u0000virtual:astro:page:src/pages/404@_@astro":"chunks/404_YnVcpWGv.mjs","\u0000virtual:astro:page:src/pages/about-us@_@astro":"chunks/about-us_DvS3a28q.mjs","\u0000virtual:astro:page:src/pages/blog/[slug]@_@astro":"chunks/_slug__BJ6wcCOw.mjs","\u0000virtual:astro:page:src/pages/blog/index@_@astro":"chunks/index_CxuZYUit.mjs","\u0000virtual:astro:page:src/pages/book-demo@_@astro":"chunks/book-demo_BxeuXgM8.mjs","\u0000virtual:astro:page:src/pages/careers@_@astro":"chunks/careers_2bbxQxn6.mjs","\u0000virtual:astro:page:src/pages/case-studies/index@_@astro":"chunks/index_DRaNgz50.mjs","\u0000virtual:astro:page:src/pages/cookie-policy@_@astro":"chunks/cookie-policy_BJLovt_-.mjs","\u0000virtual:astro:page:src/pages/documentation/api-reference@_@astro":"chunks/api-reference_DXL16Fsq.mjs","\u0000virtual:astro:page:src/pages/documentation/index@_@astro":"chunks/index_BCOiJSJt.mjs","\u0000virtual:astro:page:src/pages/documentation@_@astro":"chunks/documentation_7Wb5bR3H.mjs","\u0000virtual:astro:page:src/pages/endesarrollo@_@astro":"chunks/endesarrollo_CmmJFCQm.mjs","\u0000virtual:astro:page:src/pages/login@_@astro":"chunks/login_Bnxqmg67.mjs","\u0000virtual:astro:page:src/pages/pricing@_@astro":"chunks/pricing_CZNqY5zN.mjs","\u0000virtual:astro:page:src/pages/privacy-policy@_@astro":"chunks/privacy-policy_DQQ8b3IA.mjs","\u0000virtual:astro:page:src/pages/product@_@astro":"chunks/product_1LvlDvfi.mjs","\u0000virtual:astro:page:src/pages/solutions@_@astro":"chunks/solutions_JWpwu_YN.mjs","\u0000virtual:astro:page:src/pages/terms-of-use@_@astro":"chunks/terms-of-use_BF3d5lSR.mjs","\u0000virtual:astro:page:src/pages/tutorials/index@_@astro":"chunks/index_DUCq4J8W.mjs","\u0000virtual:astro:page:src/pages/index@_@astro":"chunks/index_BvzjpMtV.mjs","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/node_modules/astro/dist/assets/services/sharp.js":"chunks/sharp_C0lFVLHM.mjs","C:\\Users\\Ferreira_x2\\Desktop\\dev\\turnapp-web-page\\.astro\\content-assets.mjs":"chunks/content-assets_DleWbedO.mjs","\u0000astro:data-layer-content":"chunks/_astro_data-layer-content_V2dGt0hc.mjs","astro/entrypoints/prerender":"prerender-entry.CCrNFC6d.mjs","@astrojs/vercel/entrypoint":"entry.mjs","\u0000virtual:astro:page:node_modules/astro/dist/assets/endpoint/generic@_@js":"chunks/generic_wrJP7Z3I.mjs","\u0000virtual:astro:page:src/pages/contact@_@astro":"chunks/contact_BKyIQmfq.mjs","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/node_modules/astro/components/ClientRouter.astro?astro&type=script&index=0&lang.ts":"_astro/ClientRouter.astro_astro_type_script_index_0_lang.DQAK6ZHT.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/Features.astro?astro&type=script&index=0&lang.ts":"_astro/Features.astro_astro_type_script_index_0_lang.Cj-dhqA4.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/Header.astro?astro&type=script&index=0&lang.ts":"_astro/Header.astro_astro_type_script_index_0_lang.C34phMF9.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/Hero.astro?astro&type=script&index=0&lang.ts":"_astro/Hero.astro_astro_type_script_index_0_lang.DOoUef6z.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/SocialProof.astro?astro&type=script&index=0&lang.ts":"_astro/SocialProof.astro_astro_type_script_index_0_lang.BMNpwfG1.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/layouts/Layout.astro?astro&type=script&index=0&lang.ts":"_astro/Layout.astro_astro_type_script_index_0_lang.BAQDUpRY.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/blog/[slug].astro?astro&type=script&index=0&lang.ts":"_astro/_slug_.astro_astro_type_script_index_0_lang.xLGdccrv.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/book-demo.astro?astro&type=script&index=0&lang.ts":"_astro/book-demo.astro_astro_type_script_index_0_lang.BSNAhYHB.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/contact.astro?astro&type=script&index=0&lang.ts":"_astro/contact.astro_astro_type_script_index_0_lang.BKWyVA67.js","astro:scripts/page.js":"_astro/page.BOdB6yKo.js","astro:scripts/before-hydration.js":""},"inlinedScripts":[["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/Header.astro?astro&type=script&index=0&lang.ts","document.addEventListener(\"astro:page-load\",()=>{const e=document.getElementById(\"menu-toggle\"),t=document.getElementById(\"mobile-menu\");e&&t&&e.addEventListener(\"click\",()=>{const n=e.getAttribute(\"aria-expanded\")===\"true\";e.setAttribute(\"aria-expanded\",String(!n)),e.classList.toggle(\"menu-open\"),t.classList.toggle(\"mobile-menu-open\")})});"],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/Hero.astro?astro&type=script&index=0&lang.ts","const m=()=>{const l=document.querySelector(\".image-gallery\");if(!l)return()=>{};const r=l.querySelectorAll(\".gallery-item\");let n=0,o=null;const a=()=>{const e=r[n];e.style.opacity=\"0\",e.setAttribute(\"data-active\",\"false\");const t=e.querySelector(\"video\");t&&(t.pause(),t.currentTime=0),n=(n+1)%r.length;const s=r[n];s.style.opacity=\"1\",s.setAttribute(\"data-active\",\"true\");const d=s.querySelector(\"video\");d&&(d.currentTime=0,d.play().catch(i=>console.error(\"Error video:\",i)));const u=s.getAttribute(\"data-duration\"),v=u?parseInt(u):5e3;o=setTimeout(a,v),l.querySelectorAll(\".gallery-dot\").forEach((i,g)=>{g===n?(i.classList.add(\"bg-white\",\"w-8\"),i.classList.remove(\"bg-white/40\",\"w-2\")):(i.classList.remove(\"bg-white\",\"w-8\"),i.classList.add(\"bg-white/40\",\"w-2\"))})},y=()=>{o&&clearTimeout(o);const e=r[0].getAttribute(\"data-duration\"),t=e?parseInt(e):35e3;o=setTimeout(a,t)},c=r[0].querySelector(\"video\");return c&&(c.addEventListener(\"ended\",()=>a()),c.addEventListener(\"error\",()=>{console.warn(\"Error cargando el video, continuando con imágenes...\"),setTimeout(a,35e3)}),c.play().catch(e=>console.error(\"Error al reproducir el video inicial:\",e))),y(),()=>{o&&clearTimeout(o),r.forEach(e=>{const t=e.querySelector(\"video\");t&&(t.pause(),t.currentTime=0)})}};document.addEventListener(\"DOMContentLoaded\",()=>{m()});document.addEventListener(\"astro:after-swap\",()=>{m()});"],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/SocialProof.astro?astro&type=script&index=0&lang.ts","const i=[{location:\"Clínica San Juan\",detail:\"Redujo el tiempo de espera de sus pacientes en un 45% usando las filas inteligentes de TurnApp.\",time:\"Este mes\"},{location:\"Banco Nacional\",detail:\"Aumentó la satisfacción del cliente al 98% implementando emisión de turnos por QR.\",time:\"Reciente\"},{location:\"Centro de Servicios\",detail:\"Procesó 500+ turnos diarios sin aglomeraciones gracias a las pantallas HUB.\",time:\"Hace 2 meses\"},{location:\"Hospital Central\",detail:\"Organizó 4 departamentos médicos con un flujo de atención unificado y transparente.\",time:\"Este trimestre\"},{location:\"Agencia de Envíos\",detail:\"Optimizó la estación de sus 12 agentes, reduciendo el tiempo por transacción a la mitad.\",time:\"Este año\"}];let n=0,c=!1;function l(){if(c)return;const t=document.getElementById(\"social-proof-toast\"),e=document.getElementById(\"sp-location\"),s=document.getElementById(\"sp-detail\"),o=document.getElementById(\"sp-time\");if(!t||!e||!s||!o)return;const a=i[n];e.textContent=`Éxito: ${a.location}`,s.textContent=a.detail,o.textContent=a.time,t.classList.remove(\"translate-y-20\",\"opacity-0\"),t.classList.add(\"translate-y-0\",\"opacity-100\"),setTimeout(()=>{t.classList.add(\"translate-y-20\",\"opacity-0\"),t.classList.remove(\"translate-y-0\",\"opacity-100\"),n=(n+1)%i.length},8e3)}document.addEventListener(\"DOMContentLoaded\",()=>{const t=document.getElementById(\"sp-close\");t&&t.addEventListener(\"click\",()=>{c=!0;const e=document.getElementById(\"social-proof-toast\");e&&(e.classList.add(\"translate-y-20\",\"opacity-0\"),e.classList.remove(\"translate-y-0\",\"opacity-100\"))}),setTimeout(()=>{l(),setInterval(l,35e3)},6e3)});"],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/blog/[slug].astro?astro&type=script&index=0&lang.ts","document.addEventListener(\"astro:page-load\",()=>{const r=document.getElementById(\"reading-progress\"),c=document.querySelector(\"article\");if(r&&c){const t=()=>{const e=window.scrollY,o=c.clientHeight-window.innerHeight,i=Math.min(100,Math.max(0,e/o*100));r.style.width=`${i}%`,r.setAttribute(\"aria-valuenow\",i.toString())};window.addEventListener(\"scroll\",t,{passive:!0}),t()}const s=document.getElementById(\"copy-link\"),a=document.getElementById(\"copy-link-mobile\"),l=window.location.href;[s,a].forEach(t=>{t&&t.addEventListener(\"click\",async()=>{try{await navigator.clipboard.writeText(l);const e=t.querySelector(\"span\"),o=t.querySelector(\"svg\"),i=e?.textContent||\"Copy Link\";if(o&&(o.style.color=\"#7928CA\"),e){e.textContent=\"Copied!\";const n=document.createElement(\"div\");n.setAttribute(\"aria-live\",\"polite\"),n.setAttribute(\"aria-atomic\",\"true\"),n.className=\"sr-only\",n.textContent=\"Link copied to clipboard\",document.body.appendChild(n),setTimeout(()=>{e.textContent=i,o&&(o.style.color=\"\"),document.body.removeChild(n)},2e3)}}catch(e){console.error(\"Failed to copy URL:\",e)}})})});"],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/book-demo.astro?astro&type=script&index=0&lang.ts","const g=()=>{const l=document.getElementById(\"demo-form\");if(!l)return;const p=document.querySelectorAll(\".step-content\"),f=document.querySelectorAll(\"#progress-steps > div\"),c=document.getElementById(\"prev-step\"),a=document.getElementById(\"next-step\"),u=document.getElementById(\"submit-form\");let e=1;function d(){p.forEach((o,n)=>{o.classList.toggle(\"hidden\",n+1!==e)}),f.forEach((o,n)=>{const t=o.querySelector(\".step-circle\");if(t){const s=n+1<=e;o.classList.toggle(\"bg-payflo-purple/5\",s),s?(t.classList.add(\"bg-payflo-purple\",\"text-white\"),t.classList.remove(\"bg-gray-200\",\"text-gray-600\")):(t.classList.add(\"bg-gray-200\",\"text-gray-600\"),t.classList.remove(\"bg-payflo-purple\",\"text-white\"))}}),c&&(c.style.display=e===1?\"none\":\"block\"),a&&(a.style.display=e===2?\"none\":\"block\"),u&&(u.style.display=e===2?\"block\":\"none\")}function m(o){if(o===1){const n=document.getElementById(\"company\")?.value,t=document.getElementById(\"company-size\")?.value,s=document.getElementById(\"industry\")?.value;if(!n||!t||!s){const i=[];return n||i.push(\"Nombre de la Institución\"),t||i.push(\"Tamaño de la Institución\"),s||i.push(\"Tipo de Institución\"),alert(`Por favor complete los siguientes campos obligatorios:\n${i.join(`\n`)}`),!1}return!0}if(o===2){const n=document.getElementById(\"first-name\")?.value,t=document.getElementById(\"last-name\")?.value,s=document.getElementById(\"work-email\")?.value,i=document.getElementById(\"job-title\")?.value;if(!n||!t||!s||!i){const r=[];return n||r.push(\"Nombre\"),t||r.push(\"Apellido\"),s||r.push(\"Correo Electrónico Laboral\"),i||r.push(\"Cargo\"),alert(`Por favor complete los siguientes campos obligatorios:\n${r.join(`\n`)}`),!1}return/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(s)?!0:(alert(\"Por favor ingrese una dirección de correo electrónico válida\"),!1)}return!0}c&&c.addEventListener(\"click\",()=>{e>1&&(e--,d(),window.scrollTo({top:0,behavior:\"smooth\"}))}),a&&a.addEventListener(\"click\",()=>{m(e)&&(e++,d(),window.scrollTo({top:0,behavior:\"smooth\"}))}),l&&l.addEventListener(\"submit\",o=>{o.preventDefault(),m(e)&&(alert(\"¡Gracias por solicitar una demostración! Nos pondremos en contacto contigo pronto.\"),l.reset(),e=1,d(),window.scrollTo({top:0,behavior:\"smooth\"}))}),d()};document.addEventListener(\"DOMContentLoaded\",g);"],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/contact.astro?astro&type=script&index=0&lang.ts","const e=document.querySelector(\"form\"),t=document.getElementById(\"submit-btn\");e&&t&&e.addEventListener(\"submit\",s=>{t.classList.add(\"btn-loading\"),t.setAttribute(\"disabled\",\"true\"),t.classList.add(\"opacity-80\",\"cursor-not-allowed\")});"]],"assets":["/favicon.svg","/grid-pattern.svg","/partner-logo-1.svg","/partner-logo-2.svg","/partner-logo-3.svg","/partner-logo-4.svg","/partner-logo-5.svg","/partner-logo-6.svg","/testimonial-avatar-1.jpg","/testimonial-avatar-2.jpg","/testimonial-avatar-3.jpg","/turnapp-promo-2.mp4","/avatars/female-avatar.png","/avatars/male-avatar.png","/blog/building-payroll.jpg","/blog/compliance.jpg","/blog/future-payroll.jpg","/blog/introducing-payflo.jpg","/_astro/ClientRouter.astro_astro_type_script_index_0_lang.DQAK6ZHT.js","/_astro/Features.astro_astro_type_script_index_0_lang.Cj-dhqA4.js","/_astro/index.B0NqHVf_.js","/_astro/Layout.astro_astro_type_script_index_0_lang.BAQDUpRY.js","/_astro/page.BOdB6yKo.js","/_astro/ft1.ky6eWvY0.webp","/_astro/ft2.DzQzUEfW.webp","/_astro/ft3.QqNdIg_A.webp","/_astro/ft4.pMkNw8Bc.webp","/_astro/ft5.mDAns9ax.webp","/_astro/ft6.BxTWgsUL.webp","/_astro/team-photo.CbtWTGVv.jpg","/_astro/present_sin_slogan.DNOz9wRE.png","/_astro/m3.BiAObFqx.png","/_astro/m2.bvHbhU1V.png","/_astro/m4.E1SnpbV_.png","/_astro/m5.pzDR1MXo.png","/_astro/logo-wide-transparent.Bk_t4l8r.png","/_astro/m1.26pEMezb.png","/_astro/favicon.cN_Yg_zq.svg","/_astro/m6.DxZySiuK.png","/_astro/Layout.FnTcTuJU.css","/_astro/contact.DHZaXq33.css","/_astro/page.BOdB6yKo.js","/404.html","/about-us/index.html","/blog/index.html","/book-demo/index.html","/careers/index.html","/case-studies/index.html","/cookie-policy/index.html","/documentation/api-reference/index.html","/documentation/index.html","/documentation/index.html","/endesarrollo/index.html","/login/index.html","/pricing/index.html","/privacy-policy/index.html","/product/index.html","/solutions/index.html","/terms-of-use/index.html","/tutorials/index.html","/index.html"],"buildFormat":"directory","checkOrigin":true,"actionBodySizeLimit":1048576,"serverIslandBodySizeLimit":1048576,"allowedDomains":[],"key":"xz7nKMt0pZ1vsWHlxRDAZPF58+I2gldzafmHxq6F+ro=","image":{},"devToolbar":{"enabled":false,"debugInfoOutput":""},"logLevel":"info","shouldInjectCspMetaTags":false}));
+const _manifest = deserializeManifest(({"rootDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/","cacheDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/node_modules/.astro/","outDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/build/","srcDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/","publicDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/public/","buildClientDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/build/client/","buildServerDir":"file:///C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/build/server/","adapterName":"@astrojs/vercel","assetsDir":"_astro","routes":[{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"type":"page","component":"_server-islands.astro","params":["name"],"segments":[[{"content":"_server-islands","dynamic":false,"spread":false}],[{"content":"name","dynamic":true,"spread":false}]],"pattern":"^\\/_server-islands\\/([^/]+?)\\/?$","prerender":false,"isIndex":false,"fallbackRoutes":[],"route":"/_server-islands/[name]","origin":"internal","distURL":[],"_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/_image","component":"node_modules/astro/dist/assets/endpoint/generic.js","params":[],"pathname":"/_image","pattern":"^\\/_image\\/?$","segments":[[{"content":"_image","dynamic":false,"spread":false}]],"type":"endpoint","prerender":false,"fallbackRoutes":[],"distURL":[],"isIndex":false,"origin":"internal","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/404","isIndex":false,"type":"page","pattern":"^\\/404\\/?$","segments":[[{"content":"404","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/404.astro","pathname":"/404","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/about-us","isIndex":false,"type":"page","pattern":"^\\/about-us\\/?$","segments":[[{"content":"about-us","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/about-us.astro","pathname":"/about-us","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/blog/[slug]","isIndex":false,"type":"page","pattern":"^\\/blog\\/([^/]+?)\\/?$","segments":[[{"content":"blog","dynamic":false,"spread":false}],[{"content":"slug","dynamic":true,"spread":false}]],"params":["slug"],"component":"src/pages/blog/[slug].astro","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/blog","isIndex":true,"type":"page","pattern":"^\\/blog\\/?$","segments":[[{"content":"blog","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/blog/index.astro","pathname":"/blog","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/book-demo","isIndex":false,"type":"page","pattern":"^\\/book-demo\\/?$","segments":[[{"content":"book-demo","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/book-demo.astro","pathname":"/book-demo","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/careers","isIndex":false,"type":"page","pattern":"^\\/careers\\/?$","segments":[[{"content":"careers","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/careers.astro","pathname":"/careers","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/case-studies","isIndex":true,"type":"page","pattern":"^\\/case-studies\\/?$","segments":[[{"content":"case-studies","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/case-studies/index.astro","pathname":"/case-studies","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[{"type":"external","src":"_astro/contact.DHZaXq33.css"}],"routeData":{"route":"/contact","isIndex":false,"type":"page","pattern":"^\\/contact\\/?$","segments":[[{"content":"contact","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/contact.astro","pathname":"/contact","prerender":false,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/cookie-policy","isIndex":false,"type":"page","pattern":"^\\/cookie-policy\\/?$","segments":[[{"content":"cookie-policy","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/cookie-policy.astro","pathname":"/cookie-policy","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/documentation/api-reference","isIndex":false,"type":"page","pattern":"^\\/documentation\\/api-reference\\/?$","segments":[[{"content":"documentation","dynamic":false,"spread":false}],[{"content":"api-reference","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/documentation/api-reference.astro","pathname":"/documentation/api-reference","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/documentation","isIndex":true,"type":"page","pattern":"^\\/documentation\\/?$","segments":[[{"content":"documentation","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/documentation/index.astro","pathname":"/documentation","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/documentation","isIndex":false,"type":"page","pattern":"^\\/documentation\\/?$","segments":[[{"content":"documentation","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/documentation.astro","pathname":"/documentation","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/endesarrollo","isIndex":false,"type":"page","pattern":"^\\/endesarrollo\\/?$","segments":[[{"content":"endesarrollo","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/endesarrollo.astro","pathname":"/endesarrollo","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/login","isIndex":false,"type":"page","pattern":"^\\/login\\/?$","segments":[[{"content":"login","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/login.astro","pathname":"/login","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/pricing","isIndex":false,"type":"page","pattern":"^\\/pricing\\/?$","segments":[[{"content":"pricing","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/pricing.astro","pathname":"/pricing","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/privacy-policy","isIndex":false,"type":"page","pattern":"^\\/privacy-policy\\/?$","segments":[[{"content":"privacy-policy","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/privacy-policy.astro","pathname":"/privacy-policy","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/product","isIndex":false,"type":"page","pattern":"^\\/product\\/?$","segments":[[{"content":"product","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/product.astro","pathname":"/product","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/solutions","isIndex":false,"type":"page","pattern":"^\\/solutions\\/?$","segments":[[{"content":"solutions","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/solutions.astro","pathname":"/solutions","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/terms-of-use","isIndex":false,"type":"page","pattern":"^\\/terms-of-use\\/?$","segments":[[{"content":"terms-of-use","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/terms-of-use.astro","pathname":"/terms-of-use","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/tutorials","isIndex":true,"type":"page","pattern":"^\\/tutorials\\/?$","segments":[[{"content":"tutorials","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/tutorials/index.astro","pathname":"/tutorials","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/","isIndex":true,"type":"page","pattern":"^\\/$","segments":[],"params":[],"component":"src/pages/index.astro","pathname":"/","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}}],"serverLike":true,"middlewareMode":"classic","site":"https://turnapp.ferreiraric.com","base":"/","trailingSlash":"ignore","compressHTML":true,"experimentalQueuedRendering":{"enabled":false,"poolSize":0,"contentCache":false},"componentMetadata":[["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/404.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/about-us.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/blog/[slug].astro",{"propagation":"in-tree","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/blog/index.astro",{"propagation":"in-tree","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/book-demo.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/careers.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/case-studies/index.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/cookie-policy.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/documentation.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/documentation/api-reference.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/documentation/index.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/endesarrollo.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/index.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/login.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/pricing.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/privacy-policy.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/product.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/solutions.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/terms-of-use.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/tutorials/index.astro",{"propagation":"none","containsHead":true}],["\u0000astro:content",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:page:src/pages/blog/[slug]@_@astro",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:pages",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:manifest",{"propagation":"in-tree","containsHead":false}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/node_modules/astro/dist/entrypoints/prerender.js",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:page:src/pages/blog/index@_@astro",{"propagation":"in-tree","containsHead":false}],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/contact.astro",{"propagation":"none","containsHead":true}]],"renderers":[],"clientDirectives":[["idle","(()=>{var l=(n,t)=>{let i=async()=>{await(await n())()},e=typeof t.value==\"object\"?t.value:void 0,s={timeout:e==null?void 0:e.timeout};\"requestIdleCallback\"in window?window.requestIdleCallback(i,s):setTimeout(i,s.timeout||200)};(self.Astro||(self.Astro={})).idle=l;window.dispatchEvent(new Event(\"astro:idle\"));})();"],["load","(()=>{var e=async t=>{await(await t())()};(self.Astro||(self.Astro={})).load=e;window.dispatchEvent(new Event(\"astro:load\"));})();"],["media","(()=>{var n=(a,t)=>{let i=async()=>{await(await a())()};if(t.value){let e=matchMedia(t.value);e.matches?i():e.addEventListener(\"change\",i,{once:!0})}};(self.Astro||(self.Astro={})).media=n;window.dispatchEvent(new Event(\"astro:media\"));})();"],["only","(()=>{var e=async t=>{await(await t())()};(self.Astro||(self.Astro={})).only=e;window.dispatchEvent(new Event(\"astro:only\"));})();"],["visible","(()=>{var a=(s,i,o)=>{let r=async()=>{await(await s())()},t=typeof i.value==\"object\"?i.value:void 0,c={rootMargin:t==null?void 0:t.rootMargin},n=new IntersectionObserver(e=>{for(let l of e)if(l.isIntersecting){n.disconnect(),r();break}},c);for(let e of o.children)n.observe(e)};(self.Astro||(self.Astro={})).visible=a;window.dispatchEvent(new Event(\"astro:visible\"));})();"]],"entryModules":{"\u0000virtual:astro:actions/noop-entrypoint":"chunks/noop-entrypoint_BOlrdqWF.mjs","\u0000noop-middleware":"virtual_astro_middleware.mjs","\u0000virtual:astro:session-driver":"chunks/_virtual_astro_session-driver_DYx9Bb3p.mjs","\u0000virtual:astro:server-island-manifest":"chunks/_virtual_astro_server-island-manifest_CQQ1F5PF.mjs","\u0000virtual:astro:page:src/pages/404@_@astro":"chunks/404_YnVcpWGv.mjs","\u0000virtual:astro:page:src/pages/about-us@_@astro":"chunks/about-us_DvS3a28q.mjs","\u0000virtual:astro:page:src/pages/blog/[slug]@_@astro":"chunks/_slug__BJ6wcCOw.mjs","\u0000virtual:astro:page:src/pages/blog/index@_@astro":"chunks/index_CxuZYUit.mjs","\u0000virtual:astro:page:src/pages/book-demo@_@astro":"chunks/book-demo_BxeuXgM8.mjs","\u0000virtual:astro:page:src/pages/careers@_@astro":"chunks/careers_2bbxQxn6.mjs","\u0000virtual:astro:page:src/pages/case-studies/index@_@astro":"chunks/index_DRaNgz50.mjs","\u0000virtual:astro:page:src/pages/cookie-policy@_@astro":"chunks/cookie-policy_BJLovt_-.mjs","\u0000virtual:astro:page:src/pages/documentation/api-reference@_@astro":"chunks/api-reference_DXL16Fsq.mjs","\u0000virtual:astro:page:src/pages/documentation/index@_@astro":"chunks/index_BCOiJSJt.mjs","\u0000virtual:astro:page:src/pages/documentation@_@astro":"chunks/documentation_7Wb5bR3H.mjs","\u0000virtual:astro:page:src/pages/endesarrollo@_@astro":"chunks/endesarrollo_CmmJFCQm.mjs","\u0000virtual:astro:page:src/pages/login@_@astro":"chunks/login_Bnxqmg67.mjs","\u0000virtual:astro:page:src/pages/pricing@_@astro":"chunks/pricing_CZNqY5zN.mjs","\u0000virtual:astro:page:src/pages/privacy-policy@_@astro":"chunks/privacy-policy_DQQ8b3IA.mjs","\u0000virtual:astro:page:src/pages/product@_@astro":"chunks/product_1LvlDvfi.mjs","\u0000virtual:astro:page:src/pages/solutions@_@astro":"chunks/solutions_JWpwu_YN.mjs","\u0000virtual:astro:page:src/pages/terms-of-use@_@astro":"chunks/terms-of-use_BF3d5lSR.mjs","\u0000virtual:astro:page:src/pages/tutorials/index@_@astro":"chunks/index_DUCq4J8W.mjs","\u0000virtual:astro:page:src/pages/index@_@astro":"chunks/index_BvzjpMtV.mjs","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/node_modules/astro/dist/assets/services/sharp.js":"chunks/sharp_CcyWjjDf.mjs","C:\\Users\\Ferreira_x2\\Desktop\\dev\\turnapp-web-page\\.astro\\content-assets.mjs":"chunks/content-assets_DleWbedO.mjs","\u0000astro:data-layer-content":"chunks/_astro_data-layer-content_V2dGt0hc.mjs","astro/entrypoints/prerender":"prerender-entry.CCrNFC6d.mjs","@astrojs/vercel/entrypoint":"entry.mjs","\u0000virtual:astro:page:node_modules/astro/dist/assets/endpoint/generic@_@js":"chunks/generic_DfoSvJar.mjs","\u0000virtual:astro:page:src/pages/contact@_@astro":"chunks/contact_CkcteQHU.mjs","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/node_modules/resend/dist/index.mjs":"chunks/index_CTb3hl93.mjs","__vite-optional-peer-dep:@react-email/render:resend:false":"chunks/render_resend_false_B48xilIL.mjs","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/node_modules/astro/components/ClientRouter.astro?astro&type=script&index=0&lang.ts":"_astro/ClientRouter.astro_astro_type_script_index_0_lang.DQAK6ZHT.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/Features.astro?astro&type=script&index=0&lang.ts":"_astro/Features.astro_astro_type_script_index_0_lang.Cj-dhqA4.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/Header.astro?astro&type=script&index=0&lang.ts":"_astro/Header.astro_astro_type_script_index_0_lang.C34phMF9.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/Hero.astro?astro&type=script&index=0&lang.ts":"_astro/Hero.astro_astro_type_script_index_0_lang.DOoUef6z.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/SocialProof.astro?astro&type=script&index=0&lang.ts":"_astro/SocialProof.astro_astro_type_script_index_0_lang.BMNpwfG1.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/layouts/Layout.astro?astro&type=script&index=0&lang.ts":"_astro/Layout.astro_astro_type_script_index_0_lang.BAQDUpRY.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/blog/[slug].astro?astro&type=script&index=0&lang.ts":"_astro/_slug_.astro_astro_type_script_index_0_lang.xLGdccrv.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/book-demo.astro?astro&type=script&index=0&lang.ts":"_astro/book-demo.astro_astro_type_script_index_0_lang.BSNAhYHB.js","C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/contact.astro?astro&type=script&index=0&lang.ts":"_astro/contact.astro_astro_type_script_index_0_lang.BKWyVA67.js","astro:scripts/page.js":"_astro/page.BOdB6yKo.js","astro:scripts/before-hydration.js":""},"inlinedScripts":[["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/Header.astro?astro&type=script&index=0&lang.ts","document.addEventListener(\"astro:page-load\",()=>{const e=document.getElementById(\"menu-toggle\"),t=document.getElementById(\"mobile-menu\");e&&t&&e.addEventListener(\"click\",()=>{const n=e.getAttribute(\"aria-expanded\")===\"true\";e.setAttribute(\"aria-expanded\",String(!n)),e.classList.toggle(\"menu-open\"),t.classList.toggle(\"mobile-menu-open\")})});"],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/Hero.astro?astro&type=script&index=0&lang.ts","const m=()=>{const l=document.querySelector(\".image-gallery\");if(!l)return()=>{};const r=l.querySelectorAll(\".gallery-item\");let n=0,o=null;const a=()=>{const e=r[n];e.style.opacity=\"0\",e.setAttribute(\"data-active\",\"false\");const t=e.querySelector(\"video\");t&&(t.pause(),t.currentTime=0),n=(n+1)%r.length;const s=r[n];s.style.opacity=\"1\",s.setAttribute(\"data-active\",\"true\");const d=s.querySelector(\"video\");d&&(d.currentTime=0,d.play().catch(i=>console.error(\"Error video:\",i)));const u=s.getAttribute(\"data-duration\"),v=u?parseInt(u):5e3;o=setTimeout(a,v),l.querySelectorAll(\".gallery-dot\").forEach((i,g)=>{g===n?(i.classList.add(\"bg-white\",\"w-8\"),i.classList.remove(\"bg-white/40\",\"w-2\")):(i.classList.remove(\"bg-white\",\"w-8\"),i.classList.add(\"bg-white/40\",\"w-2\"))})},y=()=>{o&&clearTimeout(o);const e=r[0].getAttribute(\"data-duration\"),t=e?parseInt(e):35e3;o=setTimeout(a,t)},c=r[0].querySelector(\"video\");return c&&(c.addEventListener(\"ended\",()=>a()),c.addEventListener(\"error\",()=>{console.warn(\"Error cargando el video, continuando con imágenes...\"),setTimeout(a,35e3)}),c.play().catch(e=>console.error(\"Error al reproducir el video inicial:\",e))),y(),()=>{o&&clearTimeout(o),r.forEach(e=>{const t=e.querySelector(\"video\");t&&(t.pause(),t.currentTime=0)})}};document.addEventListener(\"DOMContentLoaded\",()=>{m()});document.addEventListener(\"astro:after-swap\",()=>{m()});"],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/components/SocialProof.astro?astro&type=script&index=0&lang.ts","const i=[{location:\"Clínica San Juan\",detail:\"Redujo el tiempo de espera de sus pacientes en un 45% usando las filas inteligentes de TurnApp.\",time:\"Este mes\"},{location:\"Banco Nacional\",detail:\"Aumentó la satisfacción del cliente al 98% implementando emisión de turnos por QR.\",time:\"Reciente\"},{location:\"Centro de Servicios\",detail:\"Procesó 500+ turnos diarios sin aglomeraciones gracias a las pantallas HUB.\",time:\"Hace 2 meses\"},{location:\"Hospital Central\",detail:\"Organizó 4 departamentos médicos con un flujo de atención unificado y transparente.\",time:\"Este trimestre\"},{location:\"Agencia de Envíos\",detail:\"Optimizó la estación de sus 12 agentes, reduciendo el tiempo por transacción a la mitad.\",time:\"Este año\"}];let n=0,c=!1;function l(){if(c)return;const t=document.getElementById(\"social-proof-toast\"),e=document.getElementById(\"sp-location\"),s=document.getElementById(\"sp-detail\"),o=document.getElementById(\"sp-time\");if(!t||!e||!s||!o)return;const a=i[n];e.textContent=`Éxito: ${a.location}`,s.textContent=a.detail,o.textContent=a.time,t.classList.remove(\"translate-y-20\",\"opacity-0\"),t.classList.add(\"translate-y-0\",\"opacity-100\"),setTimeout(()=>{t.classList.add(\"translate-y-20\",\"opacity-0\"),t.classList.remove(\"translate-y-0\",\"opacity-100\"),n=(n+1)%i.length},8e3)}document.addEventListener(\"DOMContentLoaded\",()=>{const t=document.getElementById(\"sp-close\");t&&t.addEventListener(\"click\",()=>{c=!0;const e=document.getElementById(\"social-proof-toast\");e&&(e.classList.add(\"translate-y-20\",\"opacity-0\"),e.classList.remove(\"translate-y-0\",\"opacity-100\"))}),setTimeout(()=>{l(),setInterval(l,35e3)},6e3)});"],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/blog/[slug].astro?astro&type=script&index=0&lang.ts","document.addEventListener(\"astro:page-load\",()=>{const r=document.getElementById(\"reading-progress\"),c=document.querySelector(\"article\");if(r&&c){const t=()=>{const e=window.scrollY,o=c.clientHeight-window.innerHeight,i=Math.min(100,Math.max(0,e/o*100));r.style.width=`${i}%`,r.setAttribute(\"aria-valuenow\",i.toString())};window.addEventListener(\"scroll\",t,{passive:!0}),t()}const s=document.getElementById(\"copy-link\"),a=document.getElementById(\"copy-link-mobile\"),l=window.location.href;[s,a].forEach(t=>{t&&t.addEventListener(\"click\",async()=>{try{await navigator.clipboard.writeText(l);const e=t.querySelector(\"span\"),o=t.querySelector(\"svg\"),i=e?.textContent||\"Copy Link\";if(o&&(o.style.color=\"#7928CA\"),e){e.textContent=\"Copied!\";const n=document.createElement(\"div\");n.setAttribute(\"aria-live\",\"polite\"),n.setAttribute(\"aria-atomic\",\"true\"),n.className=\"sr-only\",n.textContent=\"Link copied to clipboard\",document.body.appendChild(n),setTimeout(()=>{e.textContent=i,o&&(o.style.color=\"\"),document.body.removeChild(n)},2e3)}}catch(e){console.error(\"Failed to copy URL:\",e)}})})});"],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/book-demo.astro?astro&type=script&index=0&lang.ts","const g=()=>{const l=document.getElementById(\"demo-form\");if(!l)return;const p=document.querySelectorAll(\".step-content\"),f=document.querySelectorAll(\"#progress-steps > div\"),c=document.getElementById(\"prev-step\"),a=document.getElementById(\"next-step\"),u=document.getElementById(\"submit-form\");let e=1;function d(){p.forEach((o,n)=>{o.classList.toggle(\"hidden\",n+1!==e)}),f.forEach((o,n)=>{const t=o.querySelector(\".step-circle\");if(t){const s=n+1<=e;o.classList.toggle(\"bg-payflo-purple/5\",s),s?(t.classList.add(\"bg-payflo-purple\",\"text-white\"),t.classList.remove(\"bg-gray-200\",\"text-gray-600\")):(t.classList.add(\"bg-gray-200\",\"text-gray-600\"),t.classList.remove(\"bg-payflo-purple\",\"text-white\"))}}),c&&(c.style.display=e===1?\"none\":\"block\"),a&&(a.style.display=e===2?\"none\":\"block\"),u&&(u.style.display=e===2?\"block\":\"none\")}function m(o){if(o===1){const n=document.getElementById(\"company\")?.value,t=document.getElementById(\"company-size\")?.value,s=document.getElementById(\"industry\")?.value;if(!n||!t||!s){const i=[];return n||i.push(\"Nombre de la Institución\"),t||i.push(\"Tamaño de la Institución\"),s||i.push(\"Tipo de Institución\"),alert(`Por favor complete los siguientes campos obligatorios:\n${i.join(`\n`)}`),!1}return!0}if(o===2){const n=document.getElementById(\"first-name\")?.value,t=document.getElementById(\"last-name\")?.value,s=document.getElementById(\"work-email\")?.value,i=document.getElementById(\"job-title\")?.value;if(!n||!t||!s||!i){const r=[];return n||r.push(\"Nombre\"),t||r.push(\"Apellido\"),s||r.push(\"Correo Electrónico Laboral\"),i||r.push(\"Cargo\"),alert(`Por favor complete los siguientes campos obligatorios:\n${r.join(`\n`)}`),!1}return/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(s)?!0:(alert(\"Por favor ingrese una dirección de correo electrónico válida\"),!1)}return!0}c&&c.addEventListener(\"click\",()=>{e>1&&(e--,d(),window.scrollTo({top:0,behavior:\"smooth\"}))}),a&&a.addEventListener(\"click\",()=>{m(e)&&(e++,d(),window.scrollTo({top:0,behavior:\"smooth\"}))}),l&&l.addEventListener(\"submit\",o=>{o.preventDefault(),m(e)&&(alert(\"¡Gracias por solicitar una demostración! Nos pondremos en contacto contigo pronto.\"),l.reset(),e=1,d(),window.scrollTo({top:0,behavior:\"smooth\"}))}),d()};document.addEventListener(\"DOMContentLoaded\",g);"],["C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/src/pages/contact.astro?astro&type=script&index=0&lang.ts","const e=document.querySelector(\"form\"),t=document.getElementById(\"submit-btn\");e&&t&&e.addEventListener(\"submit\",s=>{t.classList.add(\"btn-loading\"),t.setAttribute(\"disabled\",\"true\"),t.classList.add(\"opacity-80\",\"cursor-not-allowed\")});"]],"assets":["/favicon.svg","/grid-pattern.svg","/partner-logo-1.svg","/partner-logo-2.svg","/partner-logo-3.svg","/partner-logo-4.svg","/partner-logo-5.svg","/partner-logo-6.svg","/testimonial-avatar-1.jpg","/testimonial-avatar-2.jpg","/testimonial-avatar-3.jpg","/turnapp-promo-2.mp4","/avatars/female-avatar.png","/avatars/male-avatar.png","/blog/building-payroll.jpg","/blog/compliance.jpg","/blog/future-payroll.jpg","/blog/introducing-payflo.jpg","/_astro/ClientRouter.astro_astro_type_script_index_0_lang.DQAK6ZHT.js","/_astro/Features.astro_astro_type_script_index_0_lang.Cj-dhqA4.js","/_astro/index.B0NqHVf_.js","/_astro/Layout.astro_astro_type_script_index_0_lang.BAQDUpRY.js","/_astro/page.BOdB6yKo.js","/_astro/ft1.ky6eWvY0.webp","/_astro/ft2.DzQzUEfW.webp","/_astro/ft3.QqNdIg_A.webp","/_astro/ft4.pMkNw8Bc.webp","/_astro/ft5.mDAns9ax.webp","/_astro/ft6.BxTWgsUL.webp","/_astro/team-photo.CbtWTGVv.jpg","/_astro/present_sin_slogan.DNOz9wRE.png","/_astro/m2.bvHbhU1V.png","/_astro/m3.BiAObFqx.png","/_astro/m4.E1SnpbV_.png","/_astro/m5.pzDR1MXo.png","/_astro/m1.26pEMezb.png","/_astro/logo-wide-transparent.Bk_t4l8r.png","/_astro/m6.DxZySiuK.png","/_astro/favicon.cN_Yg_zq.svg","/_astro/Layout.FnTcTuJU.css","/_astro/contact.DHZaXq33.css","/_astro/page.BOdB6yKo.js","/404.html","/about-us/index.html","/blog/index.html","/book-demo/index.html","/careers/index.html","/case-studies/index.html","/cookie-policy/index.html","/documentation/api-reference/index.html","/documentation/index.html","/documentation/index.html","/endesarrollo/index.html","/login/index.html","/pricing/index.html","/privacy-policy/index.html","/product/index.html","/solutions/index.html","/terms-of-use/index.html","/tutorials/index.html","/index.html"],"buildFormat":"directory","checkOrigin":true,"actionBodySizeLimit":1048576,"serverIslandBodySizeLimit":1048576,"allowedDomains":[],"key":"5FpI5zKXVS2GeETqvn4HcR170rs+MnIlL3eIpmROIFw=","image":{},"devToolbar":{"enabled":false,"debugInfoOutput":""},"logLevel":"info","shouldInjectCspMetaTags":false}));
 					const manifestRoutes = _manifest.routes;
 					
 					const manifest = Object.assign(_manifest, {
@@ -13191,4 +17506,4 @@ var entrypoint_default = {
   }
 };
 
-export { AstroError as A, entrypoint_default as B, ExpectedImage as E, Fragment as F, InvalidComponentArgs as I, LocalImageUsedWrongly as L, MissingImageDimension as M, NoImageMetadata as N, RemoteImageNotAllowed as R, UnsupportedImageFormat as U, isRemotePath as a, addAttribute as b, createRenderInstruction as c, renderComponent as d, renderSlot as e, renderHead as f, generateCspDigest as g, types as h, isRemoteAllowed as i, FailedToFetchRemoteImageDimensions as j, removeQueryString as k, joinPaths as l, maybeRenderHead as m, IncompatibleDescriptorOptions as n, UnsupportedImageConversion as o, InvalidImageService as p, ExpectedImageOptions as q, renderTemplate as r, spreadAttributes as s, typeHandlers as t, unescapeHTML as u, ExpectedNotESMImage as v, ImageMissingAlt as w, FontFamilyNotFound as x, MissingGetFontFileRequestUrl as y, MissingSharp as z };
+export { AstroError as A, getDefaultExportFromCjs as B, entrypoint_default as C, ExpectedImage as E, Fragment as F, InvalidComponentArgs as I, LocalImageUsedWrongly as L, MissingImageDimension as M, NoImageMetadata as N, RemoteImageNotAllowed as R, UnsupportedImageFormat as U, isRemotePath as a, addAttribute as b, createRenderInstruction as c, renderComponent as d, renderSlot as e, renderHead as f, generateCspDigest as g, types as h, isRemoteAllowed as i, FailedToFetchRemoteImageDimensions as j, removeQueryString as k, joinPaths as l, maybeRenderHead as m, IncompatibleDescriptorOptions as n, UnsupportedImageConversion as o, InvalidImageService as p, ExpectedImageOptions as q, renderTemplate as r, spreadAttributes as s, typeHandlers as t, unescapeHTML as u, ExpectedNotESMImage as v, ImageMissingAlt as w, FontFamilyNotFound as x, MissingGetFontFileRequestUrl as y, MissingSharp as z };
