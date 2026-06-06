@@ -15,9 +15,9 @@ export default defineConfig({
         'path-to-regexp-updated': 'path-to-regexp'
       }
     },
-    ssr: {
-      noExternal: true
-    }
+    // ssr: {
+    //   noExternal: true
+    // }
   },
   adapter: vercel(),
   prefetch: true,
@@ -41,6 +41,7 @@ export default defineConfig({
           "chat-centered-text",
           "globe-hemisphere-west",
           "map-pin-duotone",
+          "x-bold",
           "target-duotone",
           "lightbulb-duotone",
           "star-duotone",
