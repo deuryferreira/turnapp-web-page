@@ -14,6 +14,9 @@ export default defineConfig({
       alias: {
         'path-to-regexp-updated': 'path-to-regexp'
       }
+    },
+    ssr: {
+      noExternal: true
     }
   },
   adapter: vercel(),
@@ -91,12 +94,15 @@ export default defineConfig({
           "first-aid-kit-duotone",
           "bank-duotone",
           "arrows-merge-duotone",
-          "x-bold",
-          "monitor-play-duotone",
-          "device-tablet-camera-duotone",
-          "users-three-duotone"
         ],
       },
     }),
   ],
+
+  image: {
+    service: {
+      entrypoint: "astro/assets/services/sharp",
+    },
+  },
+
 });
