@@ -1,6 +1,5 @@
-import { f as fetchWithRedirects, g as getConfiguredImageService, i as imageConfig } from './_astro_assets_B7VvTACP.mjs';
-import { i as isRemoteAllowed, a as isRemotePath } from './entrypoint_CyOFjYyH.mjs';
-import * as mime from 'mrmime';
+import { f as fetchWithRedirects, g as getConfiguredImageService, i as imageConfig, l as lookup } from './_astro_assets_rG4c8AwY.mjs';
+import { i as isRemoteAllowed, a as isRemotePath } from './entrypoint_aZdMVXPX.mjs';
 
 const fnv1a52 = (str) => {
   const len = str.length;
@@ -79,7 +78,7 @@ const GET = async ({ request }) => {
     return new Response(data, {
       status: 200,
       headers: {
-        "Content-Type": mime.lookup(format) ?? `image/${format}`,
+        "Content-Type": lookup(format) ?? `image/${format}`,
         "Cache-Control": "public, max-age=31536000",
         ETag: etag(data.toString()),
         Date: (/* @__PURE__ */ new Date()).toUTCString()
