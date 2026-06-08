@@ -14,10 +14,6 @@ export default defineConfig({
       alias: {
         'path-to-regexp-updated': 'path-to-regexp'
       }
-    },
-    ssr: {
-      noExternal: true,
-      external: ['cookie']
     }
   },
   adapter: vercel(),
