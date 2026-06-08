@@ -14,6 +14,9 @@ export default defineConfig({
       alias: {
         'path-to-regexp-updated': 'path-to-regexp'
       }
+    },
+    ssr: {
+      noExternal: ['@vercel/routing-utils']
     }
   },
   adapter: vercel(),
