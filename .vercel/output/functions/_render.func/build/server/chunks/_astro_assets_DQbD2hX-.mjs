@@ -1,4 +1,4 @@
-import { t as typeHandlers, h as types, A as AstroError, N as NoImageMetadata, i as isRemoteAllowed, j as FailedToFetchRemoteImageDimensions, R as RemoteImageNotAllowed, I as InvalidComponentArgs, k as removeQueryString, l as joinPaths, E as ExpectedImage, a as isRemotePath, L as LocalImageUsedWrongly, M as MissingImageDimension, U as UnsupportedImageFormat, n as IncompatibleDescriptorOptions, o as UnsupportedImageConversion, p as InvalidImageService, q as ExpectedImageOptions, v as ExpectedNotESMImage, w as ImageMissingAlt, m as maybeRenderHead, b as addAttribute, s as spreadAttributes, r as renderTemplate, x as FontFamilyNotFound, u as unescapeHTML, y as MissingGetFontFileRequestUrl } from './entrypoint_aZdMVXPX.mjs';
+import { t as typeHandlers, h as types, A as AstroError, N as NoImageMetadata, i as isRemoteAllowed, j as FailedToFetchRemoteImageDimensions, R as RemoteImageNotAllowed, I as InvalidComponentArgs, k as removeQueryString, l as joinPaths, E as ExpectedImage, a as isRemotePath, L as LocalImageUsedWrongly, M as MissingImageDimension, U as UnsupportedImageFormat, n as IncompatibleDescriptorOptions, o as UnsupportedImageConversion, p as InvalidImageService, q as ExpectedImageOptions, v as ExpectedNotESMImage, w as ImageMissingAlt, m as maybeRenderHead, b as addAttribute, s as spreadAttributes, r as renderTemplate, x as FontFamilyNotFound, u as unescapeHTML, y as MissingGetFontFileRequestUrl } from './entrypoint_DmCiURBL.mjs';
 
 function isESMImportedImage(src) {
   return typeof src === "object" || typeof src === "function" && "src" in src;
@@ -647,7 +647,7 @@ async function getConfiguredImageService() {
   if (!globalThis?.astroAsset?.imageService) {
     const { default: service } = await import(
       // @ts-expect-error
-      './sharp_BaEloDmT.mjs'
+      './sharp_CeVB2602.mjs'
     ).catch((e) => {
       const error = new AstroError(InvalidImageService);
       error.cause = e;
@@ -864,7 +864,7 @@ const $$Image = createComponent(async ($$result, $$props, $$slots) => {
   }
   const { class: className, ...attributes } = { ...additionalAttributes, ...image.attributes };
   return renderTemplate`${maybeRenderHead()}<img${addAttribute(image.src, "src")}${spreadAttributes(attributes)}${addAttribute(className, "class")}>`;
-}, "C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/node_modules/astro/components/Image.astro", void 0);
+}, "C:/Users/Ferreira/Desktop/dev/turnapp-web-page/node_modules/astro/components/Image.astro", void 0);
 
 const mimes = {
   "3g2": "video/3gpp2",
@@ -1388,7 +1388,7 @@ const $$Picture = createComponent(async ($$result, $$props, $$slots) => {
     const srcsetAttribute = props.densities || !props.densities && !props.widths && !useResponsive ? `${image.src}${image.srcSet.values.length > 0 ? ", " + image.srcSet.attribute : ""}` : image.srcSet.attribute;
     return renderTemplate`<source${addAttribute(srcsetAttribute, "srcset")}${addAttribute(lookup(image.options.format ?? image.src) ?? `image/${image.options.format}`, "type")}${spreadAttributes(sourceAdditionalAttributes)}>`;
   })}  <img${addAttribute(fallbackImage.src, "src")}${spreadAttributes(attributes)}${addAttribute(className, "class")}> </picture>`;
-}, "C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/node_modules/astro/components/Picture.astro", void 0);
+}, "C:/Users/Ferreira/Desktop/dev/turnapp-web-page/node_modules/astro/components/Picture.astro", void 0);
 
 const componentDataByCssVariable = new Map([]);
 
@@ -1440,7 +1440,7 @@ const $$Font = createComponent(($$result, $$props, $$slots) => {
   }
   const filteredPreloadData = filterPreloads(data.preloads, preload);
   return renderTemplate`<style>${unescapeHTML(data.css)}</style>${filteredPreloadData?.map(({ url, type }) => renderTemplate`<link rel="preload"${addAttribute(url, "href")} as="font"${addAttribute(`font/${type}`, "type")} crossorigin>`)}`;
-}, "C:/Users/Ferreira_x2/Desktop/dev/turnapp-web-page/node_modules/astro/components/Font.astro", void 0);
+}, "C:/Users/Ferreira/Desktop/dev/turnapp-web-page/node_modules/astro/components/Font.astro", void 0);
 
 class SsrRuntimeFontFileUrlResolver {
   #urls;
