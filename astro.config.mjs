@@ -16,7 +16,7 @@ export default defineConfig({
       }
     },
     ssr: {
-      noExternal: ['@vercel/routing-utils']
+      noExternal: ['@vercel/routing-utils', 'path-to-regexp']
     }
   },
   adapter: vercel(),
