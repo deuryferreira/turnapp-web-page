@@ -272,9 +272,14 @@ const images = [
       });
       video
         .play()
-        .catch((error) =>
-          console.error("Error al reproducir el video inicial:", error),
-        );
+        .catch((error) => {
+          // Si el navegador bloquea el autoplay por ahorro de energía, mostramos un warning en lugar de un error rojo
+          if (error.name === 'AbortError' || error.name === 'NotAllowedError') {
+            console.warn("Autoplay del video pausado por ahorro de energía o políticas del navegador.");
+          } else {
+            console.warn("Error al reproducir el video inicial:", error);
+          }
+        });
     }
 
     startGallery();
