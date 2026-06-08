@@ -15,9 +15,9 @@ export default defineConfig({
         'path-to-regexp-updated': 'path-to-regexp'
       }
     },
-    ssr: {
-      noExternal: ['@vercel/routing-utils', 'path-to-regexp']
-    }
+    ssr: process.env.NODE_ENV === 'production' 
+      ? { noExternal: true } 
+      : {}
   },
   adapter: vercel(),
   prefetch: true,
