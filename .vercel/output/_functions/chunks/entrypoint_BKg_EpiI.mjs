@@ -1,4 +1,5 @@
-import '@vercel/routing-utils';
+import require$$0 from 'url';
+import require$$1 from 'path-to-regexp';
 import nodePath from 'node:path';
 import colors from 'piccolore';
 import { parse, stringify as stringify$1, unflatten as unflatten$1 } from 'devalue';
@@ -380,6 +381,1780 @@ const CacheNotEnabled = {
   message: "`Astro.cache` is not available because the cache feature is not enabled. To use caching, configure a cache provider in your Astro config under `experimental.cache`.",
   hint: 'Use an adapter that provides a default cache provider, or set one explicitly: `experimental: { cache: { provider: "..." } }`. See https://docs.astro.build/en/reference/experimental-flags/route-caching/.'
 };
+
+var dist = {exports: {}};
+
+var superstatic;
+var hasRequiredSuperstatic;
+
+function requireSuperstatic () {
+	if (hasRequiredSuperstatic) return superstatic;
+	hasRequiredSuperstatic = 1;
+	var __defProp = Object.defineProperty;
+	var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+	var __getOwnPropNames = Object.getOwnPropertyNames;
+	var __hasOwnProp = Object.prototype.hasOwnProperty;
+	var __export = (target, all) => {
+	  for (var name in all)
+	    __defProp(target, name, { get: all[name], enumerable: true });
+	};
+	var __copyProps = (to, from, except, desc) => {
+	  if (from && typeof from === "object" || typeof from === "function") {
+	    for (let key of __getOwnPropNames(from))
+	      if (!__hasOwnProp.call(to, key) && key !== except)
+	        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+	  }
+	  return to;
+	};
+	var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+	var superstatic_exports = {};
+	__export(superstatic_exports, {
+	  collectHasSegments: () => collectHasSegments,
+	  convertCleanUrls: () => convertCleanUrls,
+	  convertHeaders: () => convertHeaders,
+	  convertRedirects: () => convertRedirects,
+	  convertRewrites: () => convertRewrites,
+	  convertTrailingSlash: () => convertTrailingSlash,
+	  getCleanUrls: () => getCleanUrls,
+	  pathToRegexp: () => pathToRegexp,
+	  sourceToRegex: () => sourceToRegex
+	});
+	superstatic = __toCommonJS(superstatic_exports);
+	var import_url = require$$0;
+	var import_path_to_regexp = require$$1;
+	var import_path_to_regexp_updated = require$$1;
+	function cloneKeys(keys) {
+	  if (typeof keys === "undefined") {
+	    return void 0;
+	  }
+	  return keys.slice(0);
+	}
+	function compareKeys(left, right) {
+	  const leftSerialized = typeof left === "undefined" ? "undefined" : left.toString();
+	  const rightSerialized = typeof right === "undefined" ? "undefined" : right.toString();
+	  return leftSerialized === rightSerialized;
+	}
+	function pathToRegexp(callerId, path, keys, options) {
+	  const newKeys = cloneKeys(keys);
+	  const currentRegExp = (0, import_path_to_regexp.pathToRegexp)(path, keys, options);
+	  try {
+	    const currentKeys = keys;
+	    const newRegExp = (0, import_path_to_regexp_updated.pathToRegexp)(path, newKeys, options);
+	    const isDiffRegExp = currentRegExp.toString() !== newRegExp.toString();
+	    if (process.env.FORCE_PATH_TO_REGEXP_LOG || isDiffRegExp) {
+	      const message = JSON.stringify({
+	        path,
+	        currentRegExp: currentRegExp.toString(),
+	        newRegExp: newRegExp.toString()
+	      });
+	      console.error(`[vc] PATH TO REGEXP PATH DIFF @ #${callerId}: ${message}`);
+	    }
+	    const isDiffKeys = !compareKeys(keys, newKeys);
+	    if (process.env.FORCE_PATH_TO_REGEXP_LOG || isDiffKeys) {
+	      const message = JSON.stringify({
+	        isDiffKeys,
+	        currentKeys,
+	        newKeys
+	      });
+	      console.error(`[vc] PATH TO REGEXP KEYS DIFF @ #${callerId}: ${message}`);
+	    }
+	  } catch (err) {
+	    const error = err;
+	    const message = JSON.stringify({
+	      path,
+	      error: error.message
+	    });
+	    console.error(`[vc] PATH TO REGEXP ERROR @ #${callerId}: ${message}`);
+	  }
+	  return currentRegExp;
+	}
+	const UN_NAMED_SEGMENT = "__UN_NAMED_SEGMENT__";
+	function getCleanUrls(filePaths) {
+	  const htmlFiles = filePaths.map(toRoute).filter((f) => f.endsWith(".html")).map((f) => ({
+	    html: f,
+	    clean: f.slice(0, -5)
+	  }));
+	  return htmlFiles;
+	}
+	function convertCleanUrls(cleanUrls, trailingSlash, status = 308) {
+	  const routes = [];
+	  if (cleanUrls) {
+	    const loc = trailingSlash ? "/$1/" : "/$1";
+	    routes.push({
+	      src: "^/(?:(.+)/)?index(?:\\.html)?/?$",
+	      headers: { Location: loc },
+	      status
+	    });
+	    routes.push({
+	      src: "^/(.*)\\.html/?$",
+	      headers: { Location: loc },
+	      status
+	    });
+	  }
+	  return routes;
+	}
+	function convertRedirects(redirects, defaultStatus = 308) {
+	  return redirects.map((r) => {
+	    const { src, segments } = sourceToRegex(r.source);
+	    const hasSegments = collectHasSegments(r.has);
+	    normalizeHasKeys(r.has);
+	    normalizeHasKeys(r.missing);
+	    try {
+	      const loc = replaceSegments(segments, hasSegments, r.destination, true);
+	      let status;
+	      if (typeof r.permanent === "boolean") {
+	        status = r.permanent ? 308 : 307;
+	      } else if (r.statusCode) {
+	        status = r.statusCode;
+	      } else {
+	        status = defaultStatus;
+	      }
+	      const route = {
+	        src,
+	        headers: { Location: loc },
+	        status
+	      };
+	      if (typeof r.env !== "undefined") {
+	        route.env = r.env;
+	      }
+	      if (r.has) {
+	        route.has = r.has;
+	      }
+	      if (r.missing) {
+	        route.missing = r.missing;
+	      }
+	      return route;
+	    } catch (e) {
+	      throw new Error(`Failed to parse redirect: ${JSON.stringify(r)}`);
+	    }
+	  });
+	}
+	function convertRewrites(rewrites, internalParamNames) {
+	  return rewrites.map((r) => {
+	    const { src, segments } = sourceToRegex(r.source);
+	    const hasSegments = collectHasSegments(r.has);
+	    normalizeHasKeys(r.has);
+	    normalizeHasKeys(r.missing);
+	    try {
+	      const dest = replaceSegments(
+	        segments,
+	        hasSegments,
+	        r.destination,
+	        false,
+	        internalParamNames
+	      );
+	      const route = { src, dest, check: true };
+	      if (typeof r.env !== "undefined") {
+	        route.env = r.env;
+	      }
+	      if (r.has) {
+	        route.has = r.has;
+	      }
+	      if (r.missing) {
+	        route.missing = r.missing;
+	      }
+	      if (r.statusCode) {
+	        route.status = r.statusCode;
+	      }
+	      return route;
+	    } catch (e) {
+	      throw new Error(`Failed to parse rewrite: ${JSON.stringify(r)}`);
+	    }
+	  });
+	}
+	function convertHeaders(headers) {
+	  return headers.map((h) => {
+	    const obj = {};
+	    const { src, segments } = sourceToRegex(h.source);
+	    const hasSegments = collectHasSegments(h.has);
+	    normalizeHasKeys(h.has);
+	    normalizeHasKeys(h.missing);
+	    const namedSegments = segments.filter((name) => name !== UN_NAMED_SEGMENT);
+	    const indexes = {};
+	    segments.forEach((name, index) => {
+	      indexes[name] = toSegmentDest(index);
+	    });
+	    hasSegments.forEach((name) => {
+	      indexes[name] = "$" + name;
+	    });
+	    h.headers.forEach(({ key, value }) => {
+	      if (namedSegments.length > 0 || hasSegments.length > 0) {
+	        if (key.includes(":")) {
+	          key = safelyCompile(key, indexes);
+	        }
+	        if (value.includes(":")) {
+	          value = safelyCompile(value, indexes);
+	        }
+	      }
+	      obj[key] = value;
+	    });
+	    const route = {
+	      src,
+	      headers: obj,
+	      continue: true
+	    };
+	    if (h.has) {
+	      route.has = h.has;
+	    }
+	    if (h.missing) {
+	      route.missing = h.missing;
+	    }
+	    return route;
+	  });
+	}
+	function convertTrailingSlash(enable, status = 308) {
+	  const routes = [];
+	  if (enable) {
+	    routes.push({
+	      src: "^/\\.well-known(?:/.*)?$"
+	    });
+	    routes.push({
+	      src: "^/((?:[^/]+/)*[^/\\.]+)$",
+	      headers: { Location: "/$1/" },
+	      status
+	    });
+	    routes.push({
+	      src: "^/((?:[^/]+/)*[^/]+\\.\\w+)/$",
+	      headers: { Location: "/$1" },
+	      status
+	    });
+	  } else {
+	    routes.push({
+	      src: "^/(.*)\\/$",
+	      headers: { Location: "/$1" },
+	      status
+	    });
+	  }
+	  return routes;
+	}
+	function sourceToRegex(source) {
+	  const keys = [];
+	  const r = pathToRegexp("632", source, keys, {
+	    strict: true,
+	    sensitive: true,
+	    delimiter: "/"
+	  });
+	  const segments = keys.map((k) => k.name).map((name) => {
+	    if (typeof name !== "string") {
+	      return UN_NAMED_SEGMENT;
+	    }
+	    return name;
+	  });
+	  return { src: r.source, segments };
+	}
+	const namedGroupsRegex = /\(\?<([a-zA-Z][a-zA-Z0-9_]*)>/g;
+	const normalizeHasKeys = (hasItems = []) => {
+	  for (const hasItem of hasItems) {
+	    if ("key" in hasItem && hasItem.type === "header") {
+	      hasItem.key = hasItem.key.toLowerCase();
+	    }
+	  }
+	  return hasItems;
+	};
+	function getStringValueForRegex(value) {
+	  if (typeof value === "string") {
+	    return value;
+	  }
+	  if (value && typeof value === "object" && value !== null) {
+	    if ("re" in value && typeof value.re === "string") {
+	      return value.re;
+	    }
+	  }
+	  return null;
+	}
+	function collectHasSegments(has) {
+	  const hasSegments = /* @__PURE__ */ new Set();
+	  for (const hasItem of has || []) {
+	    if (!hasItem.value && "key" in hasItem) {
+	      hasSegments.add(hasItem.key);
+	    }
+	    const stringValue = getStringValueForRegex(hasItem.value);
+	    if (stringValue) {
+	      for (const match of stringValue.matchAll(namedGroupsRegex)) {
+	        if (match[1]) {
+	          hasSegments.add(match[1]);
+	        }
+	      }
+	      if (hasItem.type === "host") {
+	        hasSegments.add("host");
+	      }
+	    }
+	  }
+	  return [...hasSegments];
+	}
+	const escapeSegment = (str, segmentName) => str.replace(new RegExp(`:${segmentName}`, "g"), `__ESC_COLON_${segmentName}`);
+	const unescapeSegments = (str) => str.replace(/__ESC_COLON_/gi, ":");
+	function replaceSegments(segments, hasItemSegments, destination, isRedirect, internalParamNames) {
+	  const namedSegments = segments.filter((name) => name !== UN_NAMED_SEGMENT);
+	  const canNeedReplacing = destination.includes(":") && namedSegments.length > 0 || hasItemSegments.length > 0 || !isRedirect;
+	  if (!canNeedReplacing) {
+	    return destination;
+	  }
+	  let escapedDestination = destination;
+	  const indexes = {};
+	  segments.forEach((name, index) => {
+	    indexes[name] = toSegmentDest(index);
+	    escapedDestination = escapeSegment(escapedDestination, name);
+	  });
+	  hasItemSegments.forEach((name) => {
+	    indexes[name] = "$" + name;
+	    escapedDestination = escapeSegment(escapedDestination, name);
+	  });
+	  const parsedDestination = (0, import_url.parse)(escapedDestination, true);
+	  delete parsedDestination.href;
+	  delete parsedDestination.path;
+	  delete parsedDestination.search;
+	  delete parsedDestination.host;
+	  let { pathname, hash, query, hostname, ...rest } = parsedDestination;
+	  pathname = unescapeSegments(pathname || "");
+	  hash = unescapeSegments(hash || "");
+	  hostname = unescapeSegments(hostname || "");
+	  let destParams = /* @__PURE__ */ new Set();
+	  const pathnameKeys = [];
+	  const hashKeys = [];
+	  const hostnameKeys = [];
+	  try {
+	    pathToRegexp("528", pathname, pathnameKeys);
+	    pathToRegexp("834", hash || "", hashKeys);
+	    pathToRegexp("712", hostname || "", hostnameKeys);
+	  } catch (_) {
+	  }
+	  destParams = new Set(
+	    [...pathnameKeys, ...hashKeys, ...hostnameKeys].map((key) => key.name).filter((val) => typeof val === "string")
+	  );
+	  pathname = safelyCompile(pathname, indexes, true);
+	  hash = hash ? safelyCompile(hash, indexes, true) : null;
+	  hostname = hostname ? safelyCompile(hostname, indexes, true) : null;
+	  for (const [key, strOrArray] of Object.entries(query)) {
+	    if (Array.isArray(strOrArray)) {
+	      query[key] = strOrArray.map(
+	        (str) => safelyCompile(unescapeSegments(str), indexes, true)
+	      );
+	    } else {
+	      query[key] = safelyCompile(
+	        unescapeSegments(strOrArray),
+	        indexes,
+	        true
+	      );
+	    }
+	  }
+	  const paramKeys = Object.keys(indexes);
+	  const needsQueryUpdating = (
+	    // we do not consider an internal param since it is added automatically
+	    !isRedirect && !paramKeys.some(
+	      (param) => !(internalParamNames && internalParamNames.includes(param)) && destParams.has(param)
+	    )
+	  );
+	  if (needsQueryUpdating) {
+	    for (const param of paramKeys) {
+	      if (!(param in query) && param !== UN_NAMED_SEGMENT) {
+	        query[param] = indexes[param];
+	      }
+	    }
+	  }
+	  destination = (0, import_url.format)({
+	    ...rest,
+	    hostname,
+	    pathname,
+	    query,
+	    hash
+	  });
+	  return destination.replace(/%24/g, "$");
+	}
+	function safelyCompile(value, indexes, attemptDirectCompile) {
+	  if (!value) {
+	    return value;
+	  }
+	  if (attemptDirectCompile) {
+	    try {
+	      return (0, import_path_to_regexp.compile)(value, { validate: false })(indexes);
+	    } catch (e) {
+	    }
+	  }
+	  for (const key of Object.keys(indexes)) {
+	    if (value.includes(`:${key}`)) {
+	      value = value.replace(
+	        new RegExp(`:${key}\\*`, "g"),
+	        `:${key}--ESCAPED_PARAM_ASTERISK`
+	      ).replace(
+	        new RegExp(`:${key}\\?`, "g"),
+	        `:${key}--ESCAPED_PARAM_QUESTION`
+	      ).replace(new RegExp(`:${key}\\+`, "g"), `:${key}--ESCAPED_PARAM_PLUS`).replace(
+	        new RegExp(`:${key}(?!\\w)`, "g"),
+	        `--ESCAPED_PARAM_COLON${key}`
+	      );
+	    }
+	  }
+	  value = value.replace(/(:|\*|\?|\+|\(|\)|\{|\})/g, "\\$1").replace(/--ESCAPED_PARAM_PLUS/g, "+").replace(/--ESCAPED_PARAM_COLON/g, ":").replace(/--ESCAPED_PARAM_QUESTION/g, "?").replace(/--ESCAPED_PARAM_ASTERISK/g, "*");
+	  return (0, import_path_to_regexp.compile)(`/${value}`, { validate: false })(indexes).slice(1);
+	}
+	function toSegmentDest(index) {
+	  const i = index + 1;
+	  return "$" + i.toString();
+	}
+	function toRoute(filePath) {
+	  return filePath.startsWith("/") ? filePath : "/" + filePath;
+	}
+	return superstatic;
+}
+
+var append;
+var hasRequiredAppend;
+
+function requireAppend () {
+	if (hasRequiredAppend) return append;
+	hasRequiredAppend = 1;
+	var __defProp = Object.defineProperty;
+	var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+	var __getOwnPropNames = Object.getOwnPropertyNames;
+	var __hasOwnProp = Object.prototype.hasOwnProperty;
+	var __export = (target, all) => {
+	  for (var name in all)
+	    __defProp(target, name, { get: all[name], enumerable: true });
+	};
+	var __copyProps = (to, from, except, desc) => {
+	  if (from && typeof from === "object" || typeof from === "function") {
+	    for (let key of __getOwnPropNames(from))
+	      if (!__hasOwnProp.call(to, key) && key !== except)
+	        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+	  }
+	  return to;
+	};
+	var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+	var append_exports = {};
+	__export(append_exports, {
+	  appendRoutesToPhase: () => appendRoutesToPhase
+	});
+	append = __toCommonJS(append_exports);
+	var import_index = requireDist();
+	function appendRoutesToPhase({
+	  routes: prevRoutes,
+	  newRoutes,
+	  phase
+	}) {
+	  const routes = prevRoutes ? [...prevRoutes] : [];
+	  if (newRoutes === null || newRoutes.length === 0) {
+	    return routes;
+	  }
+	  let isInPhase = false;
+	  let insertIndex = -1;
+	  routes.forEach((r, i) => {
+	    if ((0, import_index.isHandler)(r)) {
+	      if (r.handle === phase) {
+	        isInPhase = true;
+	      } else if (isInPhase) {
+	        insertIndex = i;
+	        isInPhase = false;
+	      }
+	    }
+	  });
+	  if (isInPhase) {
+	    routes.push(...newRoutes);
+	  } else if (phase === null) {
+	    const lastPhase = routes.findIndex((r) => (0, import_index.isHandler)(r) && r.handle);
+	    if (lastPhase === -1) {
+	      routes.push(...newRoutes);
+	    } else {
+	      routes.splice(lastPhase, 0, ...newRoutes);
+	    }
+	  } else if (insertIndex > -1) {
+	    routes.splice(insertIndex, 0, ...newRoutes);
+	  } else {
+	    routes.push({ handle: phase });
+	    routes.push(...newRoutes);
+	  }
+	  return routes;
+	}
+	return append;
+}
+
+var merge;
+var hasRequiredMerge;
+
+function requireMerge () {
+	if (hasRequiredMerge) return merge;
+	hasRequiredMerge = 1;
+	var __defProp = Object.defineProperty;
+	var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+	var __getOwnPropNames = Object.getOwnPropertyNames;
+	var __hasOwnProp = Object.prototype.hasOwnProperty;
+	var __export = (target, all) => {
+	  for (var name in all)
+	    __defProp(target, name, { get: all[name], enumerable: true });
+	};
+	var __copyProps = (to, from, except, desc) => {
+	  if (from && typeof from === "object" || typeof from === "function") {
+	    for (let key of __getOwnPropNames(from))
+	      if (!__hasOwnProp.call(to, key) && key !== except)
+	        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+	  }
+	  return to;
+	};
+	var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+	var merge_exports = {};
+	__export(merge_exports, {
+	  mergeRoutes: () => mergeRoutes
+	});
+	merge = __toCommonJS(merge_exports);
+	var import_index = requireDist();
+	function getBuilderRoutesMapping(builds) {
+	  const builderRoutes = {};
+	  for (const { entrypoint, routes, use } of builds) {
+	    if (routes) {
+	      if (!builderRoutes[entrypoint]) {
+	        builderRoutes[entrypoint] = {};
+	      }
+	      builderRoutes[entrypoint][use] = routes;
+	    }
+	  }
+	  return builderRoutes;
+	}
+	function getCheckAndContinue(routes) {
+	  const checks = [];
+	  const continues = [];
+	  const others = [];
+	  for (const route of routes) {
+	    if ((0, import_index.isHandler)(route)) {
+	      throw new Error(
+	        `Unexpected route found in getCheckAndContinue(): ${JSON.stringify(
+	          route
+	        )}`
+	      );
+	    } else if (route.check && !route.override) {
+	      checks.push(route);
+	    } else if (route.continue && !route.override) {
+	      continues.push(route);
+	    } else {
+	      others.push(route);
+	    }
+	  }
+	  return { checks, continues, others };
+	}
+	function mergeRoutes({ userRoutes, builds }) {
+	  const userHandleMap = /* @__PURE__ */ new Map();
+	  let userPrevHandle = null;
+	  (userRoutes || []).forEach((route) => {
+	    if ((0, import_index.isHandler)(route)) {
+	      userPrevHandle = route.handle;
+	    } else {
+	      const routes = userHandleMap.get(userPrevHandle);
+	      if (!routes) {
+	        userHandleMap.set(userPrevHandle, [route]);
+	      } else {
+	        routes.push(route);
+	      }
+	    }
+	  });
+	  const builderHandleMap = /* @__PURE__ */ new Map();
+	  const builderRoutes = getBuilderRoutesMapping(builds);
+	  const sortedPaths = Object.keys(builderRoutes).sort();
+	  sortedPaths.forEach((path) => {
+	    const br = builderRoutes[path];
+	    const sortedBuilders = Object.keys(br).sort();
+	    sortedBuilders.forEach((use) => {
+	      let builderPrevHandle = null;
+	      br[use].forEach((route) => {
+	        if ((0, import_index.isHandler)(route)) {
+	          builderPrevHandle = route.handle;
+	        } else {
+	          const routes = builderHandleMap.get(builderPrevHandle);
+	          if (!routes) {
+	            builderHandleMap.set(builderPrevHandle, [route]);
+	          } else {
+	            routes.push(route);
+	          }
+	        }
+	      });
+	    });
+	  });
+	  const outputRoutes = [];
+	  const uniqueHandleValues = /* @__PURE__ */ new Set([
+	    null,
+	    ...userHandleMap.keys(),
+	    ...builderHandleMap.keys()
+	  ]);
+	  for (const handle of uniqueHandleValues) {
+	    const userRoutes2 = userHandleMap.get(handle) || [];
+	    const builderRoutes2 = builderHandleMap.get(handle) || [];
+	    const builderSorted = getCheckAndContinue(builderRoutes2);
+	    if (handle !== null && (userRoutes2.length > 0 || builderRoutes2.length > 0)) {
+	      outputRoutes.push({ handle });
+	    }
+	    outputRoutes.push(...builderSorted.continues);
+	    outputRoutes.push(...userRoutes2);
+	    outputRoutes.push(...builderSorted.checks);
+	    outputRoutes.push(...builderSorted.others);
+	  }
+	  return outputRoutes;
+	}
+	return merge;
+}
+
+var serviceRouteOwnership;
+var hasRequiredServiceRouteOwnership;
+
+function requireServiceRouteOwnership () {
+	if (hasRequiredServiceRouteOwnership) return serviceRouteOwnership;
+	hasRequiredServiceRouteOwnership = 1;
+	var __defProp = Object.defineProperty;
+	var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+	var __getOwnPropNames = Object.getOwnPropertyNames;
+	var __hasOwnProp = Object.prototype.hasOwnProperty;
+	var __export = (target, all) => {
+	  for (var name in all)
+	    __defProp(target, name, { get: all[name], enumerable: true });
+	};
+	var __copyProps = (to, from, except, desc) => {
+	  if (from && typeof from === "object" || typeof from === "function") {
+	    for (let key of __getOwnPropNames(from))
+	      if (!__hasOwnProp.call(to, key) && key !== except)
+	        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+	  }
+	  return to;
+	};
+	var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+	var service_route_ownership_exports = {};
+	__export(service_route_ownership_exports, {
+	  getOwnershipGuard: () => getOwnershipGuard,
+	  normalizeRoutePrefix: () => normalizeRoutePrefix,
+	  scopeRouteSourceToOwnership: () => scopeRouteSourceToOwnership
+	});
+	serviceRouteOwnership = __toCommonJS(service_route_ownership_exports);
+	function normalizeRoutePrefix(routePrefix) {
+	  let normalized = routePrefix.startsWith("/") ? routePrefix : `/${routePrefix}`;
+	  if (normalized !== "/" && normalized.endsWith("/")) {
+	    normalized = normalized.slice(0, -1);
+	  }
+	  return normalized || "/";
+	}
+	function escapeForRegex(value) {
+	  return value.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&");
+	}
+	function toPrefixMatcher(routePrefix) {
+	  return `${escapeForRegex(routePrefix)}(?:/|$)`;
+	}
+	function isDescendantPrefix(candidate, prefix) {
+	  return candidate !== prefix && candidate.startsWith(`${prefix}/`);
+	}
+	function getOwnershipGuard(ownerPrefix, allRoutePrefixes) {
+	  const owner = normalizeRoutePrefix(ownerPrefix);
+	  const normalizedPrefixes = Array.from(
+	    new Set(allRoutePrefixes.map(normalizeRoutePrefix))
+	  );
+	  const nonRootPrefixes = normalizedPrefixes.filter((prefix) => prefix !== "/").sort((a, b) => b.length - a.length);
+	  if (owner === "/") {
+	    return nonRootPrefixes.map((prefix) => `(?!${toPrefixMatcher(prefix)})`).join("");
+	  }
+	  const descendants = nonRootPrefixes.filter(
+	    (prefix) => isDescendantPrefix(prefix, owner)
+	  );
+	  const positive = `(?=${toPrefixMatcher(owner)})`;
+	  const negative = descendants.map((prefix) => `(?!${toPrefixMatcher(prefix)})`).join("");
+	  return `${positive}${negative}`;
+	}
+	function scopeRouteSourceToOwnership(source, ownershipGuard) {
+	  if (!ownershipGuard) {
+	    return source;
+	  }
+	  const inner = source.startsWith("^") ? source.slice(1) : source;
+	  return `^${ownershipGuard}(?:${inner})`;
+	}
+	return serviceRouteOwnership;
+}
+
+var schemas;
+var hasRequiredSchemas;
+
+function requireSchemas () {
+	if (hasRequiredSchemas) return schemas;
+	hasRequiredSchemas = 1;
+	var __defProp = Object.defineProperty;
+	var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+	var __getOwnPropNames = Object.getOwnPropertyNames;
+	var __hasOwnProp = Object.prototype.hasOwnProperty;
+	var __export = (target, all) => {
+	  for (var name in all)
+	    __defProp(target, name, { get: all[name], enumerable: true });
+	};
+	var __copyProps = (to, from, except, desc) => {
+	  if (from && typeof from === "object" || typeof from === "function") {
+	    for (let key of __getOwnPropNames(from))
+	      if (!__hasOwnProp.call(to, key) && key !== except)
+	        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+	  }
+	  return to;
+	};
+	var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+	var schemas_exports = {};
+	__export(schemas_exports, {
+	  bulkRedirectsSchema: () => bulkRedirectsSchema,
+	  cleanUrlsSchema: () => cleanUrlsSchema,
+	  hasSchema: () => hasSchema,
+	  headersSchema: () => headersSchema,
+	  redirectsSchema: () => redirectsSchema,
+	  rewritesSchema: () => rewritesSchema,
+	  routesSchema: () => routesSchema,
+	  trailingSlashSchema: () => trailingSlashSchema
+	});
+	schemas = __toCommonJS(schemas_exports);
+	const mitigateSchema = {
+	  description: "Mitigation action to take on a route",
+	  type: "object",
+	  additionalProperties: false,
+	  required: ["action"],
+	  properties: {
+	    action: {
+	      description: "The mitigation action to take",
+	      type: "string",
+	      enum: ["challenge", "deny"]
+	    }
+	  }
+	};
+	const matchableValueSchema = {
+	  description: "A value to match against. Can be a string (regex) or a condition operation object",
+	  anyOf: [
+	    {
+	      description: "A regular expression used to match thev value. Named groups can be used in the destination.",
+	      type: "string",
+	      maxLength: 4096
+	    },
+	    {
+	      description: "A condition operation object",
+	      type: "object",
+	      additionalProperties: false,
+	      minProperties: 1,
+	      properties: {
+	        eq: {
+	          description: "Equal to",
+	          anyOf: [
+	            {
+	              type: "string",
+	              maxLength: 4096
+	            },
+	            {
+	              type: "number"
+	            }
+	          ]
+	        },
+	        neq: {
+	          description: "Not equal",
+	          type: "string",
+	          maxLength: 4096
+	        },
+	        inc: {
+	          description: "In array",
+	          type: "array",
+	          items: {
+	            type: "string",
+	            maxLength: 4096
+	          }
+	        },
+	        ninc: {
+	          description: "Not in array",
+	          type: "array",
+	          items: {
+	            type: "string",
+	            maxLength: 4096
+	          }
+	        },
+	        pre: {
+	          description: "Starts with",
+	          type: "string",
+	          maxLength: 4096
+	        },
+	        suf: {
+	          description: "Ends with",
+	          type: "string",
+	          maxLength: 4096
+	        },
+	        re: {
+	          description: "Regex",
+	          type: "string",
+	          maxLength: 4096
+	        },
+	        gt: {
+	          description: "Greater than",
+	          type: "number"
+	        },
+	        gte: {
+	          description: "Greater than or equal to",
+	          type: "number"
+	        },
+	        lt: {
+	          description: "Less than",
+	          type: "number"
+	        },
+	        lte: {
+	          description: "Less than or equal to",
+	          type: "number"
+	        }
+	      }
+	    }
+	  ]
+	};
+	const hasSchema = {
+	  description: "An array of requirements that are needed to match",
+	  type: "array",
+	  maxItems: 16,
+	  items: {
+	    anyOf: [
+	      {
+	        type: "object",
+	        additionalProperties: false,
+	        required: ["type", "value"],
+	        properties: {
+	          type: {
+	            description: "The type of request element to check",
+	            type: "string",
+	            enum: ["host"]
+	          },
+	          value: matchableValueSchema
+	        }
+	      },
+	      {
+	        type: "object",
+	        additionalProperties: false,
+	        required: ["type", "key"],
+	        properties: {
+	          type: {
+	            description: "The type of request element to check",
+	            type: "string",
+	            enum: ["header", "cookie", "query"]
+	          },
+	          key: {
+	            description: "The name of the element contained in the particular type",
+	            type: "string",
+	            maxLength: 4096
+	          },
+	          value: matchableValueSchema
+	        }
+	      }
+	    ]
+	  }
+	};
+	const transformsSchema = {
+	  description: "A list of transform rules to adjust the query parameters of a request or HTTP headers of request or response",
+	  type: "array",
+	  minItems: 1,
+	  items: {
+	    type: "object",
+	    additionalProperties: false,
+	    required: ["type", "op", "target"],
+	    properties: {
+	      type: {
+	        description: "The scope of the transform to apply",
+	        type: "string",
+	        enum: ["request.headers", "request.query", "response.headers"]
+	      },
+	      op: {
+	        description: "The operation to perform on the target",
+	        type: "string",
+	        enum: ["append", "set", "delete"]
+	      },
+	      target: {
+	        description: "The target of the transform",
+	        type: "object",
+	        required: ["key"],
+	        properties: {
+	          // re is not supported for transforms. Once supported, replace target.key with matchableValueSchema
+	          key: {
+	            description: "A value to match against. Can be a string or a condition operation object (without regex support)",
+	            anyOf: [
+	              {
+	                description: "A valid header name (letters, numbers, hyphens, underscores)",
+	                type: "string",
+	                maxLength: 4096
+	              },
+	              {
+	                description: "A condition operation object",
+	                type: "object",
+	                additionalProperties: false,
+	                minProperties: 1,
+	                properties: {
+	                  eq: {
+	                    description: "Equal to",
+	                    anyOf: [
+	                      {
+	                        type: "string",
+	                        maxLength: 4096
+	                      },
+	                      {
+	                        type: "number"
+	                      }
+	                    ]
+	                  },
+	                  neq: {
+	                    description: "Not equal",
+	                    type: "string",
+	                    maxLength: 4096
+	                  },
+	                  inc: {
+	                    description: "In array",
+	                    type: "array",
+	                    items: {
+	                      type: "string",
+	                      maxLength: 4096
+	                    }
+	                  },
+	                  ninc: {
+	                    description: "Not in array",
+	                    type: "array",
+	                    items: {
+	                      type: "string",
+	                      maxLength: 4096
+	                    }
+	                  },
+	                  pre: {
+	                    description: "Starts with",
+	                    type: "string",
+	                    maxLength: 4096
+	                  },
+	                  suf: {
+	                    description: "Ends with",
+	                    type: "string",
+	                    maxLength: 4096
+	                  },
+	                  gt: {
+	                    description: "Greater than",
+	                    type: "number"
+	                  },
+	                  gte: {
+	                    description: "Greater than or equal to",
+	                    type: "number"
+	                  },
+	                  lt: {
+	                    description: "Less than",
+	                    type: "number"
+	                  },
+	                  lte: {
+	                    description: "Less than or equal to",
+	                    type: "number"
+	                  }
+	                }
+	              }
+	            ]
+	          }
+	        }
+	      },
+	      args: {
+	        description: "The arguments to the operation",
+	        anyOf: [
+	          {
+	            type: "string",
+	            maxLength: 4096
+	          },
+	          {
+	            type: "array",
+	            minItems: 1,
+	            items: {
+	              type: "string",
+	              maxLength: 4096
+	            }
+	          }
+	        ]
+	      },
+	      env: {
+	        description: "An array of environment variable names that should be replaced at runtime in the args value",
+	        type: "array",
+	        minItems: 1,
+	        maxItems: 64,
+	        items: {
+	          type: "string",
+	          maxLength: 256
+	        }
+	      }
+	    },
+	    allOf: [
+	      {
+	        if: {
+	          properties: {
+	            op: {
+	              enum: ["append", "set"]
+	            }
+	          }
+	        },
+	        then: {
+	          required: ["args"]
+	        }
+	      },
+	      {
+	        if: {
+	          allOf: [
+	            {
+	              properties: {
+	                type: {
+	                  enum: ["request.headers", "response.headers"]
+	                }
+	              }
+	            },
+	            {
+	              properties: {
+	                op: {
+	                  enum: ["set", "append"]
+	                }
+	              }
+	            }
+	          ]
+	        },
+	        then: {
+	          properties: {
+	            target: {
+	              properties: {
+	                key: {
+	                  if: {
+	                    type: "string"
+	                  },
+	                  then: {
+	                    pattern: "^[a-zA-Z0-9_-]+$"
+	                  }
+	                }
+	              }
+	            },
+	            args: {
+	              anyOf: [
+	                {
+	                  type: "string",
+	                  pattern: "^[a-zA-Z0-9_ :;.,\"'?!(){}\\[\\]@<>=+*#$&`|~\\^%/-]+$"
+	                },
+	                {
+	                  type: "array",
+	                  items: {
+	                    type: "string",
+	                    pattern: "^[a-zA-Z0-9_ :;.,\"'?!(){}\\[\\]@<>=+*#$&`|~\\^%/-]+$"
+	                  }
+	                }
+	              ]
+	            }
+	          }
+	        }
+	      }
+	    ]
+	  }
+	};
+	const routesSchema = {
+	  type: "array",
+	  deprecated: true,
+	  description: "A list of routes objects used to rewrite paths to point towards other internal or external paths",
+	  example: [{ dest: "https://docs.example.com", src: "/docs" }],
+	  items: {
+	    anyOf: [
+	      {
+	        type: "object",
+	        required: ["src"],
+	        additionalProperties: false,
+	        properties: {
+	          src: {
+	            type: "string",
+	            maxLength: 4096
+	          },
+	          dest: {
+	            type: "string",
+	            maxLength: 4096
+	          },
+	          headers: {
+	            type: "object",
+	            additionalProperties: false,
+	            minProperties: 1,
+	            maxProperties: 100,
+	            patternProperties: {
+	              "^.{1,256}$": {
+	                type: "string",
+	                maxLength: 32768
+	              }
+	            }
+	          },
+	          methods: {
+	            type: "array",
+	            maxItems: 10,
+	            items: {
+	              type: "string",
+	              maxLength: 32
+	            }
+	          },
+	          caseSensitive: {
+	            type: "boolean"
+	          },
+	          important: {
+	            type: "boolean"
+	          },
+	          user: {
+	            type: "boolean"
+	          },
+	          continue: {
+	            type: "boolean"
+	          },
+	          override: {
+	            type: "boolean"
+	          },
+	          check: {
+	            type: "boolean"
+	          },
+	          isInternal: {
+	            type: "boolean"
+	          },
+	          status: {
+	            type: "integer",
+	            minimum: 100,
+	            maximum: 999
+	          },
+	          locale: {
+	            type: "object",
+	            additionalProperties: false,
+	            minProperties: 1,
+	            properties: {
+	              redirect: {
+	                type: "object",
+	                additionalProperties: false,
+	                minProperties: 1,
+	                maxProperties: 100,
+	                patternProperties: {
+	                  "^.{1,256}$": {
+	                    type: "string",
+	                    maxLength: 4096
+	                  }
+	                }
+	              },
+	              value: {
+	                type: "string",
+	                maxLength: 4096
+	              },
+	              path: {
+	                type: "string",
+	                maxLength: 4096
+	              },
+	              cookie: {
+	                type: "string",
+	                maxLength: 4096
+	              },
+	              default: {
+	                type: "string",
+	                maxLength: 4096
+	              }
+	            }
+	          },
+	          middleware: { type: "number" },
+	          middlewarePath: { type: "string" },
+	          middlewareRawSrc: {
+	            type: "array",
+	            items: {
+	              type: "string"
+	            }
+	          },
+	          has: hasSchema,
+	          missing: hasSchema,
+	          mitigate: mitigateSchema,
+	          transforms: transformsSchema,
+	          env: {
+	            description: "An array of environment variable names that should be replaced at runtime in the destination or headers",
+	            type: "array",
+	            minItems: 1,
+	            maxItems: 64,
+	            items: {
+	              type: "string",
+	              maxLength: 256
+	            }
+	          },
+	          respectOriginCacheControl: {
+	            description: "When set to true (default), external rewrites will respect the Cache-Control header from the origin. When false, caching is disabled for this rewrite.",
+	            type: "boolean"
+	          }
+	        }
+	      },
+	      {
+	        type: "object",
+	        required: ["handle"],
+	        additionalProperties: false,
+	        properties: {
+	          handle: {
+	            type: "string",
+	            maxLength: 32,
+	            enum: ["error", "filesystem", "hit", "miss", "resource", "rewrite"]
+	          }
+	        }
+	      }
+	    ]
+	  }
+	};
+	const rewritesSchema = {
+	  type: "array",
+	  maxItems: 2048,
+	  description: "A list of rewrite definitions.",
+	  items: {
+	    type: "object",
+	    additionalProperties: false,
+	    required: ["source", "destination"],
+	    properties: {
+	      source: {
+	        description: "A pattern that matches each incoming pathname (excluding querystring).",
+	        type: "string",
+	        maxLength: 4096
+	      },
+	      destination: {
+	        description: "An absolute pathname to an existing resource or an external URL.",
+	        type: "string",
+	        maxLength: 4096
+	      },
+	      has: hasSchema,
+	      missing: hasSchema,
+	      statusCode: {
+	        description: "An optional integer to override the status code of the response.",
+	        type: "integer",
+	        minimum: 100,
+	        maximum: 999
+	      },
+	      env: {
+	        description: "An array of environment variable names that should be replaced at runtime in the destination",
+	        type: "array",
+	        minItems: 1,
+	        maxItems: 64,
+	        items: {
+	          type: "string",
+	          maxLength: 256
+	        }
+	      },
+	      respectOriginCacheControl: {
+	        description: "When set to true (default), external rewrites will respect the Cache-Control header from the origin. When false, caching is disabled for this rewrite.",
+	        type: "boolean"
+	      }
+	    }
+	  }
+	};
+	const redirectsSchema = {
+	  title: "Redirects",
+	  type: "array",
+	  maxItems: 2048,
+	  description: "A list of redirect definitions.",
+	  items: {
+	    type: "object",
+	    additionalProperties: false,
+	    required: ["source", "destination"],
+	    properties: {
+	      source: {
+	        description: "A pattern that matches each incoming pathname (excluding querystring).",
+	        type: "string",
+	        maxLength: 4096
+	      },
+	      destination: {
+	        description: "A location destination defined as an absolute pathname or external URL.",
+	        type: "string",
+	        maxLength: 4096
+	      },
+	      permanent: {
+	        description: "A boolean to toggle between permanent and temporary redirect. When `true`, the status code is `308`. When `false` the status code is `307`.",
+	        type: "boolean"
+	      },
+	      statusCode: {
+	        description: "An optional integer to define the status code of the redirect.",
+	        private: true,
+	        type: "integer",
+	        minimum: 100,
+	        maximum: 999
+	      },
+	      has: hasSchema,
+	      missing: hasSchema,
+	      env: {
+	        description: "An array of environment variable names that should be replaced at runtime in the destination",
+	        type: "array",
+	        minItems: 1,
+	        maxItems: 64,
+	        items: {
+	          type: "string",
+	          maxLength: 256
+	        }
+	      }
+	    }
+	  }
+	};
+	const headersSchema = {
+	  type: "array",
+	  maxItems: 2048,
+	  description: "A list of header definitions.",
+	  items: {
+	    type: "object",
+	    additionalProperties: false,
+	    required: ["source", "headers"],
+	    properties: {
+	      source: {
+	        description: "A pattern that matches each incoming pathname (excluding querystring)",
+	        type: "string",
+	        maxLength: 4096
+	      },
+	      headers: {
+	        description: "An array of key/value pairs representing each response header.",
+	        type: "array",
+	        maxItems: 1024,
+	        items: {
+	          type: "object",
+	          additionalProperties: false,
+	          required: ["key", "value"],
+	          properties: {
+	            key: {
+	              type: "string",
+	              maxLength: 4096
+	            },
+	            value: {
+	              type: "string",
+	              maxLength: 32768
+	            }
+	          }
+	        }
+	      },
+	      has: hasSchema,
+	      missing: hasSchema
+	    }
+	  }
+	};
+	const cleanUrlsSchema = {
+	  description: "When set to `true`, all HTML files and Serverless Functions will have their extension removed. When visiting a path that ends with the extension, a 308 response will redirect the client to the extensionless path.",
+	  type: "boolean"
+	};
+	const trailingSlashSchema = {
+	  description: "When `false`, visiting a path that ends with a forward slash will respond with a `308` status code and redirect to the path without the trailing slash.",
+	  type: "boolean"
+	};
+	const bulkRedirectsSchema = {
+	  type: "array",
+	  description: "A list of bulk redirect definitions.",
+	  items: {
+	    type: "object",
+	    additionalProperties: false,
+	    required: ["source", "destination"],
+	    properties: {
+	      source: {
+	        description: "The exact URL path or pattern to match.",
+	        type: "string",
+	        maxLength: 2048
+	      },
+	      destination: {
+	        description: "The target URL path where traffic should be redirected.",
+	        type: "string",
+	        maxLength: 2048
+	      },
+	      permanent: {
+	        description: "A boolean to toggle between permanent and temporary redirect. When `true`, the status code is `308`. When `false` the status code is `307`.",
+	        type: "boolean"
+	      },
+	      statusCode: {
+	        description: "An optional integer to define the status code of the redirect.",
+	        type: "integer",
+	        enum: [301, 302, 307, 308]
+	      },
+	      sensitive: {
+	        description: "A boolean to toggle between case-sensitive and case-insensitive redirect. When `true`, the redirect is case-sensitive. When `false` the redirect is case-insensitive.",
+	        type: "boolean"
+	      },
+	      query: {
+	        description: "Whether the query string should be preserved by the redirect. The default is `false`.",
+	        type: "boolean"
+	      }
+	    }
+	  }
+	};
+	return schemas;
+}
+
+var types$1;
+var hasRequiredTypes;
+
+function requireTypes () {
+	if (hasRequiredTypes) return types$1;
+	hasRequiredTypes = 1;
+	var __defProp = Object.defineProperty;
+	var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+	var __getOwnPropNames = Object.getOwnPropertyNames;
+	var __hasOwnProp = Object.prototype.hasOwnProperty;
+	var __copyProps = (to, from, except, desc) => {
+	  if (from && typeof from === "object" || typeof from === "function") {
+	    for (let key of __getOwnPropNames(from))
+	      if (!__hasOwnProp.call(to, key) && key !== except)
+	        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+	  }
+	  return to;
+	};
+	var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+	var types_exports = {};
+	types$1 = __toCommonJS(types_exports);
+	return types$1;
+}
+
+var hasRequiredDist;
+
+function requireDist () {
+	if (hasRequiredDist) return dist.exports;
+	hasRequiredDist = 1;
+	(function (module) {
+		var __defProp = Object.defineProperty;
+		var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+		var __getOwnPropNames = Object.getOwnPropertyNames;
+		var __hasOwnProp = Object.prototype.hasOwnProperty;
+		var __export = (target, all) => {
+		  for (var name in all)
+		    __defProp(target, name, { get: all[name], enumerable: true });
+		};
+		var __copyProps = (to, from, except, desc) => {
+		  if (from && typeof from === "object" || typeof from === "function") {
+		    for (let key of __getOwnPropNames(from))
+		      if (!__hasOwnProp.call(to, key) && key !== except)
+		        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+		  }
+		  return to;
+		};
+		var __reExport = (target, mod, secondTarget) => (__copyProps(target, mod, "default"), secondTarget && __copyProps(secondTarget, mod, "default"));
+		var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+		var src_exports = {};
+		__export(src_exports, {
+		  appendRoutesToPhase: () => import_append.appendRoutesToPhase,
+		  getCleanUrls: () => import_superstatic2.getCleanUrls,
+		  getOwnershipGuard: () => import_service_route_ownership.getOwnershipGuard,
+		  getTransformedRoutes: () => getTransformedRoutes,
+		  isHandler: () => isHandler,
+		  isValidHandleValue: () => isValidHandleValue,
+		  mergeRoutes: () => import_merge.mergeRoutes,
+		  normalizeRoutePrefix: () => import_service_route_ownership.normalizeRoutePrefix,
+		  normalizeRoutes: () => normalizeRoutes,
+		  scopeRouteSourceToOwnership: () => import_service_route_ownership.scopeRouteSourceToOwnership,
+		  sourceToRegex: () => import_superstatic2.sourceToRegex
+		});
+		module.exports = __toCommonJS(src_exports);
+		var import_url = require$$0;
+		var import_superstatic = requireSuperstatic();
+		var import_append = requireAppend();
+		var import_merge = requireMerge();
+		var import_service_route_ownership = requireServiceRouteOwnership();
+		__reExport(src_exports, requireSchemas(), module.exports);
+		var import_superstatic2 = requireSuperstatic();
+		__reExport(src_exports, requireTypes(), module.exports);
+		const VALID_HANDLE_VALUES = [
+		  "filesystem",
+		  "hit",
+		  "miss",
+		  "rewrite",
+		  "error",
+		  "resource"
+		];
+		const validHandleValues = new Set(VALID_HANDLE_VALUES);
+		function isHandler(route) {
+		  return typeof route.handle !== "undefined";
+		}
+		function isValidHandleValue(handle) {
+		  return validHandleValues.has(handle);
+		}
+		function normalizeRoutes(inputRoutes) {
+		  if (!inputRoutes || inputRoutes.length === 0) {
+		    return { routes: inputRoutes, error: null };
+		  }
+		  const routes = [];
+		  const handling = [];
+		  const errors = [];
+		  inputRoutes.forEach((r, i) => {
+		    const route = { ...r };
+		    routes.push(route);
+		    const keys = Object.keys(route);
+		    if (isHandler(route)) {
+		      const { handle } = route;
+		      if (keys.length !== 1) {
+		        const unknownProp = keys.find((prop) => prop !== "handle");
+		        errors.push(
+		          `Route at index ${i} has unknown property \`${unknownProp}\`.`
+		        );
+		      } else if (!isValidHandleValue(handle)) {
+		        errors.push(
+		          `Route at index ${i} has unknown handle value \`handle: ${handle}\`.`
+		        );
+		      } else if (handling.includes(handle)) {
+		        errors.push(
+		          `Route at index ${i} is a duplicate. Please use one \`handle: ${handle}\` at most.`
+		        );
+		      } else {
+		        handling.push(handle);
+		      }
+		    } else if (route.src) {
+		      if (!route.src.startsWith("^")) {
+		        route.src = `^${route.src}`;
+		      }
+		      if (!route.src.endsWith("$")) {
+		        route.src = `${route.src}$`;
+		      }
+		      route.src = route.src.replace(/\\\//g, "/");
+		      const regError = checkRegexSyntax("Route", i, route.src);
+		      if (regError) {
+		        errors.push(regError);
+		      }
+		      const handleValue = handling[handling.length - 1];
+		      if (handleValue === "hit") {
+		        if (route.dest) {
+		          errors.push(
+		            `Route at index ${i} cannot define \`dest\` after \`handle: hit\`.`
+		          );
+		        }
+		        if (route.status) {
+		          errors.push(
+		            `Route at index ${i} cannot define \`status\` after \`handle: hit\`.`
+		          );
+		        }
+		        if (!route.continue) {
+		          errors.push(
+		            `Route at index ${i} must define \`continue: true\` after \`handle: hit\`.`
+		          );
+		        }
+		      } else if (handleValue === "miss") {
+		        if (route.dest && !route.check) {
+		          errors.push(
+		            `Route at index ${i} must define \`check: true\` after \`handle: miss\`.`
+		          );
+		        } else if (!route.dest && !route.continue) {
+		          errors.push(
+		            `Route at index ${i} must define \`continue: true\` after \`handle: miss\`.`
+		          );
+		        }
+		      }
+		    } else {
+		      errors.push(
+		        `Route at index ${i} must define either \`handle\` or \`src\` property.`
+		      );
+		    }
+		  });
+		  const error = errors.length > 0 ? createError(
+		    "invalid_route",
+		    errors,
+		    "https://vercel.link/routes-json",
+		    "Learn More"
+		  ) : null;
+		  return { routes, error };
+		}
+		function checkRegexSyntax(type, index, src) {
+		  try {
+		    new RegExp(src);
+		  } catch (err) {
+		    const prop = type === "Route" ? "src" : "source";
+		    return `${type} at index ${index} has invalid \`${prop}\` regular expression "${src}".`;
+		  }
+		  return null;
+		}
+		function checkPatternSyntax(type, index, {
+		  source,
+		  destination,
+		  has
+		}) {
+		  let sourceSegments = /* @__PURE__ */ new Set();
+		  const destinationSegments = /* @__PURE__ */ new Set();
+		  try {
+		    sourceSegments = new Set((0, import_superstatic.sourceToRegex)(source).segments);
+		  } catch (err) {
+		    return {
+		      message: `${type} at index ${index} has invalid \`source\` pattern "${source}".`,
+		      link: "https://vercel.link/invalid-route-source-pattern"
+		    };
+		  }
+		  if (destination) {
+		    try {
+		      const { hostname, pathname, query } = (0, import_url.parse)(destination, true);
+		      (0, import_superstatic.sourceToRegex)(hostname || "").segments.forEach(
+		        (name) => destinationSegments.add(name)
+		      );
+		      (0, import_superstatic.sourceToRegex)(pathname || "").segments.forEach(
+		        (name) => destinationSegments.add(name)
+		      );
+		      for (const strOrArray of Object.values(query)) {
+		        const value = Array.isArray(strOrArray) ? strOrArray[0] : strOrArray;
+		        (0, import_superstatic.sourceToRegex)(value || "").segments.forEach(
+		          (name) => destinationSegments.add(name)
+		        );
+		      }
+		    } catch (err) {
+		    }
+		    const hasSegments = (0, import_superstatic.collectHasSegments)(has);
+		    for (const segment of destinationSegments) {
+		      if (!sourceSegments.has(segment) && !hasSegments.includes(segment)) {
+		        return {
+		          message: `${type} at index ${index} has segment ":${segment}" in \`destination\` property but not in \`source\` or \`has\` property.`,
+		          link: "https://vercel.link/invalid-route-destination-segment"
+		        };
+		      }
+		    }
+		  }
+		  return null;
+		}
+		function checkRedirect(r, index) {
+		  if (typeof r.permanent !== "undefined" && typeof r.statusCode !== "undefined") {
+		    return `Redirect at index ${index} cannot define both \`permanent\` and \`statusCode\` properties.`;
+		  }
+		  return null;
+		}
+		function createError(code, allErrors, link, action) {
+		  const errors = Array.isArray(allErrors) ? allErrors : [allErrors];
+		  const message = errors[0];
+		  const error = {
+		    name: "RouteApiError",
+		    code,
+		    message,
+		    link,
+		    action,
+		    errors
+		  };
+		  return error;
+		}
+		function notEmpty(value) {
+		  return value !== null && value !== void 0;
+		}
+		function getTransformedRoutes(vercelConfig) {
+		  const { cleanUrls, rewrites, redirects, headers, trailingSlash } = vercelConfig;
+		  let { routes = null } = vercelConfig;
+		  if (routes) {
+		    const hasNewProperties = typeof cleanUrls !== "undefined" || typeof trailingSlash !== "undefined" || typeof redirects !== "undefined" || typeof headers !== "undefined" || typeof rewrites !== "undefined";
+		    if (hasNewProperties) {
+		      const error = createError(
+		        "invalid_mixed_routes",
+		        "If `rewrites`, `redirects`, `headers`, `cleanUrls` or `trailingSlash` are used, then `routes` cannot be present.",
+		        "https://vercel.link/mix-routing-props",
+		        "Learn More"
+		      );
+		      return { routes, error };
+		    }
+		    return normalizeRoutes(routes);
+		  }
+		  if (typeof cleanUrls !== "undefined") {
+		    const normalized = normalizeRoutes(
+		      (0, import_superstatic.convertCleanUrls)(cleanUrls, trailingSlash)
+		    );
+		    if (normalized.error) {
+		      normalized.error.code = "invalid_clean_urls";
+		      return { routes, error: normalized.error };
+		    }
+		    routes = routes || [];
+		    routes.push(...normalized.routes || []);
+		  }
+		  if (typeof trailingSlash !== "undefined") {
+		    const normalized = normalizeRoutes((0, import_superstatic.convertTrailingSlash)(trailingSlash));
+		    if (normalized.error) {
+		      normalized.error.code = "invalid_trailing_slash";
+		      return { routes, error: normalized.error };
+		    }
+		    routes = routes || [];
+		    routes.push(...normalized.routes || []);
+		  }
+		  if (typeof redirects !== "undefined") {
+		    const code = "invalid_redirect";
+		    const regexErrorMessage = redirects.map((r, i) => checkRegexSyntax("Redirect", i, r.source)).find(notEmpty);
+		    if (regexErrorMessage) {
+		      return {
+		        routes,
+		        error: createError(
+		          "invalid_redirect",
+		          regexErrorMessage,
+		          "https://vercel.link/invalid-route-source-pattern",
+		          "Learn More"
+		        )
+		      };
+		    }
+		    const patternError = redirects.map((r, i) => checkPatternSyntax("Redirect", i, r)).find(notEmpty);
+		    if (patternError) {
+		      return {
+		        routes,
+		        error: createError(
+		          code,
+		          patternError.message,
+		          patternError.link,
+		          "Learn More"
+		        )
+		      };
+		    }
+		    const redirectErrorMessage = redirects.map(checkRedirect).find(notEmpty);
+		    if (redirectErrorMessage) {
+		      return {
+		        routes,
+		        error: createError(
+		          code,
+		          redirectErrorMessage,
+		          "https://vercel.link/redirects-json",
+		          "Learn More"
+		        )
+		      };
+		    }
+		    const normalized = normalizeRoutes((0, import_superstatic.convertRedirects)(redirects));
+		    if (normalized.error) {
+		      normalized.error.code = code;
+		      return { routes, error: normalized.error };
+		    }
+		    routes = routes || [];
+		    routes.push(...normalized.routes || []);
+		  }
+		  if (typeof headers !== "undefined") {
+		    const code = "invalid_header";
+		    const regexErrorMessage = headers.map((r, i) => checkRegexSyntax("Header", i, r.source)).find(notEmpty);
+		    if (regexErrorMessage) {
+		      return {
+		        routes,
+		        error: createError(
+		          code,
+		          regexErrorMessage,
+		          "https://vercel.link/invalid-route-source-pattern",
+		          "Learn More"
+		        )
+		      };
+		    }
+		    const patternError = headers.map((r, i) => checkPatternSyntax("Header", i, r)).find(notEmpty);
+		    if (patternError) {
+		      return {
+		        routes,
+		        error: createError(
+		          code,
+		          patternError.message,
+		          patternError.link,
+		          "Learn More"
+		        )
+		      };
+		    }
+		    const normalized = normalizeRoutes((0, import_superstatic.convertHeaders)(headers));
+		    if (normalized.error) {
+		      normalized.error.code = code;
+		      return { routes, error: normalized.error };
+		    }
+		    routes = routes || [];
+		    routes.push(...normalized.routes || []);
+		  }
+		  if (typeof rewrites !== "undefined") {
+		    const code = "invalid_rewrite";
+		    const regexErrorMessage = rewrites.map((r, i) => checkRegexSyntax("Rewrite", i, r.source)).find(notEmpty);
+		    if (regexErrorMessage) {
+		      return {
+		        routes,
+		        error: createError(
+		          code,
+		          regexErrorMessage,
+		          "https://vercel.link/invalid-route-source-pattern",
+		          "Learn More"
+		        )
+		      };
+		    }
+		    const patternError = rewrites.map((r, i) => checkPatternSyntax("Rewrite", i, r)).find(notEmpty);
+		    if (patternError) {
+		      return {
+		        routes,
+		        error: createError(
+		          code,
+		          patternError.message,
+		          patternError.link,
+		          "Learn More"
+		        )
+		      };
+		    }
+		    const normalized = normalizeRoutes((0, import_superstatic.convertRewrites)(rewrites));
+		    if (normalized.error) {
+		      normalized.error.code = code;
+		      return { routes, error: normalized.error };
+		    }
+		    routes = routes || [];
+		    routes.push({ handle: "filesystem" });
+		    routes.push(...normalized.routes || []);
+		  }
+		  return { routes, error: null };
+		}
+	} (dist));
+	return dist.exports;
+}
+
+requireDist();
 
 function matchPattern(url, remotePattern) {
   return matchProtocol(url, remotePattern.protocol) && matchHostname(url, remotePattern.hostname, true) && matchPort(url, remotePattern.port) && matchPathname(url, remotePattern.pathname, true);
@@ -1502,7 +3277,7 @@ const ASTRO_PATH_PARAM = "x_astro_path";
 const ASTRO_LOCALS_HEADER = "x-astro-locals";
 const ASTRO_MIDDLEWARE_SECRET_HEADER = "x-astro-middleware-secret";
 
-const middlewareSecret = "f6779b38-e46d-4701-b3b3-8a81de0152c8";
+const middlewareSecret = "e40166a2-4729-454e-8abc-5cfedf89cf76";
 
 const ACTION_QUERY_PARAMS = {
   actionName: "_action"};
@@ -10884,14 +12659,14 @@ const renderers = [];
 const serializedData = [{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"type":"page","component":"_server-islands.astro","params":["name"],"segments":[[{"content":"_server-islands","dynamic":false,"spread":false}],[{"content":"name","dynamic":true,"spread":false}]],"pattern":"^\\/_server-islands\\/([^/]+?)\\/?$","prerender":false,"isIndex":false,"fallbackRoutes":[],"route":"/_server-islands/[name]","origin":"internal","distURL":[],"_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"route":"/_image","component":"node_modules/astro/dist/assets/endpoint/generic.js","params":[],"pathname":"/_image","pattern":"^\\/_image\\/?$","segments":[[{"content":"_image","dynamic":false,"spread":false}]],"type":"endpoint","prerender":false,"fallbackRoutes":[],"distURL":[],"isIndex":false,"origin":"internal","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"route":"/contact","isIndex":false,"type":"page","pattern":"^\\/contact\\/?$","segments":[[{"content":"contact","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/contact.astro","pathname":"/contact","prerender":false,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}}];
 				serializedData.map(deserializeRouteInfo);
 
-const _page0 = () => import('./generic_qJPkiuFC.mjs');
-const _page1 = () => import('./contact_A02xlbVz.mjs');
+const _page0 = () => import('./generic_CFu0tbw1.mjs');
+const _page1 = () => import('./contact_C4-oqCWF.mjs');
 const pageMap = new Map([
     ["node_modules/astro/dist/assets/endpoint/generic.js", _page0],
     ["src/pages/contact.astro", _page1]
 ]);
 
-const _manifest = deserializeManifest(({"rootDir":"file:///C:/Users/Ferreira/Desktop/dev/turnapp-web-page/","cacheDir":"file:///C:/Users/Ferreira/Desktop/dev/turnapp-web-page/node_modules/.astro/","outDir":"file:///C:/Users/Ferreira/Desktop/dev/turnapp-web-page/build/","srcDir":"file:///C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/","publicDir":"file:///C:/Users/Ferreira/Desktop/dev/turnapp-web-page/public/","buildClientDir":"file:///C:/Users/Ferreira/Desktop/dev/turnapp-web-page/build/client/","buildServerDir":"file:///C:/Users/Ferreira/Desktop/dev/turnapp-web-page/build/server/","adapterName":"@astrojs/vercel","assetsDir":"_astro","routes":[{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"type":"page","component":"_server-islands.astro","params":["name"],"segments":[[{"content":"_server-islands","dynamic":false,"spread":false}],[{"content":"name","dynamic":true,"spread":false}]],"pattern":"^\\/_server-islands\\/([^/]+?)\\/?$","prerender":false,"isIndex":false,"fallbackRoutes":[],"route":"/_server-islands/[name]","origin":"internal","distURL":[],"_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/_image","component":"node_modules/astro/dist/assets/endpoint/generic.js","params":[],"pathname":"/_image","pattern":"^\\/_image\\/?$","segments":[[{"content":"_image","dynamic":false,"spread":false}]],"type":"endpoint","prerender":false,"fallbackRoutes":[],"distURL":[],"isIndex":false,"origin":"internal","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/404","isIndex":false,"type":"page","pattern":"^\\/404\\/?$","segments":[[{"content":"404","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/404.astro","pathname":"/404","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/about-us","isIndex":false,"type":"page","pattern":"^\\/about-us\\/?$","segments":[[{"content":"about-us","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/about-us.astro","pathname":"/about-us","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/blog/[slug]","isIndex":false,"type":"page","pattern":"^\\/blog\\/([^/]+?)\\/?$","segments":[[{"content":"blog","dynamic":false,"spread":false}],[{"content":"slug","dynamic":true,"spread":false}]],"params":["slug"],"component":"src/pages/blog/[slug].astro","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/blog","isIndex":true,"type":"page","pattern":"^\\/blog\\/?$","segments":[[{"content":"blog","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/blog/index.astro","pathname":"/blog","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/book-demo","isIndex":false,"type":"page","pattern":"^\\/book-demo\\/?$","segments":[[{"content":"book-demo","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/book-demo.astro","pathname":"/book-demo","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/careers","isIndex":false,"type":"page","pattern":"^\\/careers\\/?$","segments":[[{"content":"careers","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/careers.astro","pathname":"/careers","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/case-studies","isIndex":true,"type":"page","pattern":"^\\/case-studies\\/?$","segments":[[{"content":"case-studies","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/case-studies/index.astro","pathname":"/case-studies","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[{"type":"external","src":"_astro/contact.UUF5ZIV5.css"}],"routeData":{"route":"/contact","isIndex":false,"type":"page","pattern":"^\\/contact\\/?$","segments":[[{"content":"contact","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/contact.astro","pathname":"/contact","prerender":false,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/cookie-policy","isIndex":false,"type":"page","pattern":"^\\/cookie-policy\\/?$","segments":[[{"content":"cookie-policy","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/cookie-policy.astro","pathname":"/cookie-policy","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/documentation/api-reference","isIndex":false,"type":"page","pattern":"^\\/documentation\\/api-reference\\/?$","segments":[[{"content":"documentation","dynamic":false,"spread":false}],[{"content":"api-reference","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/documentation/api-reference.astro","pathname":"/documentation/api-reference","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/documentation","isIndex":false,"type":"page","pattern":"^\\/documentation\\/?$","segments":[[{"content":"documentation","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/documentation.astro","pathname":"/documentation","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/endesarrollo","isIndex":false,"type":"page","pattern":"^\\/endesarrollo\\/?$","segments":[[{"content":"endesarrollo","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/endesarrollo.astro","pathname":"/endesarrollo","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/login","isIndex":false,"type":"page","pattern":"^\\/login\\/?$","segments":[[{"content":"login","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/login.astro","pathname":"/login","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/pricing","isIndex":false,"type":"page","pattern":"^\\/pricing\\/?$","segments":[[{"content":"pricing","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/pricing.astro","pathname":"/pricing","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/privacy-policy","isIndex":false,"type":"page","pattern":"^\\/privacy-policy\\/?$","segments":[[{"content":"privacy-policy","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/privacy-policy.astro","pathname":"/privacy-policy","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/product","isIndex":false,"type":"page","pattern":"^\\/product\\/?$","segments":[[{"content":"product","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/product.astro","pathname":"/product","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/solutions","isIndex":false,"type":"page","pattern":"^\\/solutions\\/?$","segments":[[{"content":"solutions","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/solutions.astro","pathname":"/solutions","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/terms-of-use","isIndex":false,"type":"page","pattern":"^\\/terms-of-use\\/?$","segments":[[{"content":"terms-of-use","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/terms-of-use.astro","pathname":"/terms-of-use","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/tutorials","isIndex":true,"type":"page","pattern":"^\\/tutorials\\/?$","segments":[[{"content":"tutorials","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/tutorials/index.astro","pathname":"/tutorials","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/","isIndex":true,"type":"page","pattern":"^\\/$","segments":[],"params":[],"component":"src/pages/index.astro","pathname":"/","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}}],"serverLike":true,"middlewareMode":"classic","site":"https://turnapp.ferreiraric.com","base":"/","trailingSlash":"ignore","compressHTML":true,"experimentalQueuedRendering":{"enabled":false,"poolSize":0,"contentCache":false},"componentMetadata":[["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/404.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/about-us.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/blog/[slug].astro",{"propagation":"in-tree","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/blog/index.astro",{"propagation":"in-tree","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/book-demo.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/careers.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/case-studies/index.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/cookie-policy.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/documentation.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/documentation/api-reference.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/endesarrollo.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/index.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/login.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/pricing.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/privacy-policy.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/product.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/solutions.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/terms-of-use.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/tutorials/index.astro",{"propagation":"none","containsHead":true}],["\u0000astro:content",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:page:src/pages/blog/[slug]@_@astro",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:pages",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:manifest",{"propagation":"in-tree","containsHead":false}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/node_modules/astro/dist/entrypoints/prerender.js",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:page:src/pages/blog/index@_@astro",{"propagation":"in-tree","containsHead":false}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/contact.astro",{"propagation":"none","containsHead":true}]],"renderers":[],"clientDirectives":[["idle","(()=>{var l=(n,t)=>{let i=async()=>{await(await n())()},e=typeof t.value==\"object\"?t.value:void 0,s={timeout:e==null?void 0:e.timeout};\"requestIdleCallback\"in window?window.requestIdleCallback(i,s):setTimeout(i,s.timeout||200)};(self.Astro||(self.Astro={})).idle=l;window.dispatchEvent(new Event(\"astro:idle\"));})();"],["load","(()=>{var e=async t=>{await(await t())()};(self.Astro||(self.Astro={})).load=e;window.dispatchEvent(new Event(\"astro:load\"));})();"],["media","(()=>{var n=(a,t)=>{let i=async()=>{await(await a())()};if(t.value){let e=matchMedia(t.value);e.matches?i():e.addEventListener(\"change\",i,{once:!0})}};(self.Astro||(self.Astro={})).media=n;window.dispatchEvent(new Event(\"astro:media\"));})();"],["only","(()=>{var e=async t=>{await(await t())()};(self.Astro||(self.Astro={})).only=e;window.dispatchEvent(new Event(\"astro:only\"));})();"],["visible","(()=>{var a=(s,i,o)=>{let r=async()=>{await(await s())()},t=typeof i.value==\"object\"?i.value:void 0,c={rootMargin:t==null?void 0:t.rootMargin},n=new IntersectionObserver(e=>{for(let l of e)if(l.isIntersecting){n.disconnect(),r();break}},c);for(let e of o.children)n.observe(e)};(self.Astro||(self.Astro={})).visible=a;window.dispatchEvent(new Event(\"astro:visible\"));})();"]],"entryModules":{"\u0000virtual:astro:actions/noop-entrypoint":"chunks/noop-entrypoint_BOlrdqWF.mjs","\u0000noop-middleware":"virtual_astro_middleware.mjs","\u0000virtual:astro:session-driver":"chunks/_virtual_astro_session-driver_DYx9Bb3p.mjs","\u0000virtual:astro:server-island-manifest":"chunks/_virtual_astro_server-island-manifest_CQQ1F5PF.mjs","\u0000virtual:astro:page:src/pages/404@_@astro":"chunks/404_TG1fWgtF.mjs","\u0000virtual:astro:page:src/pages/about-us@_@astro":"chunks/about-us_BJi2QQ39.mjs","\u0000virtual:astro:page:src/pages/blog/[slug]@_@astro":"chunks/_slug__BTA1ZmsY.mjs","\u0000virtual:astro:page:src/pages/blog/index@_@astro":"chunks/index_Jo_z_Uxz.mjs","\u0000virtual:astro:page:src/pages/book-demo@_@astro":"chunks/book-demo_CjrCZxml.mjs","\u0000virtual:astro:page:src/pages/careers@_@astro":"chunks/careers_B9vBlMx7.mjs","\u0000virtual:astro:page:src/pages/case-studies/index@_@astro":"chunks/index_XoYF8f35.mjs","\u0000virtual:astro:page:src/pages/cookie-policy@_@astro":"chunks/cookie-policy_DP3tp1D9.mjs","\u0000virtual:astro:page:src/pages/documentation/api-reference@_@astro":"chunks/api-reference_Bxat6Py6.mjs","\u0000virtual:astro:page:src/pages/documentation@_@astro":"chunks/documentation_8Tnv02NA.mjs","\u0000virtual:astro:page:src/pages/endesarrollo@_@astro":"chunks/endesarrollo_efeaB4K5.mjs","\u0000virtual:astro:page:src/pages/login@_@astro":"chunks/login_CK7QKbr0.mjs","\u0000virtual:astro:page:src/pages/pricing@_@astro":"chunks/pricing_yL6f6KJY.mjs","\u0000virtual:astro:page:src/pages/privacy-policy@_@astro":"chunks/privacy-policy_DkCUCGcn.mjs","\u0000virtual:astro:page:src/pages/product@_@astro":"chunks/product_CGYVeSnu.mjs","\u0000virtual:astro:page:src/pages/solutions@_@astro":"chunks/solutions_JxroVkgm.mjs","\u0000virtual:astro:page:src/pages/terms-of-use@_@astro":"chunks/terms-of-use_DClj-S2d.mjs","\u0000virtual:astro:page:src/pages/tutorials/index@_@astro":"chunks/index_DjtTOmLl.mjs","\u0000virtual:astro:page:src/pages/index@_@astro":"chunks/index_DfRgBzif.mjs","C:/Users/Ferreira/Desktop/dev/turnapp-web-page/node_modules/astro/dist/assets/services/sharp.js":"chunks/sharp_Dhgh58KX.mjs","C:\\Users\\Ferreira\\Desktop\\dev\\turnapp-web-page\\.astro\\content-assets.mjs":"chunks/content-assets_DleWbedO.mjs","\u0000astro:data-layer-content":"chunks/_astro_data-layer-content_V2dGt0hc.mjs","astro/entrypoints/prerender":"prerender-entry.DKam4fRu.mjs","@astrojs/vercel/entrypoint":"entry.mjs","\u0000virtual:astro:page:node_modules/astro/dist/assets/endpoint/generic@_@js":"chunks/generic_qJPkiuFC.mjs","\u0000virtual:astro:page:src/pages/contact@_@astro":"chunks/contact_A02xlbVz.mjs","C:/Users/Ferreira/Desktop/dev/turnapp-web-page/node_modules/astro/components/ClientRouter.astro?astro&type=script&index=0&lang.ts":"_astro/ClientRouter.astro_astro_type_script_index_0_lang.DQAK6ZHT.js","C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/components/Companies.astro?astro&type=script&index=0&lang.ts":"_astro/Companies.astro_astro_type_script_index_0_lang.Cerwo5cp.js","C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/components/Features.astro?astro&type=script&index=0&lang.ts":"_astro/Features.astro_astro_type_script_index_0_lang.Cj-dhqA4.js","C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/components/Header.astro?astro&type=script&index=0&lang.ts":"_astro/Header.astro_astro_type_script_index_0_lang.C34phMF9.js","C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/components/Hero.astro?astro&type=script&index=0&lang.ts":"_astro/Hero.astro_astro_type_script_index_0_lang.DOoUef6z.js","C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/components/SocialProof.astro?astro&type=script&index=0&lang.ts":"_astro/SocialProof.astro_astro_type_script_index_0_lang.BMNpwfG1.js","C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/layouts/Layout.astro?astro&type=script&index=0&lang.ts":"_astro/Layout.astro_astro_type_script_index_0_lang.BAQDUpRY.js","C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/blog/[slug].astro?astro&type=script&index=0&lang.ts":"_astro/_slug_.astro_astro_type_script_index_0_lang.xLGdccrv.js","C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/book-demo.astro?astro&type=script&index=0&lang.ts":"_astro/book-demo.astro_astro_type_script_index_0_lang.BSNAhYHB.js","C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/contact.astro?astro&type=script&index=0&lang.ts":"_astro/contact.astro_astro_type_script_index_0_lang.BKWyVA67.js","astro:scripts/page.js":"_astro/page.BOdB6yKo.js","astro:scripts/before-hydration.js":""},"inlinedScripts":[["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/components/Companies.astro?astro&type=script&index=0&lang.ts","document.addEventListener(\"DOMContentLoaded\",()=>{const t=document.getElementById(\"company-modal\"),a=document.getElementById(\"company-modal-backdrop\"),c=document.getElementById(\"company-modal-close\"),n=document.querySelector(\".animate-marquee-logos\"),m=document.getElementById(\"modal-company-name\"),l=document.getElementById(\"modal-company-problem\"),i=document.getElementById(\"modal-company-logo\"),s=document.getElementById(\"companies-data-json\");if(!s)return;const r=JSON.parse(s.textContent);function y(e){const o=r.find(p=>p.id===e);o&&(m.textContent=o.name,l.textContent=o.problem,i.src=`/partner-logo-${e}.svg`,t.classList.remove(\"hidden\"),n&&(n.style.animationPlayState=\"paused\"),setTimeout(()=>{t.classList.remove(\"opacity-0\"),t.querySelector(\".transform\").classList.remove(\"scale-95\",\"opacity-0\")},10))}function d(){t.classList.add(\"opacity-0\"),t.querySelector(\".transform\").classList.add(\"scale-95\",\"opacity-0\"),setTimeout(()=>{t.classList.add(\"hidden\"),n&&(n.style.animationPlayState=\"running\")},300)}document.querySelectorAll(\".company-logo-btn\").forEach(e=>{e.addEventListener(\"click\",()=>{const o=parseInt(e.getAttribute(\"data-company-id\"));y(o)})}),c&&c.addEventListener(\"click\",d),a&&a.addEventListener(\"click\",d)});"],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/components/Header.astro?astro&type=script&index=0&lang.ts","document.addEventListener(\"astro:page-load\",()=>{const e=document.getElementById(\"menu-toggle\"),t=document.getElementById(\"mobile-menu\");e&&t&&e.addEventListener(\"click\",()=>{const n=e.getAttribute(\"aria-expanded\")===\"true\";e.setAttribute(\"aria-expanded\",String(!n)),e.classList.toggle(\"menu-open\"),t.classList.toggle(\"mobile-menu-open\")})});"],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/components/Hero.astro?astro&type=script&index=0&lang.ts","const m=()=>{const l=document.querySelector(\".image-gallery\");if(!l)return()=>{};const r=l.querySelectorAll(\".gallery-item\");let n=0,o=null;const a=()=>{const e=r[n];e.style.opacity=\"0\",e.setAttribute(\"data-active\",\"false\");const t=e.querySelector(\"video\");t&&(t.pause(),t.currentTime=0),n=(n+1)%r.length;const s=r[n];s.style.opacity=\"1\",s.setAttribute(\"data-active\",\"true\");const d=s.querySelector(\"video\");d&&(d.currentTime=0,d.play().catch(i=>console.error(\"Error video:\",i)));const u=s.getAttribute(\"data-duration\"),v=u?parseInt(u):5e3;o=setTimeout(a,v),l.querySelectorAll(\".gallery-dot\").forEach((i,g)=>{g===n?(i.classList.add(\"bg-white\",\"w-8\"),i.classList.remove(\"bg-white/40\",\"w-2\")):(i.classList.remove(\"bg-white\",\"w-8\"),i.classList.add(\"bg-white/40\",\"w-2\"))})},y=()=>{o&&clearTimeout(o);const e=r[0].getAttribute(\"data-duration\"),t=e?parseInt(e):35e3;o=setTimeout(a,t)},c=r[0].querySelector(\"video\");return c&&(c.addEventListener(\"ended\",()=>a()),c.addEventListener(\"error\",()=>{console.warn(\"Error cargando el video, continuando con imágenes...\"),setTimeout(a,35e3)}),c.play().catch(e=>console.error(\"Error al reproducir el video inicial:\",e))),y(),()=>{o&&clearTimeout(o),r.forEach(e=>{const t=e.querySelector(\"video\");t&&(t.pause(),t.currentTime=0)})}};document.addEventListener(\"DOMContentLoaded\",()=>{m()});document.addEventListener(\"astro:after-swap\",()=>{m()});"],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/components/SocialProof.astro?astro&type=script&index=0&lang.ts","const i=[{location:\"Clínica San Juan\",detail:\"Redujo el tiempo de espera de sus pacientes en un 45% usando las filas inteligentes de TurnApp.\",time:\"Este mes\"},{location:\"Banco Nacional\",detail:\"Aumentó la satisfacción del cliente al 98% implementando emisión de turnos por QR.\",time:\"Reciente\"},{location:\"Centro de Servicios\",detail:\"Procesó 500+ turnos diarios sin aglomeraciones gracias a las pantallas HUB.\",time:\"Hace 2 meses\"},{location:\"Hospital Central\",detail:\"Organizó 4 departamentos médicos con un flujo de atención unificado y transparente.\",time:\"Este trimestre\"},{location:\"Agencia de Envíos\",detail:\"Optimizó la estación de sus 12 agentes, reduciendo el tiempo por transacción a la mitad.\",time:\"Este año\"}];let n=0,c=!1;function l(){if(c)return;const t=document.getElementById(\"social-proof-toast\"),e=document.getElementById(\"sp-location\"),s=document.getElementById(\"sp-detail\"),o=document.getElementById(\"sp-time\");if(!t||!e||!s||!o)return;const a=i[n];e.textContent=`Éxito: ${a.location}`,s.textContent=a.detail,o.textContent=a.time,t.classList.remove(\"translate-y-20\",\"opacity-0\"),t.classList.add(\"translate-y-0\",\"opacity-100\"),setTimeout(()=>{t.classList.add(\"translate-y-20\",\"opacity-0\"),t.classList.remove(\"translate-y-0\",\"opacity-100\"),n=(n+1)%i.length},8e3)}document.addEventListener(\"DOMContentLoaded\",()=>{const t=document.getElementById(\"sp-close\");t&&t.addEventListener(\"click\",()=>{c=!0;const e=document.getElementById(\"social-proof-toast\");e&&(e.classList.add(\"translate-y-20\",\"opacity-0\"),e.classList.remove(\"translate-y-0\",\"opacity-100\"))}),setTimeout(()=>{l(),setInterval(l,35e3)},6e3)});"],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/blog/[slug].astro?astro&type=script&index=0&lang.ts","document.addEventListener(\"astro:page-load\",()=>{const r=document.getElementById(\"reading-progress\"),c=document.querySelector(\"article\");if(r&&c){const t=()=>{const e=window.scrollY,o=c.clientHeight-window.innerHeight,i=Math.min(100,Math.max(0,e/o*100));r.style.width=`${i}%`,r.setAttribute(\"aria-valuenow\",i.toString())};window.addEventListener(\"scroll\",t,{passive:!0}),t()}const s=document.getElementById(\"copy-link\"),a=document.getElementById(\"copy-link-mobile\"),l=window.location.href;[s,a].forEach(t=>{t&&t.addEventListener(\"click\",async()=>{try{await navigator.clipboard.writeText(l);const e=t.querySelector(\"span\"),o=t.querySelector(\"svg\"),i=e?.textContent||\"Copy Link\";if(o&&(o.style.color=\"#7928CA\"),e){e.textContent=\"Copied!\";const n=document.createElement(\"div\");n.setAttribute(\"aria-live\",\"polite\"),n.setAttribute(\"aria-atomic\",\"true\"),n.className=\"sr-only\",n.textContent=\"Link copied to clipboard\",document.body.appendChild(n),setTimeout(()=>{e.textContent=i,o&&(o.style.color=\"\"),document.body.removeChild(n)},2e3)}}catch(e){console.error(\"Failed to copy URL:\",e)}})})});"],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/book-demo.astro?astro&type=script&index=0&lang.ts","const g=()=>{const l=document.getElementById(\"demo-form\");if(!l)return;const p=document.querySelectorAll(\".step-content\"),f=document.querySelectorAll(\"#progress-steps > div\"),c=document.getElementById(\"prev-step\"),a=document.getElementById(\"next-step\"),u=document.getElementById(\"submit-form\");let e=1;function d(){p.forEach((o,n)=>{o.classList.toggle(\"hidden\",n+1!==e)}),f.forEach((o,n)=>{const t=o.querySelector(\".step-circle\");if(t){const s=n+1<=e;o.classList.toggle(\"bg-payflo-purple/5\",s),s?(t.classList.add(\"bg-payflo-purple\",\"text-white\"),t.classList.remove(\"bg-gray-200\",\"text-gray-600\")):(t.classList.add(\"bg-gray-200\",\"text-gray-600\"),t.classList.remove(\"bg-payflo-purple\",\"text-white\"))}}),c&&(c.style.display=e===1?\"none\":\"block\"),a&&(a.style.display=e===2?\"none\":\"block\"),u&&(u.style.display=e===2?\"block\":\"none\")}function m(o){if(o===1){const n=document.getElementById(\"company\")?.value,t=document.getElementById(\"company-size\")?.value,s=document.getElementById(\"industry\")?.value;if(!n||!t||!s){const i=[];return n||i.push(\"Nombre de la Institución\"),t||i.push(\"Tamaño de la Institución\"),s||i.push(\"Tipo de Institución\"),alert(`Por favor complete los siguientes campos obligatorios:\n${i.join(`\n`)}`),!1}return!0}if(o===2){const n=document.getElementById(\"first-name\")?.value,t=document.getElementById(\"last-name\")?.value,s=document.getElementById(\"work-email\")?.value,i=document.getElementById(\"job-title\")?.value;if(!n||!t||!s||!i){const r=[];return n||r.push(\"Nombre\"),t||r.push(\"Apellido\"),s||r.push(\"Correo Electrónico Laboral\"),i||r.push(\"Cargo\"),alert(`Por favor complete los siguientes campos obligatorios:\n${r.join(`\n`)}`),!1}return/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(s)?!0:(alert(\"Por favor ingrese una dirección de correo electrónico válida\"),!1)}return!0}c&&c.addEventListener(\"click\",()=>{e>1&&(e--,d(),window.scrollTo({top:0,behavior:\"smooth\"}))}),a&&a.addEventListener(\"click\",()=>{m(e)&&(e++,d(),window.scrollTo({top:0,behavior:\"smooth\"}))}),l&&l.addEventListener(\"submit\",o=>{o.preventDefault(),m(e)&&(alert(\"¡Gracias por solicitar una demostración! Nos pondremos en contacto contigo pronto.\"),l.reset(),e=1,d(),window.scrollTo({top:0,behavior:\"smooth\"}))}),d()};document.addEventListener(\"DOMContentLoaded\",g);"],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/contact.astro?astro&type=script&index=0&lang.ts","const e=document.querySelector(\"form\"),t=document.getElementById(\"submit-btn\");e&&t&&e.addEventListener(\"submit\",s=>{t.classList.add(\"btn-loading\"),t.setAttribute(\"disabled\",\"true\"),t.classList.add(\"opacity-80\",\"cursor-not-allowed\")});"]],"assets":["/favicon.svg","/grid-pattern.svg","/partner-logo-1.svg","/partner-logo-2.svg","/partner-logo-3.svg","/partner-logo-4.svg","/partner-logo-5.svg","/partner-logo-6.svg","/testimonial-avatar-1.jpg","/testimonial-avatar-2.jpg","/testimonial-avatar-3.jpg","/turnapp-promo-2.mp4","/avatars/female-avatar.png","/avatars/male-avatar.png","/blog/building-payroll.jpg","/blog/compliance.jpg","/blog/future-payroll.jpg","/blog/introducing-payflo.jpg","/_astro/ClientRouter.astro_astro_type_script_index_0_lang.DQAK6ZHT.js","/_astro/Features.astro_astro_type_script_index_0_lang.Cj-dhqA4.js","/_astro/index.B0NqHVf_.js","/_astro/Layout.astro_astro_type_script_index_0_lang.BAQDUpRY.js","/_astro/page.BOdB6yKo.js","/_astro/ft2.DzQzUEfW.webp","/_astro/ft1.ky6eWvY0.webp","/_astro/ft3.QqNdIg_A.webp","/_astro/ft4.pMkNw8Bc.webp","/_astro/ft5.mDAns9ax.webp","/_astro/ft6.BxTWgsUL.webp","/_astro/team-photo.CbtWTGVv.jpg","/_astro/m4.E1SnpbV_.png","/_astro/m2.bvHbhU1V.png","/_astro/m3.BiAObFqx.png","/_astro/m5.pzDR1MXo.png","/_astro/present_sin_slogan.DNOz9wRE.png","/_astro/m1.26pEMezb.png","/_astro/m6.DxZySiuK.png","/_astro/logo-wide-transparent.Bk_t4l8r.png","/_astro/favicon.cN_Yg_zq.svg","/_astro/Layout.CNfifaBo.css","/_astro/contact.UUF5ZIV5.css","/_astro/page.BOdB6yKo.js","/404.html","/about-us/index.html","/blog/index.html","/book-demo/index.html","/careers/index.html","/case-studies/index.html","/cookie-policy/index.html","/documentation/api-reference/index.html","/documentation/index.html","/endesarrollo/index.html","/login/index.html","/pricing/index.html","/privacy-policy/index.html","/product/index.html","/solutions/index.html","/terms-of-use/index.html","/tutorials/index.html","/index.html"],"buildFormat":"directory","checkOrigin":true,"actionBodySizeLimit":1048576,"serverIslandBodySizeLimit":1048576,"allowedDomains":[],"key":"KXUiL5qdQF9Lg9ZlRPzMV7v/bmK2GY1ALoJ2p71vXBU=","image":{},"devToolbar":{"enabled":false,"debugInfoOutput":""},"logLevel":"info","shouldInjectCspMetaTags":false}));
+const _manifest = deserializeManifest(({"rootDir":"file:///C:/Users/Ferreira/Desktop/dev/turnapp-web-page/","cacheDir":"file:///C:/Users/Ferreira/Desktop/dev/turnapp-web-page/node_modules/.astro/","outDir":"file:///C:/Users/Ferreira/Desktop/dev/turnapp-web-page/build/","srcDir":"file:///C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/","publicDir":"file:///C:/Users/Ferreira/Desktop/dev/turnapp-web-page/public/","buildClientDir":"file:///C:/Users/Ferreira/Desktop/dev/turnapp-web-page/build/client/","buildServerDir":"file:///C:/Users/Ferreira/Desktop/dev/turnapp-web-page/build/server/","adapterName":"@astrojs/vercel","assetsDir":"_astro","routes":[{"file":"","links":[],"scripts":[],"styles":[],"routeData":{"type":"page","component":"_server-islands.astro","params":["name"],"segments":[[{"content":"_server-islands","dynamic":false,"spread":false}],[{"content":"name","dynamic":true,"spread":false}]],"pattern":"^\\/_server-islands\\/([^/]+?)\\/?$","prerender":false,"isIndex":false,"fallbackRoutes":[],"route":"/_server-islands/[name]","origin":"internal","distURL":[],"_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/_image","component":"node_modules/astro/dist/assets/endpoint/generic.js","params":[],"pathname":"/_image","pattern":"^\\/_image\\/?$","segments":[[{"content":"_image","dynamic":false,"spread":false}]],"type":"endpoint","prerender":false,"fallbackRoutes":[],"distURL":[],"isIndex":false,"origin":"internal","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/404","isIndex":false,"type":"page","pattern":"^\\/404\\/?$","segments":[[{"content":"404","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/404.astro","pathname":"/404","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/about-us","isIndex":false,"type":"page","pattern":"^\\/about-us\\/?$","segments":[[{"content":"about-us","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/about-us.astro","pathname":"/about-us","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/blog/[slug]","isIndex":false,"type":"page","pattern":"^\\/blog\\/([^/]+?)\\/?$","segments":[[{"content":"blog","dynamic":false,"spread":false}],[{"content":"slug","dynamic":true,"spread":false}]],"params":["slug"],"component":"src/pages/blog/[slug].astro","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/blog","isIndex":true,"type":"page","pattern":"^\\/blog\\/?$","segments":[[{"content":"blog","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/blog/index.astro","pathname":"/blog","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/book-demo","isIndex":false,"type":"page","pattern":"^\\/book-demo\\/?$","segments":[[{"content":"book-demo","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/book-demo.astro","pathname":"/book-demo","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/careers","isIndex":false,"type":"page","pattern":"^\\/careers\\/?$","segments":[[{"content":"careers","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/careers.astro","pathname":"/careers","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/case-studies","isIndex":true,"type":"page","pattern":"^\\/case-studies\\/?$","segments":[[{"content":"case-studies","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/case-studies/index.astro","pathname":"/case-studies","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[{"type":"external","src":"_astro/contact.UUF5ZIV5.css"}],"routeData":{"route":"/contact","isIndex":false,"type":"page","pattern":"^\\/contact\\/?$","segments":[[{"content":"contact","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/contact.astro","pathname":"/contact","prerender":false,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/cookie-policy","isIndex":false,"type":"page","pattern":"^\\/cookie-policy\\/?$","segments":[[{"content":"cookie-policy","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/cookie-policy.astro","pathname":"/cookie-policy","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/documentation/api-reference","isIndex":false,"type":"page","pattern":"^\\/documentation\\/api-reference\\/?$","segments":[[{"content":"documentation","dynamic":false,"spread":false}],[{"content":"api-reference","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/documentation/api-reference.astro","pathname":"/documentation/api-reference","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/documentation","isIndex":false,"type":"page","pattern":"^\\/documentation\\/?$","segments":[[{"content":"documentation","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/documentation.astro","pathname":"/documentation","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/endesarrollo","isIndex":false,"type":"page","pattern":"^\\/endesarrollo\\/?$","segments":[[{"content":"endesarrollo","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/endesarrollo.astro","pathname":"/endesarrollo","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/login","isIndex":false,"type":"page","pattern":"^\\/login\\/?$","segments":[[{"content":"login","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/login.astro","pathname":"/login","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/pricing","isIndex":false,"type":"page","pattern":"^\\/pricing\\/?$","segments":[[{"content":"pricing","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/pricing.astro","pathname":"/pricing","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/privacy-policy","isIndex":false,"type":"page","pattern":"^\\/privacy-policy\\/?$","segments":[[{"content":"privacy-policy","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/privacy-policy.astro","pathname":"/privacy-policy","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/product","isIndex":false,"type":"page","pattern":"^\\/product\\/?$","segments":[[{"content":"product","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/product.astro","pathname":"/product","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/solutions","isIndex":false,"type":"page","pattern":"^\\/solutions\\/?$","segments":[[{"content":"solutions","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/solutions.astro","pathname":"/solutions","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/terms-of-use","isIndex":false,"type":"page","pattern":"^\\/terms-of-use\\/?$","segments":[[{"content":"terms-of-use","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/terms-of-use.astro","pathname":"/terms-of-use","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/tutorials","isIndex":true,"type":"page","pattern":"^\\/tutorials\\/?$","segments":[[{"content":"tutorials","dynamic":false,"spread":false}]],"params":[],"component":"src/pages/tutorials/index.astro","pathname":"/tutorials","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}},{"file":"","links":[],"scripts":[{"type":"external","value":"_astro/page.BOdB6yKo.js"}],"styles":[],"routeData":{"route":"/","isIndex":true,"type":"page","pattern":"^\\/$","segments":[],"params":[],"component":"src/pages/index.astro","pathname":"/","prerender":true,"fallbackRoutes":[],"distURL":[],"origin":"project","_meta":{"trailingSlash":"ignore"}}}],"serverLike":true,"middlewareMode":"classic","site":"https://turnapp.ferreiraric.com","base":"/","trailingSlash":"ignore","compressHTML":true,"experimentalQueuedRendering":{"enabled":false,"poolSize":0,"contentCache":false},"componentMetadata":[["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/404.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/about-us.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/blog/[slug].astro",{"propagation":"in-tree","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/blog/index.astro",{"propagation":"in-tree","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/book-demo.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/careers.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/case-studies/index.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/cookie-policy.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/documentation.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/documentation/api-reference.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/endesarrollo.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/index.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/login.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/pricing.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/privacy-policy.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/product.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/solutions.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/terms-of-use.astro",{"propagation":"none","containsHead":true}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/tutorials/index.astro",{"propagation":"none","containsHead":true}],["\u0000astro:content",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:page:src/pages/blog/[slug]@_@astro",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:pages",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:manifest",{"propagation":"in-tree","containsHead":false}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/node_modules/astro/dist/entrypoints/prerender.js",{"propagation":"in-tree","containsHead":false}],["\u0000virtual:astro:page:src/pages/blog/index@_@astro",{"propagation":"in-tree","containsHead":false}],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/contact.astro",{"propagation":"none","containsHead":true}]],"renderers":[],"clientDirectives":[["idle","(()=>{var l=(n,t)=>{let i=async()=>{await(await n())()},e=typeof t.value==\"object\"?t.value:void 0,s={timeout:e==null?void 0:e.timeout};\"requestIdleCallback\"in window?window.requestIdleCallback(i,s):setTimeout(i,s.timeout||200)};(self.Astro||(self.Astro={})).idle=l;window.dispatchEvent(new Event(\"astro:idle\"));})();"],["load","(()=>{var e=async t=>{await(await t())()};(self.Astro||(self.Astro={})).load=e;window.dispatchEvent(new Event(\"astro:load\"));})();"],["media","(()=>{var n=(a,t)=>{let i=async()=>{await(await a())()};if(t.value){let e=matchMedia(t.value);e.matches?i():e.addEventListener(\"change\",i,{once:!0})}};(self.Astro||(self.Astro={})).media=n;window.dispatchEvent(new Event(\"astro:media\"));})();"],["only","(()=>{var e=async t=>{await(await t())()};(self.Astro||(self.Astro={})).only=e;window.dispatchEvent(new Event(\"astro:only\"));})();"],["visible","(()=>{var a=(s,i,o)=>{let r=async()=>{await(await s())()},t=typeof i.value==\"object\"?i.value:void 0,c={rootMargin:t==null?void 0:t.rootMargin},n=new IntersectionObserver(e=>{for(let l of e)if(l.isIntersecting){n.disconnect(),r();break}},c);for(let e of o.children)n.observe(e)};(self.Astro||(self.Astro={})).visible=a;window.dispatchEvent(new Event(\"astro:visible\"));})();"]],"entryModules":{"\u0000virtual:astro:actions/noop-entrypoint":"chunks/noop-entrypoint_BOlrdqWF.mjs","\u0000noop-middleware":"virtual_astro_middleware.mjs","\u0000virtual:astro:session-driver":"chunks/_virtual_astro_session-driver_DYx9Bb3p.mjs","\u0000virtual:astro:server-island-manifest":"chunks/_virtual_astro_server-island-manifest_CQQ1F5PF.mjs","\u0000virtual:astro:page:src/pages/404@_@astro":"chunks/404_TG1fWgtF.mjs","\u0000virtual:astro:page:src/pages/about-us@_@astro":"chunks/about-us_BJi2QQ39.mjs","\u0000virtual:astro:page:src/pages/blog/[slug]@_@astro":"chunks/_slug__BTA1ZmsY.mjs","\u0000virtual:astro:page:src/pages/blog/index@_@astro":"chunks/index_Jo_z_Uxz.mjs","\u0000virtual:astro:page:src/pages/book-demo@_@astro":"chunks/book-demo_CjrCZxml.mjs","\u0000virtual:astro:page:src/pages/careers@_@astro":"chunks/careers_B9vBlMx7.mjs","\u0000virtual:astro:page:src/pages/case-studies/index@_@astro":"chunks/index_XoYF8f35.mjs","\u0000virtual:astro:page:src/pages/cookie-policy@_@astro":"chunks/cookie-policy_DP3tp1D9.mjs","\u0000virtual:astro:page:src/pages/documentation/api-reference@_@astro":"chunks/api-reference_Bxat6Py6.mjs","\u0000virtual:astro:page:src/pages/documentation@_@astro":"chunks/documentation_8Tnv02NA.mjs","\u0000virtual:astro:page:src/pages/endesarrollo@_@astro":"chunks/endesarrollo_efeaB4K5.mjs","\u0000virtual:astro:page:src/pages/login@_@astro":"chunks/login_CK7QKbr0.mjs","\u0000virtual:astro:page:src/pages/pricing@_@astro":"chunks/pricing_yL6f6KJY.mjs","\u0000virtual:astro:page:src/pages/privacy-policy@_@astro":"chunks/privacy-policy_DkCUCGcn.mjs","\u0000virtual:astro:page:src/pages/product@_@astro":"chunks/product_CGYVeSnu.mjs","\u0000virtual:astro:page:src/pages/solutions@_@astro":"chunks/solutions_JxroVkgm.mjs","\u0000virtual:astro:page:src/pages/terms-of-use@_@astro":"chunks/terms-of-use_DClj-S2d.mjs","\u0000virtual:astro:page:src/pages/tutorials/index@_@astro":"chunks/index_DjtTOmLl.mjs","\u0000virtual:astro:page:src/pages/index@_@astro":"chunks/index_DfRgBzif.mjs","C:/Users/Ferreira/Desktop/dev/turnapp-web-page/node_modules/astro/dist/assets/services/sharp.js":"chunks/sharp_BwI19EnW.mjs","C:\\Users\\Ferreira\\Desktop\\dev\\turnapp-web-page\\.astro\\content-assets.mjs":"chunks/content-assets_DleWbedO.mjs","\u0000astro:data-layer-content":"chunks/_astro_data-layer-content_V2dGt0hc.mjs","astro/entrypoints/prerender":"prerender-entry.DKam4fRu.mjs","@astrojs/vercel/entrypoint":"entry.mjs","\u0000virtual:astro:page:node_modules/astro/dist/assets/endpoint/generic@_@js":"chunks/generic_CFu0tbw1.mjs","\u0000virtual:astro:page:src/pages/contact@_@astro":"chunks/contact_C4-oqCWF.mjs","C:/Users/Ferreira/Desktop/dev/turnapp-web-page/node_modules/astro/components/ClientRouter.astro?astro&type=script&index=0&lang.ts":"_astro/ClientRouter.astro_astro_type_script_index_0_lang.DQAK6ZHT.js","C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/components/Companies.astro?astro&type=script&index=0&lang.ts":"_astro/Companies.astro_astro_type_script_index_0_lang.Cerwo5cp.js","C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/components/Features.astro?astro&type=script&index=0&lang.ts":"_astro/Features.astro_astro_type_script_index_0_lang.Cj-dhqA4.js","C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/components/Header.astro?astro&type=script&index=0&lang.ts":"_astro/Header.astro_astro_type_script_index_0_lang.C34phMF9.js","C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/components/Hero.astro?astro&type=script&index=0&lang.ts":"_astro/Hero.astro_astro_type_script_index_0_lang.DOoUef6z.js","C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/components/SocialProof.astro?astro&type=script&index=0&lang.ts":"_astro/SocialProof.astro_astro_type_script_index_0_lang.BMNpwfG1.js","C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/layouts/Layout.astro?astro&type=script&index=0&lang.ts":"_astro/Layout.astro_astro_type_script_index_0_lang.BAQDUpRY.js","C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/blog/[slug].astro?astro&type=script&index=0&lang.ts":"_astro/_slug_.astro_astro_type_script_index_0_lang.xLGdccrv.js","C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/book-demo.astro?astro&type=script&index=0&lang.ts":"_astro/book-demo.astro_astro_type_script_index_0_lang.BSNAhYHB.js","C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/contact.astro?astro&type=script&index=0&lang.ts":"_astro/contact.astro_astro_type_script_index_0_lang.BKWyVA67.js","astro:scripts/page.js":"_astro/page.BOdB6yKo.js","astro:scripts/before-hydration.js":""},"inlinedScripts":[["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/components/Companies.astro?astro&type=script&index=0&lang.ts","document.addEventListener(\"DOMContentLoaded\",()=>{const t=document.getElementById(\"company-modal\"),a=document.getElementById(\"company-modal-backdrop\"),c=document.getElementById(\"company-modal-close\"),n=document.querySelector(\".animate-marquee-logos\"),m=document.getElementById(\"modal-company-name\"),l=document.getElementById(\"modal-company-problem\"),i=document.getElementById(\"modal-company-logo\"),s=document.getElementById(\"companies-data-json\");if(!s)return;const r=JSON.parse(s.textContent);function y(e){const o=r.find(p=>p.id===e);o&&(m.textContent=o.name,l.textContent=o.problem,i.src=`/partner-logo-${e}.svg`,t.classList.remove(\"hidden\"),n&&(n.style.animationPlayState=\"paused\"),setTimeout(()=>{t.classList.remove(\"opacity-0\"),t.querySelector(\".transform\").classList.remove(\"scale-95\",\"opacity-0\")},10))}function d(){t.classList.add(\"opacity-0\"),t.querySelector(\".transform\").classList.add(\"scale-95\",\"opacity-0\"),setTimeout(()=>{t.classList.add(\"hidden\"),n&&(n.style.animationPlayState=\"running\")},300)}document.querySelectorAll(\".company-logo-btn\").forEach(e=>{e.addEventListener(\"click\",()=>{const o=parseInt(e.getAttribute(\"data-company-id\"));y(o)})}),c&&c.addEventListener(\"click\",d),a&&a.addEventListener(\"click\",d)});"],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/components/Header.astro?astro&type=script&index=0&lang.ts","document.addEventListener(\"astro:page-load\",()=>{const e=document.getElementById(\"menu-toggle\"),t=document.getElementById(\"mobile-menu\");e&&t&&e.addEventListener(\"click\",()=>{const n=e.getAttribute(\"aria-expanded\")===\"true\";e.setAttribute(\"aria-expanded\",String(!n)),e.classList.toggle(\"menu-open\"),t.classList.toggle(\"mobile-menu-open\")})});"],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/components/Hero.astro?astro&type=script&index=0&lang.ts","const m=()=>{const l=document.querySelector(\".image-gallery\");if(!l)return()=>{};const r=l.querySelectorAll(\".gallery-item\");let n=0,o=null;const a=()=>{const e=r[n];e.style.opacity=\"0\",e.setAttribute(\"data-active\",\"false\");const t=e.querySelector(\"video\");t&&(t.pause(),t.currentTime=0),n=(n+1)%r.length;const s=r[n];s.style.opacity=\"1\",s.setAttribute(\"data-active\",\"true\");const d=s.querySelector(\"video\");d&&(d.currentTime=0,d.play().catch(i=>console.error(\"Error video:\",i)));const u=s.getAttribute(\"data-duration\"),v=u?parseInt(u):5e3;o=setTimeout(a,v),l.querySelectorAll(\".gallery-dot\").forEach((i,g)=>{g===n?(i.classList.add(\"bg-white\",\"w-8\"),i.classList.remove(\"bg-white/40\",\"w-2\")):(i.classList.remove(\"bg-white\",\"w-8\"),i.classList.add(\"bg-white/40\",\"w-2\"))})},y=()=>{o&&clearTimeout(o);const e=r[0].getAttribute(\"data-duration\"),t=e?parseInt(e):35e3;o=setTimeout(a,t)},c=r[0].querySelector(\"video\");return c&&(c.addEventListener(\"ended\",()=>a()),c.addEventListener(\"error\",()=>{console.warn(\"Error cargando el video, continuando con imágenes...\"),setTimeout(a,35e3)}),c.play().catch(e=>console.error(\"Error al reproducir el video inicial:\",e))),y(),()=>{o&&clearTimeout(o),r.forEach(e=>{const t=e.querySelector(\"video\");t&&(t.pause(),t.currentTime=0)})}};document.addEventListener(\"DOMContentLoaded\",()=>{m()});document.addEventListener(\"astro:after-swap\",()=>{m()});"],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/components/SocialProof.astro?astro&type=script&index=0&lang.ts","const i=[{location:\"Clínica San Juan\",detail:\"Redujo el tiempo de espera de sus pacientes en un 45% usando las filas inteligentes de TurnApp.\",time:\"Este mes\"},{location:\"Banco Nacional\",detail:\"Aumentó la satisfacción del cliente al 98% implementando emisión de turnos por QR.\",time:\"Reciente\"},{location:\"Centro de Servicios\",detail:\"Procesó 500+ turnos diarios sin aglomeraciones gracias a las pantallas HUB.\",time:\"Hace 2 meses\"},{location:\"Hospital Central\",detail:\"Organizó 4 departamentos médicos con un flujo de atención unificado y transparente.\",time:\"Este trimestre\"},{location:\"Agencia de Envíos\",detail:\"Optimizó la estación de sus 12 agentes, reduciendo el tiempo por transacción a la mitad.\",time:\"Este año\"}];let n=0,c=!1;function l(){if(c)return;const t=document.getElementById(\"social-proof-toast\"),e=document.getElementById(\"sp-location\"),s=document.getElementById(\"sp-detail\"),o=document.getElementById(\"sp-time\");if(!t||!e||!s||!o)return;const a=i[n];e.textContent=`Éxito: ${a.location}`,s.textContent=a.detail,o.textContent=a.time,t.classList.remove(\"translate-y-20\",\"opacity-0\"),t.classList.add(\"translate-y-0\",\"opacity-100\"),setTimeout(()=>{t.classList.add(\"translate-y-20\",\"opacity-0\"),t.classList.remove(\"translate-y-0\",\"opacity-100\"),n=(n+1)%i.length},8e3)}document.addEventListener(\"DOMContentLoaded\",()=>{const t=document.getElementById(\"sp-close\");t&&t.addEventListener(\"click\",()=>{c=!0;const e=document.getElementById(\"social-proof-toast\");e&&(e.classList.add(\"translate-y-20\",\"opacity-0\"),e.classList.remove(\"translate-y-0\",\"opacity-100\"))}),setTimeout(()=>{l(),setInterval(l,35e3)},6e3)});"],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/blog/[slug].astro?astro&type=script&index=0&lang.ts","document.addEventListener(\"astro:page-load\",()=>{const r=document.getElementById(\"reading-progress\"),c=document.querySelector(\"article\");if(r&&c){const t=()=>{const e=window.scrollY,o=c.clientHeight-window.innerHeight,i=Math.min(100,Math.max(0,e/o*100));r.style.width=`${i}%`,r.setAttribute(\"aria-valuenow\",i.toString())};window.addEventListener(\"scroll\",t,{passive:!0}),t()}const s=document.getElementById(\"copy-link\"),a=document.getElementById(\"copy-link-mobile\"),l=window.location.href;[s,a].forEach(t=>{t&&t.addEventListener(\"click\",async()=>{try{await navigator.clipboard.writeText(l);const e=t.querySelector(\"span\"),o=t.querySelector(\"svg\"),i=e?.textContent||\"Copy Link\";if(o&&(o.style.color=\"#7928CA\"),e){e.textContent=\"Copied!\";const n=document.createElement(\"div\");n.setAttribute(\"aria-live\",\"polite\"),n.setAttribute(\"aria-atomic\",\"true\"),n.className=\"sr-only\",n.textContent=\"Link copied to clipboard\",document.body.appendChild(n),setTimeout(()=>{e.textContent=i,o&&(o.style.color=\"\"),document.body.removeChild(n)},2e3)}}catch(e){console.error(\"Failed to copy URL:\",e)}})})});"],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/book-demo.astro?astro&type=script&index=0&lang.ts","const g=()=>{const l=document.getElementById(\"demo-form\");if(!l)return;const p=document.querySelectorAll(\".step-content\"),f=document.querySelectorAll(\"#progress-steps > div\"),c=document.getElementById(\"prev-step\"),a=document.getElementById(\"next-step\"),u=document.getElementById(\"submit-form\");let e=1;function d(){p.forEach((o,n)=>{o.classList.toggle(\"hidden\",n+1!==e)}),f.forEach((o,n)=>{const t=o.querySelector(\".step-circle\");if(t){const s=n+1<=e;o.classList.toggle(\"bg-payflo-purple/5\",s),s?(t.classList.add(\"bg-payflo-purple\",\"text-white\"),t.classList.remove(\"bg-gray-200\",\"text-gray-600\")):(t.classList.add(\"bg-gray-200\",\"text-gray-600\"),t.classList.remove(\"bg-payflo-purple\",\"text-white\"))}}),c&&(c.style.display=e===1?\"none\":\"block\"),a&&(a.style.display=e===2?\"none\":\"block\"),u&&(u.style.display=e===2?\"block\":\"none\")}function m(o){if(o===1){const n=document.getElementById(\"company\")?.value,t=document.getElementById(\"company-size\")?.value,s=document.getElementById(\"industry\")?.value;if(!n||!t||!s){const i=[];return n||i.push(\"Nombre de la Institución\"),t||i.push(\"Tamaño de la Institución\"),s||i.push(\"Tipo de Institución\"),alert(`Por favor complete los siguientes campos obligatorios:\n${i.join(`\n`)}`),!1}return!0}if(o===2){const n=document.getElementById(\"first-name\")?.value,t=document.getElementById(\"last-name\")?.value,s=document.getElementById(\"work-email\")?.value,i=document.getElementById(\"job-title\")?.value;if(!n||!t||!s||!i){const r=[];return n||r.push(\"Nombre\"),t||r.push(\"Apellido\"),s||r.push(\"Correo Electrónico Laboral\"),i||r.push(\"Cargo\"),alert(`Por favor complete los siguientes campos obligatorios:\n${r.join(`\n`)}`),!1}return/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(s)?!0:(alert(\"Por favor ingrese una dirección de correo electrónico válida\"),!1)}return!0}c&&c.addEventListener(\"click\",()=>{e>1&&(e--,d(),window.scrollTo({top:0,behavior:\"smooth\"}))}),a&&a.addEventListener(\"click\",()=>{m(e)&&(e++,d(),window.scrollTo({top:0,behavior:\"smooth\"}))}),l&&l.addEventListener(\"submit\",o=>{o.preventDefault(),m(e)&&(alert(\"¡Gracias por solicitar una demostración! Nos pondremos en contacto contigo pronto.\"),l.reset(),e=1,d(),window.scrollTo({top:0,behavior:\"smooth\"}))}),d()};document.addEventListener(\"DOMContentLoaded\",g);"],["C:/Users/Ferreira/Desktop/dev/turnapp-web-page/src/pages/contact.astro?astro&type=script&index=0&lang.ts","const e=document.querySelector(\"form\"),t=document.getElementById(\"submit-btn\");e&&t&&e.addEventListener(\"submit\",s=>{t.classList.add(\"btn-loading\"),t.setAttribute(\"disabled\",\"true\"),t.classList.add(\"opacity-80\",\"cursor-not-allowed\")});"]],"assets":["/favicon.svg","/grid-pattern.svg","/partner-logo-1.svg","/partner-logo-2.svg","/partner-logo-3.svg","/partner-logo-4.svg","/partner-logo-5.svg","/partner-logo-6.svg","/testimonial-avatar-1.jpg","/testimonial-avatar-2.jpg","/testimonial-avatar-3.jpg","/turnapp-promo-2.mp4","/avatars/female-avatar.png","/avatars/male-avatar.png","/blog/building-payroll.jpg","/blog/compliance.jpg","/blog/future-payroll.jpg","/blog/introducing-payflo.jpg","/_astro/ClientRouter.astro_astro_type_script_index_0_lang.DQAK6ZHT.js","/_astro/Features.astro_astro_type_script_index_0_lang.Cj-dhqA4.js","/_astro/index.B0NqHVf_.js","/_astro/Layout.astro_astro_type_script_index_0_lang.BAQDUpRY.js","/_astro/page.BOdB6yKo.js","/_astro/ft1.ky6eWvY0.webp","/_astro/ft4.pMkNw8Bc.webp","/_astro/ft2.DzQzUEfW.webp","/_astro/ft3.QqNdIg_A.webp","/_astro/ft5.mDAns9ax.webp","/_astro/ft6.BxTWgsUL.webp","/_astro/team-photo.CbtWTGVv.jpg","/_astro/present_sin_slogan.DNOz9wRE.png","/_astro/m4.E1SnpbV_.png","/_astro/m2.bvHbhU1V.png","/_astro/m5.pzDR1MXo.png","/_astro/m3.BiAObFqx.png","/_astro/m1.26pEMezb.png","/_astro/m6.DxZySiuK.png","/_astro/logo-wide-transparent.Bk_t4l8r.png","/_astro/favicon.cN_Yg_zq.svg","/_astro/Layout.CNfifaBo.css","/_astro/contact.UUF5ZIV5.css","/_astro/page.BOdB6yKo.js","/404.html","/about-us/index.html","/blog/index.html","/book-demo/index.html","/careers/index.html","/case-studies/index.html","/cookie-policy/index.html","/documentation/api-reference/index.html","/documentation/index.html","/endesarrollo/index.html","/login/index.html","/pricing/index.html","/privacy-policy/index.html","/product/index.html","/solutions/index.html","/terms-of-use/index.html","/tutorials/index.html","/index.html"],"buildFormat":"directory","checkOrigin":true,"actionBodySizeLimit":1048576,"serverIslandBodySizeLimit":1048576,"allowedDomains":[],"key":"qFZlq861KOYgWDjo4mle+lhfvLe4rVuyBqimc/l3QxU=","image":{},"devToolbar":{"enabled":false,"debugInfoOutput":""},"logLevel":"info","shouldInjectCspMetaTags":false}));
 					const manifestRoutes = _manifest.routes;
 					
 					const manifest = Object.assign(_manifest, {
